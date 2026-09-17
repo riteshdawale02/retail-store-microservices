@@ -1,0 +1,53 @@
+services:
+  ui-db:
+    image: mariadb:10.9
+    hostname: ui-db
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=uidb
+      - MYSQL_USER=ui_user
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - RETAIL_JWT_SECRET=${RETAIL_JWT_SECRET:-local-dev-secret-change-me-32-chars-min}
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "ui_user", "-p${DB_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "3307:3306"
+  ui:
+    ports:
+      - 8888:8080
+    environment:
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+      - SERVER_TOMCAT_ACCESSLOG_ENABLED=true
+      - RETAIL_ADMIN_USERNAME=admin
+      - RETAIL_ADMIN_PASSWORD=admin
+    hostname: ui
+    build:
+      context: .
+    restart: always
+    mem_limit: 512m
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -f http://localhost:8080/actuator/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    develop:
+      watch:
+        - action: rebuild
+          path: src
+        - action: rebuild
+          path: pom.xml
