@@ -1,0 +1,167 @@
+name: Continuous Integration (CI)
+
+on:
+  push:
+    branches: [ "main", "develop", "feature/*" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # =========================================================================
+  # Job 1: Infrastructure as Code & Manifest Linting
+  # =========================================================================
+  iac-validation:
+    name: Lint & Validate IaC (Terraform, Helm, K8s)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0
+
+      - name: Terraform Format Check & Validate
+        run: |
+          cd terraform
+          terraform fmt -check
+          terraform init -backend=false
+          terraform validate
+
+      - name: Set up Helm CLI
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Helm Chart Linting
+        run: |
+          helm lint ./helm/retail-platform
+
+      - name: Set up Node for Manifest Verification
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate Kubernetes Manifests Syntax
+        run: |
+          for f in k8s/*.yaml; do
+            npx --yes js-yaml "$f" > /dev/null && echo "✔ Valid manifest: $f"
+          done
+
+  # =========================================================================
+  # Job 2: React Frontend Verification
+  # =========================================================================
+  frontend-ci:
+    name: Frontend CI (Lint, Test & Vite Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci || npm install
+
+      - name: Run Linter (oxlint)
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run Automated Unit Tests (Vitest)
+        run: |
+          cd frontend
+          npm test
+
+      - name: Build Production Frontend Bundle (Vite)
+        run: |
+          cd frontend
+          npm run build
+
+  # =========================================================================
+  # Job 3: Parallel Matrix Java Microservices Testing & Packaging
+  # =========================================================================
+  backend-microservices-ci:
+    name: Microservice CI (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - product-service
+          - cart-service
+          - order-service
+          - api-gateway
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run Unit Tests with Maven & Surefire
+        run: |
+          cd ${{ matrix.service }}
+          mvn clean test -B
+
+      - name: Package Executable Spring Boot JAR
+        run: |
+          cd ${{ matrix.service }}
+          mvn package -DskipTests -B
+
+      - name: Upload Test Reports Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports-${{ matrix.service }}
+          path: ${{ matrix.service }}/target/surefire-reports/
+          if-no-files-found: ignore
+
+  # =========================================================================
+  # Job 4: Multi-Stage Docker Container Build Verification
+  # =========================================================================
+  docker-build-verification:
+    name: Verify Container Build (${{ matrix.component }})
+    needs: [frontend-ci, backend-microservices-ci]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - frontend
+          - product-service
+          - cart-service
+          - order-service
+          - api-gateway
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Container Image (Validation Only)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.component }}
+          push: false
+          tags: retail/${{ matrix.component }}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

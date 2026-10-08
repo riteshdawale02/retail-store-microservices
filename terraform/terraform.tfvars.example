@@ -1,0 +1,8 @@
+aws_region          = "us-east-1"
+environment         = "production"
+project_name        = "retail-platform"
+vpc_cidr            = "10.0.0.0/16"
+eks_version         = "1.30"
+node_instance_types = ["t3.medium"]
+db_username         = "retailadmin"
+db_password         = "YourStrongPassword2026!"
