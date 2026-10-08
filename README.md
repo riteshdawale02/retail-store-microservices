@@ -2,7 +2,8 @@
 ### BCA Semester V – Capstone Project (Academic Year: 2026–2027)
 **College of Management and Computer Science, Yavatmal**  
 **Department of Computer Science**  
-**Domain:** E-Commerce, Cloud Computing and DevOps
+**Domain:** E-Commerce, Cloud Computing and DevOps  
+**GitHub Repository:** [riteshdawale02/retail-store-microservices](https://github.com/riteshdawale02/retail-store-microservices)
 
 ---
 

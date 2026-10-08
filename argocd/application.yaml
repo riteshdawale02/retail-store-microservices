@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/samirdhavane/cloud-native-retail-platform.git'
+    repoURL: 'https://github.com/riteshdawale02/retail-store-microservices.git'
     targetRevision: HEAD
     path: helm/retail-platform
     helm:

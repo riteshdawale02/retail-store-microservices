@@ -258,7 +258,7 @@ Argo CD will continuously sync git commits to your EKS cluster with zero downtim
 git init
 git add .
 git commit -m "feat: complete cloud-native retail microservices platform"
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/cloud-native-retail-platform.git
+git remote add origin https://github.com/riteshdawale02/retail-store-microservices.git
 git branch -M main
 git push -u origin main
 ```

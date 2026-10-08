@@ -4,6 +4,9 @@ description: Helm Chart for Cloud-Native Retail Microservices Platform on Amazon
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
+home: https://github.com/riteshdawale02/retail-store-microservices
+sources:
+  - https://github.com/riteshdawale02/retail-store-microservices
 maintainers:
   - name: Samir Anil Dhavane
     email: samir@cloudretail.io
