@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+services:
+  product-service:
+    url: ${SERVICES_PRODUCT_URL:http://localhost:8081}
+  cart-service:
+    url: ${SERVICES_CART_URL:http://localhost:8082}
+  order-service:
+    url: ${SERVICES_ORDER_URL:http://localhost:8083}
+
+cloud:
+  provider: ${CLOUD_PROVIDER:AWS}
+  region: ${AWS_REGION:us-east-1}
+  environment: ${APP_ENV:production}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true

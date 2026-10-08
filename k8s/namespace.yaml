@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: retail-system
+  labels:
+    name: retail-system
+    app.kubernetes.io/part-of: cloud-retail-platform

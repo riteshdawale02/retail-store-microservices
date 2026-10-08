@@ -1,0 +1,131 @@
+name: Cloud Retail CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  EKS_CLUSTER_NAME: retail-platform-cluster
+
+jobs:
+  test-and-build:
+    name: Build & Verify Java Spring Boot Microservices
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build Product Service
+        run: |
+          cd product-service
+          mvn clean test-compile -B
+
+      - name: Build Cart Service
+        run: |
+          cd cart-service
+          mvn clean test-compile -B
+
+      - name: Build Order Service
+        run: |
+          cd order-service
+          mvn clean test-compile -B
+
+      - name: Build API Gateway & Frontend
+        run: |
+          cd api-gateway
+          mvn clean test-compile -B
+
+  docker-build-push:
+    name: Build & Push Container Images to Amazon ECR
+    needs: test-and-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Product Service Image
+        run: |
+          docker build -t $ECR_REGISTRY/retail/product-service:latest -t $ECR_REGISTRY/retail/product-service:${{ github.sha }} ./product-service
+          docker push $ECR_REGISTRY/retail/product-service:latest
+          docker push $ECR_REGISTRY/retail/product-service:${{ github.sha }}
+
+      - name: Build and Push Cart Service Image
+        run: |
+          docker build -t $ECR_REGISTRY/retail/cart-service:latest -t $ECR_REGISTRY/retail/cart-service:${{ github.sha }} ./cart-service
+          docker push $ECR_REGISTRY/retail/cart-service:latest
+          docker push $ECR_REGISTRY/retail/cart-service:${{ github.sha }}
+
+      - name: Build and Push Order Service Image
+        run: |
+          docker build -t $ECR_REGISTRY/retail/order-service:latest -t $ECR_REGISTRY/retail/order-service:${{ github.sha }} ./order-service
+          docker push $ECR_REGISTRY/retail/order-service:latest
+          docker push $ECR_REGISTRY/retail/order-service:${{ github.sha }}
+
+      - name: Build and Push API Gateway Image
+        run: |
+          docker build -t $ECR_REGISTRY/retail/api-gateway:latest -t $ECR_REGISTRY/retail/api-gateway:${{ github.sha }} ./api-gateway
+          docker push $ECR_REGISTRY/retail/api-gateway:latest
+          docker push $ECR_REGISTRY/retail/api-gateway:${{ github.sha }}
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t $ECR_REGISTRY/retail/frontend:latest -t $ECR_REGISTRY/retail/frontend:${{ github.sha }} ./frontend
+          docker push $ECR_REGISTRY/retail/frontend:latest
+          docker push $ECR_REGISTRY/retail/frontend:${{ github.sha }}
+
+  deploy-eks:
+    name: Deploy to Amazon EKS via Helm & Argo CD
+    needs: docker-build-push
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update Kubeconfig for Amazon EKS
+        run: |
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Apply Helm Chart to EKS
+        run: |
+          helm upgrade --install retail-platform ./helm/retail-platform \
+            --namespace retail-system \
+            --create-namespace \
+            --set global.ecrRegistry=$ECR_REGISTRY \
+            --set global.tag=${{ github.sha }}

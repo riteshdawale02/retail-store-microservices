@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudRetail – Cloud-Native Microservices Retail Platform</title>
+    <meta name="description" content="Next-generation cloud-native retail platform powered by Java Spring Boot microservices, MySQL, Redis, and Amazon EKS.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-section">
+                <div class="brand-logo" id="brand-logo">
+                    <span class="logo-icon"><i data-lucide="cloud"></i></span>
+                    <span class="logo-text">Cloud<strong>Retail</strong></span>
+                </div>
+                <div class="cloud-badge" id="cloud-badge">
+                    <span class="pulse-dot"></span>
+                    <span>AWS EKS Cluster</span>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <div class="search-input-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="product-search-input" placeholder="Search premium electronics, fashion, audio..." autocomplete="off">
+                    <button id="clear-search-btn" class="clear-search-btn hidden" aria-label="Clear Search">&times;</button>
+                </div>
+            </div>
+
+            <nav class="nav-actions">
+                <button class="nav-tab active" id="tab-btn-catalog" data-tab="catalog-view">
+                    <i data-lucide="grid"></i>
+                    <span>Catalog</span>
+                </button>
+                <button class="nav-tab" id="tab-btn-orders" data-tab="orders-view">
+                    <i data-lucide="package"></i>
+                    <span>My Orders</span>
+                    <span class="badge-count hidden" id="orders-count-badge">0</span>
+                </button>
+                <button class="nav-tab" id="tab-btn-architecture" data-tab="architecture-view">
+                    <i data-lucide="cpu"></i>
+                    <span>Cloud Architecture</span>
+                </button>
+                <button class="cart-btn" id="open-cart-btn" aria-label="View Shopping Cart">
+                    <i data-lucide="shopping-bag"></i>
+                    <span class="cart-label">Cart</span>
+                    <span class="cart-count" id="cart-counter">0</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Toast Notification Container -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- VIEW 1: CATALOG VIEW -->
+        <section id="catalog-view" class="view-section active">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <div class="hero-glow"></div>
+                <div class="hero-content">
+                    <div class="hero-tag">
+                        <i data-lucide="layers"></i> Distributed Microservices Architecture
+                    </div>
+                    <h1 class="hero-title">High-Performance Cloud Retail Engine</h1>
+                    <p class="hero-subtitle">
+                        Engineered with Java Spring Boot, MySQL transactional persistence, Redis distributed caching, 
+                        and automated deployment on Amazon Elastic Kubernetes Service.
+                    </p>
+                    <div class="hero-meta-badges">
+                        <div class="meta-pill"><i data-lucide="server"></i> 4 Spring Boot Microservices</div>
+                        <div class="meta-pill"><i data-lucide="database"></i> MySQL + Redis Cluster</div>
+                        <div class="meta-pill"><i data-lucide="shield-check"></i> Multi-AZ AWS EKS</div>
+                        <div class="meta-pill"><i data-lucide="git-branch"></i> GitOps & Argo CD Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter and Controls Toolbar -->
+            <div class="catalog-toolbar">
+                <div class="category-filters" id="category-filters-container">
+                    <button class="category-chip active" data-category="ALL" id="cat-all">All Products</button>
+                    <!-- Injected dynamically -->
+                </div>
+                <div class="toolbar-stats" id="catalog-stats">
+                    Showing <span id="displayed-count">0</span> products
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid" id="product-grid">
+                <!-- Skeletons or Product cards loaded here -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Connecting to Product Microservice...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: ORDERS VIEW -->
+        <section id="orders-view" class="view-section hidden">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Order History & Tracking</h2>
+                    <p class="section-subtitle">Real-time orders processed by the Order Processing Microservice & stored in MySQL.</p>
+                </div>
+                <button class="action-btn secondary" id="refresh-orders-btn">
+                    <i data-lucide="refresh-cw"></i> Refresh Orders
+                </button>
+            </div>
+            <div class="orders-list" id="orders-list-container">
+                <div class="empty-state">
+                    <i data-lucide="inbox"></i>
+                    <h3>No orders placed yet</h3>
+                    <p>Browse our catalog and experience the seamless checkout process.</p>
+                    <button class="action-btn primary" id="back-to-catalog-btn">Explore Catalog</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: CLOUD ARCHITECTURE & DEVOPS VIEW -->
+        <section id="architecture-view" class="view-section hidden">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Cloud-Native Microservices Topology</h2>
+                    <p class="section-subtitle">Live topology, health telemetry, and cloud infrastructure layout deployed on AWS.</p>
+                </div>
+                <button class="action-btn primary" id="ping-telemetry-btn">
+                    <i data-lucide="activity"></i> Run Health Audit
+                </button>
+            </div>
+
+            <!-- Architecture Diagram Visualization -->
+            <div class="architecture-diagram-card">
+                <h3 class="card-heading"><i data-lucide="network"></i> End-to-End AWS Traffic Flow</h3>
+                <div class="diagram-flow">
+                    <div class="diagram-node client-node">
+                        <div class="node-icon"><i data-lucide="globe"></i></div>
+                        <div class="node-title">Web Browser / Client</div>
+                        <div class="node-meta">HTTPS / DNS Route 53</div>
+                    </div>
+                    <div class="diagram-arrow">
+                        <span>TLS / Ingress</span>
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                    <div class="diagram-node alb-node">
+                        <div class="node-icon"><i data-lucide="shield"></i></div>
+                        <div class="node-title">AWS Application Load Balancer</div>
+                        <div class="node-meta">Kubernetes ALB Ingress</div>
+                    </div>
+                    <div class="diagram-arrow">
+                        <span>Reverse Proxy</span>
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+                    <div class="diagram-node gateway-node">
+                        <div class="node-icon"><i data-lucide="layout-grid"></i></div>
+                        <div class="node-title">API Gateway (:8080)</div>
+                        <div class="node-meta">Spring Boot / Static Host</div>
+                    </div>
+                </div>
+
+                <div class="diagram-downstream">
+                    <div class="service-cluster">
+                        <div class="service-block product-block">
+                            <div class="block-header">
+                                <i data-lucide="package-search"></i>
+                                <span>Product Service (:8081)</span>
+                            </div>
+                            <div class="block-desc">Spring Boot 3 + Spring Data JPA</div>
+                            <div class="db-connector">
+                                <i data-lucide="database"></i> MySQL Database (Aurora / RDS)
+                            </div>
+                        </div>
+
+                        <div class="service-block cart-block">
+                            <div class="block-header">
+                                <i data-lucide="shopping-cart"></i>
+                                <span>Cart Service (:8082)</span>
+                            </div>
+                            <div class="block-desc">Spring Boot 3 + Spring Data Redis</div>
+                            <div class="db-connector redis">
+                                <i data-lucide="zap"></i> Redis In-Memory Cache (ElastiCache)
+                            </div>
+                        </div>
+
+                        <div class="service-block order-block">
+                            <div class="block-header">
+                                <i data-lucide="receipt"></i>
+                                <span>Order Service (:8083)</span>
+                            </div>
+                            <div class="block-desc">Spring Boot 3 + RestClient Orchestration</div>
+                            <div class="db-connector">
+                                <i data-lucide="database"></i> MySQL Database (Aurora / RDS)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Microservices Health Telemetry Cards -->
+            <div class="telemetry-grid">
+                <div class="telemetry-card" id="card-gateway-telemetry">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">API Gateway</span>
+                        <span class="status-indicator status-up" id="stat-gateway-badge">ACTIVE</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Port / Type</span>
+                        <span class="metric-value">8080 (Reverse Proxy)</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Cloud Host</span>
+                        <span class="metric-value" id="cloud-provider-val">AWS EKS</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Latency</span>
+                        <span class="metric-value" id="stat-gateway-lat">&lt; 1 ms</span>
+                    </div>
+                </div>
+
+                <div class="telemetry-card" id="card-product-telemetry">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">Product Service</span>
+                        <span class="status-indicator status-checking" id="stat-product-badge">CHECKING...</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Port / Data</span>
+                        <span class="metric-value">8081 / MySQL JPA</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Health Probe</span>
+                        <span class="metric-value">/actuator/health</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Latency</span>
+                        <span class="metric-value" id="stat-product-lat">-- ms</span>
+                    </div>
+                </div>
+
+                <div class="telemetry-card" id="card-cart-telemetry">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">Cart Service</span>
+                        <span class="status-indicator status-checking" id="stat-cart-badge">CHECKING...</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Port / Data</span>
+                        <span class="metric-value">8082 / Redis Cache</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Health Probe</span>
+                        <span class="metric-value">/actuator/health</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Latency</span>
+                        <span class="metric-value" id="stat-cart-lat">-- ms</span>
+                    </div>
+                </div>
+
+                <div class="telemetry-card" id="card-order-telemetry">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">Order Service</span>
+                        <span class="status-indicator status-checking" id="stat-order-badge">CHECKING...</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Port / Data</span>
+                        <span class="metric-value">8083 / MySQL JPA</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Health Probe</span>
+                        <span class="metric-value">/actuator/health</span>
+                    </div>
+                    <div class="telemetry-metric">
+                        <span class="metric-label">Latency</span>
+                        <span class="metric-value" id="stat-order-lat">-- ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AWS Cloud & DevOps Spec Table -->
+            <div class="cloud-spec-card">
+                <h3 class="card-heading"><i data-lucide="layers-3"></i> DevOps & Cloud Infrastructure Specification</h3>
+                <div class="spec-table-wrapper">
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Technology / AWS Service</th>
+                                <th>Configuration / Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Compute / Cluster</strong></td>
+                                <td>Amazon EKS (v1.30+)</td>
+                                <td>Multi-AZ Managed Node Groups (t3.medium)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Container Registry</strong></td>
+                                <td>Amazon ECR</td>
+                                <td>Dedicated private repos for each microservice</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Networking & Ingress</strong></td>
+                                <td>AWS ALB Ingress Controller</td>
+                                <td>SSL termination, automated target group binding</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Relational Database</strong></td>
+                                <td>Amazon RDS / Aurora MySQL</td>
+                                <td>Multi-AZ transactional persistence for Products & Orders</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Distributed Cache</strong></td>
+                                <td>Amazon ElastiCache Redis</td>
+                                <td>High-throughput in-memory cart session storage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Infrastructure as Code</strong></td>
+                                <td>Terraform (HashiCorp)</td>
+                                <td>Automated VPC, Subnets, EKS, RDS, ElastiCache</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GitOps Continuous Delivery</strong></td>
+                                <td>Argo CD + Helm 3</td>
+                                <td>Declarative auto-sync from Git to EKS</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CI Pipeline</strong></td>
+                                <td>GitHub Actions</td>
+                                <td>Automated Maven build, unit test, container buildx & ECR push</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SHOPPING CART SLIDE-OVER DRAWER -->
+    <div id="cart-drawer-overlay" class="drawer-overlay hidden">
+        <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart Drawer">
+            <div class="drawer-header">
+                <div class="drawer-title-group">
+                    <i data-lucide="shopping-bag"></i>
+                    <h2>Your Shopping Cart</h2>
+                </div>
+                <button id="close-cart-btn" class="close-btn" aria-label="Close Cart">&times;</button>
+            </div>
+
+            <div class="drawer-body" id="cart-items-container">
+                <div class="empty-state">
+                    <i data-lucide="shopping-cart"></i>
+                    <p>Your cart is empty</p>
+                </div>
+            </div>
+
+            <div class="drawer-footer" id="cart-footer">
+                <div class="order-summary-row">
+                    <span>Subtotal</span>
+                    <strong id="cart-subtotal">$0.00</strong>
+                </div>
+                <div class="order-summary-row subtle">
+                    <span>Cloud Processing & Tax</span>
+                    <span id="cart-tax">$0.00</span>
+                </div>
+                <div class="order-summary-divider"></div>
+                <div class="order-summary-row total">
+                    <span>Estimated Total</span>
+                    <span class="total-price" id="cart-total">$0.00</span>
+                </div>
+                <div class="cart-action-buttons">
+                    <button class="action-btn secondary" id="clear-cart-btn">Clear Cart</button>
+                    <button class="action-btn primary" id="proceed-checkout-btn">
+                        <span>Checkout Now</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+            <div class="modal-header">
+                <div>
+                    <h2 id="checkout-title" class="modal-title">Complete Checkout</h2>
+                    <p class="modal-subtitle">Direct order placement via Order Microservice.</p>
+                </div>
+                <button id="close-checkout-btn" class="close-btn" aria-label="Close Checkout">&times;</button>
+            </div>
+
+            <form id="checkout-form" class="checkout-form">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label for="cust-name">Full Name</label>
+                        <input type="text" id="cust-name" required placeholder="e.g. Samir Dhavane" value="Samir Dhavane">
+                    </div>
+                    <div class="form-group full">
+                        <label for="cust-email">Email Address</label>
+                        <input type="email" id="cust-email" required placeholder="e.g. samir@example.com" value="samir@cloudretail.io">
+                    </div>
+                    <div class="form-group full">
+                        <label for="cust-address">Shipping Delivery Address</label>
+                        <textarea id="cust-address" required rows="2" placeholder="e.g. Flat 402, Skyline Towers, Tech City, Maharashtra, India">Flat 402, Skyline Towers, Tech City, Maharashtra, India</textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label>Simulated Payment Method</label>
+                        <div class="payment-options">
+                            <label class="payment-option selected">
+                                <input type="radio" name="payment-method" value="CARD" checked>
+                                <i data-lucide="credit-card"></i>
+                                <span>Credit / Debit Card (AWS Test Gateway)</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="COD">
+                                <i data-lucide="banknote"></i>
+                                <span>Cash on Delivery</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-summary-box">
+                    <div class="summary-line">
+                        <span>Total Items:</span>
+                        <strong id="modal-summary-items">0</strong>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total To Pay:</span>
+                        <strong id="modal-summary-total">$0.00</strong>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="action-btn secondary" id="cancel-checkout-btn">Cancel</button>
+                    <button type="submit" class="action-btn primary" id="submit-order-btn">
+                        <i data-lucide="lock"></i> Confirm & Place Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER CONFIRMATION MODAL -->
+    <div id="order-success-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-dialog success-dialog">
+            <div class="success-icon-wrapper">
+                <i data-lucide="check-circle-2"></i>
+            </div>
+            <h2 class="modal-title">Order Placed Successfully!</h2>
+            <p class="modal-subtitle" id="order-success-message">
+                Your order has been recorded in the MySQL Order database and dispatched for fulfillment.
+            </p>
+
+            <div class="order-receipt-card" id="order-receipt-details">
+                <!-- Receipt details populated by JS -->
+            </div>
+
+            <div class="modal-footer centered">
+                <button class="action-btn primary" id="view-orders-after-success-btn">View My Orders</button>
+                <button class="action-btn secondary" id="continue-shopping-btn">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Initialize icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
