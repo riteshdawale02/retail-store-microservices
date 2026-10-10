@@ -1,0 +1,156 @@
+{{- if .Values.mysql.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-mysql-init-scripts
+  labels:
+    app: mysql
+data:
+  01-init.sql: |
+    CREATE DATABASE IF NOT EXISTS retail_product_db;
+    CREATE DATABASE IF NOT EXISTS retail_order_db;
+    CREATE USER IF NOT EXISTS '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
+    ALTER USER '{{ .Values.mysql.username }}'@'%' IDENTIFIED BY '{{ .Values.mysql.password }}';
+    GRANT ALL PRIVILEGES ON retail_product_db.* TO '{{ .Values.mysql.username }}'@'%';
+    GRANT ALL PRIVILEGES ON retail_order_db.* TO '{{ .Values.mysql.username }}'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO '{{ .Values.mysql.username }}'@'%' WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON retail_product_db.* TO 'root'@'%';
+    GRANT ALL PRIVILEGES ON retail_order_db.* TO 'root'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mysql
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              value: retail_product_db
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+          ports:
+            - containerPort: 3306
+              name: mysql
+          resources:
+            {{- toYaml .Values.mysql.resources | nindent 12 }}
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -u
+                - root
+                - -p{{ .Values.mysql.rootPassword }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-mysql-pvc
+        - name: mysql-init-scripts
+          configMap:
+            name: {{ .Release.Name }}-mysql-init-scripts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+---
+{{- end }}
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: redis-persistent-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+{{- end }}

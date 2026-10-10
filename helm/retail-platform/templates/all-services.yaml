@@ -1,10 +1,13 @@
 {{- $registry := .Values.global.ecrRegistry -}}
 {{- $tag := .Values.global.tag -}}
+{{- $release := .Release.Name -}}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-api-gateway
+  name: {{ $release }}-api-gateway
+  labels:
+    app: api-gateway
 spec:
   replicas: {{ .Values.apiGateway.replicaCount }}
   selector:
@@ -18,10 +21,48 @@ spec:
       containers:
         - name: api-gateway
           image: "{{ $registry }}/{{ .Values.apiGateway.image.repository }}:{{ $tag }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.apiGateway.service.port }}
+          env:
+            - name: SERVICES_PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SERVICES_PRODUCT_URL
+            - name: SERVICES_CART_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SERVICES_CART_URL
+            - name: SERVICES_ORDER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SERVICES_ORDER_URL
+            - name: CLOUD_PROVIDER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: CLOUD_PROVIDER
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: AWS_REGION
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: APP_ENV
           resources:
             {{- toYaml .Values.apiGateway.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -38,7 +79,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-product-service
+  name: {{ $release }}-product-service
+  labels:
+    app: product-service
 spec:
   replicas: {{ .Values.productService.replicaCount }}
   selector:
@@ -49,13 +92,37 @@ spec:
       labels:
         app: product-service
     spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z -w 2 mysql 3306; do echo "Waiting for MySQL..."; sleep 2; done; echo "MySQL ready!";']
       containers:
         - name: product-service
           image: "{{ $registry }}/{{ .Values.productService.image.repository }}:{{ $tag }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.productService.service.port }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/retail_product_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $release }}-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $release }}-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
           resources:
             {{- toYaml .Values.productService.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 25
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -71,7 +138,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-cart-service
+  name: {{ $release }}-cart-service
+  labels:
+    app: cart-service
 spec:
   replicas: {{ .Values.cartService.replicaCount }}
   selector:
@@ -82,13 +151,35 @@ spec:
       labels:
         app: cart-service
     spec:
+      initContainers:
+        - name: wait-for-redis
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z -w 2 redis 6379; do echo "Waiting for Redis..."; sleep 2; done; echo "Redis ready!";']
       containers:
         - name: cart-service
           image: "{{ $registry }}/{{ .Values.cartService.image.repository }}:{{ $tag }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.cartService.service.port }}
+          env:
+            - name: SPRING_DATA_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SPRING_DATA_REDIS_HOST
+            - name: SPRING_DATA_REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SPRING_DATA_REDIS_PORT
           resources:
             {{- toYaml .Values.cartService.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8082
+            initialDelaySeconds: 20
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -104,7 +195,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-order-service
+  name: {{ $release }}-order-service
+  labels:
+    app: order-service
 spec:
   replicas: {{ .Values.orderService.replicaCount }}
   selector:
@@ -115,13 +208,47 @@ spec:
       labels:
         app: order-service
     spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z -w 2 mysql 3306; do echo "Waiting for MySQL..."; sleep 2; done; echo "MySQL ready!";']
       containers:
         - name: order-service
           image: "{{ $registry }}/{{ .Values.orderService.image.repository }}:{{ $tag }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.orderService.service.port }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql:3306/retail_order_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $release }}-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $release }}-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SERVICES_PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SERVICES_PRODUCT_URL
+            - name: SERVICES_CART_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $release }}-config
+                  key: SERVICES_CART_URL
           resources:
             {{- toYaml .Values.orderService.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8083
+            initialDelaySeconds: 25
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -137,7 +264,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-frontend
+  name: {{ $release }}-frontend
+  labels:
+    app: retail-frontend
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
   selector:
@@ -151,6 +280,7 @@ spec:
       containers:
         - name: frontend
           image: "{{ $registry }}/{{ .Values.frontend.image.repository }}:{{ $tag }}"
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.frontend.service.port }}
           resources:
@@ -166,4 +296,3 @@ spec:
   ports:
     - port: {{ .Values.frontend.service.port }}
       targetPort: {{ .Values.frontend.service.port }}
-
