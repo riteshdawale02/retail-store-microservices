@@ -316,11 +316,105 @@ Once tested and validated on EC2, transition to production Amazon EKS:
 
 ---
 
-## 7. Troubleshooting Guide
+## 7. Complete Helm Implementation & Lifecycle Guide
+
+Helm is the official CNCF Kubernetes package manager used in this platform to parameterize, version, and manage the deployment of all microservices, databases, persistent storage, and routing rules as a single unified release.
+
+### A. Why Helm Instead of Plain YAML Manifests?
+1. **DRY Configuration**: Instead of hardcoding image tags, registry URLs, and account IDs across 10 different YAML files, change `global.ecrRegistry` and `global.tag` in a single `values.yaml`.
+2. **Release Versioning & Instant Rollback**: Helm tracks release revisions in Kubernetes Secrets. If an update introduces an error, `helm rollback` restores the last working state with zero downtime.
+3. **Environment Parity**: Easily deploy to local Kubernetes, EC2, staging, or production EKS by supplying distinct override files (`-f values-dev.yaml` or `--set global.environment=production`).
+4. **GitOps Integration**: Directly consumed by Argo CD to continuously synchronize Git state to Amazon EKS without manual intervention.
+
+### B. Helm Chart Architecture
+```
+helm/retail-platform/
+├── Chart.yaml                  # Chart metadata, version (1.0.0), and maintainers
+├── values.yaml                 # Default parameter values (registry, replicas, resources, DB configs)
+└── templates/                  # Templated Kubernetes manifests
+    ├── configmap-and-secrets.yaml # Platform environment variables and DB credentials
+    ├── storage.yaml            # PVCs for MySQL (10Gi) and Redis (2Gi)
+    ├── databases.yaml          # MySQL (with auto-init 01-init.sql ConfigMap) and Redis
+    ├── all-services.yaml       # Microservices (Gateway, Product, Cart, Order, Frontend) with initContainers
+    ├── ingress.yaml            # AWS Application Load Balancer Ingress
+    └── hpa.yaml                # Horizontal Pod Autoscalers (HPA)
+```
+
+### C. Step-by-Step Helm Deployment Workflow
+
+#### Step 1: Verify & Lint the Chart
+Before installing, validate chart syntax and template rendering:
+```bash
+# 1. Lint chart syntax and conventions
+helm lint ./helm/retail-platform
+
+# 2. Render templates locally (Dry-run without touching Kubernetes)
+helm template retail-platform ./helm/retail-platform \
+  --namespace retail-system \
+  --set global.ecrRegistry=592306540354.dkr.ecr.us-east-1.amazonaws.com \
+  --set global.tag=latest
+```
+
+#### Step 2: Install or Upgrade the Release
+Deploy the entire stack with automatic namespace creation and readiness verification:
+```bash
+helm upgrade --install retail-platform ./helm/retail-platform \
+  --namespace retail-system \
+  --create-namespace \
+  --set global.ecrRegistry=592306540354.dkr.ecr.us-east-1.amazonaws.com \
+  --set global.tag=latest \
+  --wait \
+  --timeout 10m
+```
+> The `--wait` flag ensures Helm waits until all pods (MySQL, Redis, and all microservices) pass their readiness probes before marking the release as successful.
+
+#### Step 3: Verify the Deployed Helm Release
+```bash
+# List all Helm releases in the namespace
+helm list -n retail-system
+
+# Inspect status of the specific release
+helm status retail-platform -n retail-system
+
+# Check all deployed Kubernetes resources
+kubectl get all,pvc,ingress -n retail-system
+```
+
+#### Step 4: Upgrading the Release (Zero-Downtime Rolling Update)
+When a new container image tag or configuration is released:
+```bash
+# Example: Deploying a new image tag
+helm upgrade retail-platform ./helm/retail-platform \
+  --namespace retail-system \
+  --set global.tag=v1.0.1 \
+  --reuse-values
+```
+
+#### Step 5: Rolling Back a Failed Release
+If an upgrade causes errors:
+```bash
+# View release revision history
+helm history retail-platform -n retail-system
+
+# Rollback to the previous revision (e.g. revision 1)
+helm rollback retail-platform 1 -n retail-system
+```
+
+#### Step 6: Uninstalling the Release
+To completely uninstall the application release:
+```bash
+helm uninstall retail-platform -n retail-system
+```
+*(PersistentVolumeClaims are retained to prevent accidental data loss until manually deleted).*
+
+---
+
+## 8. Troubleshooting Guide
 
 | Issue | Cause | Resolution |
 |---|---|---|
 | `ErrImageNeverPull` or `ImagePullBackOff` | Kubernetes cannot find local image or lacks ECR credentials | Ensure image was loaded into containerd (`k3s ctr images import`) and `imagePullPolicy: IfNotPresent` is set. |
-| `CrashLoopBackOff` on Spring services | Memory limit exceeded or MySQL not yet ready | Check logs: `kubectl logs -n retail-system -l app=product-service`. Verify DB is ready. |
+| `CrashLoopBackOff` on Spring services | Memory limit exceeded or MySQL not yet ready | The included `wait-for-mysql` initContainer prevents this. Check `kubectl logs -n retail-system -l app=product-service`. |
 | Cannot access ports from browser | EC2 Security Group blocking inbound traffic | Ensure ports `3005`, `8080`, and `3001` are open in AWS EC2 Security Group. |
 | Port-forward closes on disconnect | Command terminated when SSH session exits | Use `nohup` or `tmux` / `screen` session to keep port-forwarding alive. |
+| Helm release in `failed` state | Timeout reached while waiting for pods | Run `helm status retail-platform -n retail-system` and check pod logs with `kubectl logs -n retail-system -l app=mysql`. |
