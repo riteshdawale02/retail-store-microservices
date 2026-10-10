@@ -37,7 +37,7 @@ This project is a modern, enterprise-grade cloud-native e-commerce application s
 
 ```
 /Users/samir/ecom/
-├── README.md                      # Project overview and quickstart
+├── README.md                      # Project overview and quickstart 1
 ├── PROJECT_SYNOPSIS.md            # Exact academic capstone synopsis (15 Sections)
 ├── VIVA_VOCE_PREPARATION.md       # Capstone Viva Voce defense & examiner Q&A guide
 ├── ARCHITECTURE.md                # Microservices architecture & API contract specs
