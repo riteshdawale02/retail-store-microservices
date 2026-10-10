@@ -1,0 +1,87 @@
+# Environment override for Local Minikube, Kind, or Single-Node EC2 Testing
+global:
+  environment: development
+  awsRegion: us-east-1
+  ecrRegistry: ""  # Empty registry uses local docker images (e.g. retail/product-service:latest)
+  tag: latest
+
+mysql:
+  enabled: true
+  storage: 5Gi
+  rootPassword: "RetailRootSecret2026!"
+  username: "retail_user"
+  password: "RetailAppSecret2026!"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+redis:
+  enabled: true
+  storage: 1Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+
+apiGateway:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
+productService:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 150m
+      memory: 256Mi
+    limits:
+      cpu: 350m
+      memory: 512Mi
+
+cartService:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
+orderService:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 150m
+      memory: 256Mi
+    limits:
+      cpu: 350m
+      memory: 512Mi
+
+frontend:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+
+autoscaling:
+  enabled: false
+
+ingress:
+  enabled: false
