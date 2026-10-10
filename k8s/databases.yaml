@@ -1,3 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-scripts
+  namespace: retail-system
+data:
+  01-init.sql: |
+    CREATE DATABASE IF NOT EXISTS retail_product_db;
+    CREATE DATABASE IF NOT EXISTS retail_order_db;
+    CREATE USER IF NOT EXISTS 'retail_user'@'%' IDENTIFIED BY 'RetailAppSecret2026!';
+    ALTER USER 'retail_user'@'%' IDENTIFIED BY 'RetailAppSecret2026!';
+    GRANT ALL PRIVILEGES ON retail_product_db.* TO 'retail_user'@'%';
+    GRANT ALL PRIVILEGES ON retail_order_db.* TO 'retail_user'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO 'retail_user'@'%' WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON retail_product_db.* TO 'root'@'%';
+    GRANT ALL PRIVILEGES ON retail_order_db.* TO 'root'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,6 +26,8 @@ metadata:
     app: mysql
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mysql
@@ -26,6 +47,16 @@ spec:
                   key: MYSQL_ROOT_PASSWORD
             - name: MYSQL_DATABASE
               value: retail_product_db
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: retail-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: retail-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
           ports:
             - containerPort: 3306
               name: mysql
@@ -36,6 +67,44 @@ spec:
             limits:
               cpu: 500m
               memory: 1024Mi
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -u
+                - root
+                - -pRetailRootSecret2026!
+            initialDelaySeconds: 40
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -u
+                - root
+                - -pRetailRootSecret2026!
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-init-scripts
+          configMap:
+            name: mysql-init-scripts
 ---
 apiVersion: v1
 kind: Service
@@ -59,6 +128,8 @@ metadata:
     app: redis
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: redis
@@ -80,6 +151,27 @@ spec:
             limits:
               cpu: 250m
               memory: 256Mi
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: redis-persistent-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
 ---
 apiVersion: v1
 kind: Service

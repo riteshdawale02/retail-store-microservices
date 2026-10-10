@@ -85,8 +85,9 @@ This project is a modern, enterprise-grade cloud-native e-commerce application s
 │
 ├── k8s/                           # Module 6: Production Kubernetes Manifests
 │   ├── namespace.yaml
+│   ├── storage.yaml               # PersistentVolumes (PV) & Claims (PVC) for MySQL & Redis
 │   ├── configmap-and-secrets.yaml
-│   ├── databases.yaml             # MySQL & Redis manifests
+│   ├── databases.yaml             # MySQL & Redis manifests with auto-init ConfigMap
 │   ├── product-service.yaml
 │   ├── cart-service.yaml
 │   ├── order-service.yaml
