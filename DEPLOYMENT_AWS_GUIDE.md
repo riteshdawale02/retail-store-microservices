@@ -191,7 +191,19 @@ helm upgrade --install retail-platform ./helm/retail-platform \
 ### Option B: Deploy via Kubernetes Manifests
 Update the image URLs in `k8s/*.yaml` with your `$REGISTRY` address, then run:
 ```bash
+# 1. Create namespace
+kubectl apply -f k8s/namespace.yaml
+
+# 2. Storage: Persistent Volumes and Claims
+kubectl apply -f k8s/storage.yaml
+
+# 3. Configuration & Secrets
 kubectl apply -f k8s/configmap-and-secrets.yaml
+
+# 4. Databases (MySQL with auto-init ConfigMap & Redis)
+kubectl apply -f k8s/databases.yaml
+
+# 5. Microservices & Ingress
 kubectl apply -f k8s/product-service.yaml
 kubectl apply -f k8s/cart-service.yaml
 kubectl apply -f k8s/order-service.yaml

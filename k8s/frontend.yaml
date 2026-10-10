@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: retail/frontend:latest
+          image: 592306540354.dkr.ecr.us-east-1.amazonaws.com/retail/frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
