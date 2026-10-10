@@ -1,0 +1,97 @@
+# Environment override for Production on Amazon EKS
+global:
+  environment: production
+  awsRegion: us-east-1
+  ecrRegistry: 592306540354.dkr.ecr.us-east-1.amazonaws.com
+  tag: latest
+
+mysql:
+  enabled: true
+  storage: 20Gi
+  rootPassword: "RetailRootSecret2026!"
+  username: "retail_user"
+  password: "RetailAppSecret2026!"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      cpu: 1000m
+      memory: 2048Mi
+
+redis:
+  enabled: true
+  storage: 5Gi
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+apiGateway:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: 800m
+      memory: 1024Mi
+
+productService:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 400m
+      memory: 768Mi
+    limits:
+      cpu: 1000m
+      memory: 1536Mi
+
+cartService:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: 800m
+      memory: 1024Mi
+
+orderService:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 400m
+      memory: 768Mi
+    limits:
+      cpu: 1000m
+      memory: 1536Mi
+
+frontend:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  host: retail.cloudretail.io
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'

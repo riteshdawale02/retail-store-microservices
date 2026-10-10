@@ -318,94 +318,272 @@ Once tested and validated on EC2, transition to production Amazon EKS:
 
 ## 7. Complete Helm Implementation & Lifecycle Guide
 
-Helm is the official CNCF Kubernetes package manager used in this platform to parameterize, version, and manage the deployment of all microservices, databases, persistent storage, and routing rules as a single unified release.
+Helm is the official CNCF Kubernetes package manager used in this retail platform to parameterize, version, package, and operate all microservices, stateful databases, persistent storage, and ingress routing as a single unified release.
 
-### A. Why Helm Instead of Plain YAML Manifests?
-1. **DRY Configuration**: Instead of hardcoding image tags, registry URLs, and account IDs across 10 different YAML files, change `global.ecrRegistry` and `global.tag` in a single `values.yaml`.
-2. **Release Versioning & Instant Rollback**: Helm tracks release revisions in Kubernetes Secrets. If an update introduces an error, `helm rollback` restores the last working state with zero downtime.
-3. **Environment Parity**: Easily deploy to local Kubernetes, EC2, staging, or production EKS by supplying distinct override files (`-f values-dev.yaml` or `--set global.environment=production`).
-4. **GitOps Integration**: Directly consumed by Argo CD to continuously synchronize Git state to Amazon EKS without manual intervention.
+---
 
-### B. Helm Chart Architecture
+### A. Architectural Value of Helm in this Platform
+
+1. **Elimination of Configuration Drift (DRY)**:
+   Instead of duplicating registry URLs, database passwords, CPU/memory limits, and replica counts across 10+ standalone Kubernetes YAML files, Helm centralizes configuration into `values.yaml` and environment overlays (`values-local.yaml`, `values-prod.yaml`).
+2. **Deterministic Release Lifecycle & Instant Rollbacks**:
+   Helm stores revision snapshots directly within Kubernetes cluster Secrets (`sh.helm.release.v1.*`). If an application code update or faulty environment variable causes degradation, a single `helm rollback` command reverts all deployments, services, and configurations to the last known healthy state in seconds.
+3. **Environment Parity**:
+   The exact same Kubernetes manifests run seamlessly on:
+   - Developer laptops (Minikube / Docker Desktop / Kind) using local Docker images.
+   - Single-node AWS EC2 instances running K3s.
+   - Multi-AZ enterprise Amazon EKS clusters backed by AWS Application Load Balancers and AWS ECR.
+4. **GitOps-Ready Engine**:
+   The chart is directly consumable by declarative GitOps controllers such as **Argo CD** or **Flux CD** without extra wrapping.
+
+---
+
+### B. Helm Chart Architecture & File Hierarchy
+
 ```
 helm/retail-platform/
 ├── Chart.yaml                  # Chart metadata, version (1.0.0), and maintainers
-├── values.yaml                 # Default parameter values (registry, replicas, resources, DB configs)
-└── templates/                  # Templated Kubernetes manifests
+├── values.yaml                 # Base configuration and default parameters
+├── values-local.yaml           # Development overlay (single-replica, local Docker images)
+├── values-prod.yaml            # Production overlay (multi-replica HA, AWS ECR, AWS ALB, HPA)
+└── templates/                  # Templated Kubernetes resources
     ├── configmap-and-secrets.yaml # Platform environment variables and DB credentials
-    ├── storage.yaml            # PVCs for MySQL (10Gi) and Redis (2Gi)
-    ├── databases.yaml          # MySQL (with auto-init 01-init.sql ConfigMap) and Redis
-    ├── all-services.yaml       # Microservices (Gateway, Product, Cart, Order, Frontend) with initContainers
+    ├── storage.yaml            # Dynamic PVCs for MySQL (10Gi) and Redis (2Gi)
+    ├── databases.yaml          # MySQL (with auto-provisioning 01-init.sql ConfigMap) and Redis
+    ├── all-services.yaml       # Gateway, Product, Cart, Order, and Frontend deployments & services
     ├── ingress.yaml            # AWS Application Load Balancer Ingress
-    └── hpa.yaml                # Horizontal Pod Autoscalers (HPA)
+    └── hpa.yaml                # Horizontal Pod Autoscalers (HPA) for compute workloads
 ```
 
-### C. Step-by-Step Helm Deployment Workflow
+#### Detailed Component Responsibilities:
 
-#### Step 1: Verify & Lint the Chart
-Before installing, validate chart syntax and template rendering:
+| Template File | Managed Resources | Key Implementation Features |
+|---|---|---|
+| `Chart.yaml` | Chart Metadata | Standard Helm v2 API version, semantic versioning (`1.0.0`). |
+| `values.yaml` | Default Values | Central catalog of database credentials, ports, resource limits, and service definitions. |
+| `templates/storage.yaml` | `PersistentVolumeClaim` | Automated provisioning of storage for MySQL (`mysql-pvc`) and Redis (`redis-pvc`). |
+| `templates/databases.yaml` | `Deployment`, `Service`, `ConfigMap` | MySQL 8.0 and Redis 7 deployments. Mounts an auto-generated `01-init.sql` ConfigMap to `/docker-entrypoint-initdb.d/` ensuring `retail_product_db`, `retail_order_db`, and user `retail_user` with full permissions are created on first boot without any manual intervention. |
+| `templates/all-services.yaml` | `Deployment`, `Service` | Spring Boot services and React Frontend. Includes `initContainers` (`wait-for-mysql` and `wait-for-redis`) utilizing lightweight `busybox:1.36` to poll database socket availability (`nc -z -w 2`) before launching the JVM, preventing `CrashLoopBackOff` race conditions. |
+| `templates/ingress.yaml` | `Ingress` | Provisions an AWS Application Load Balancer (ALB) via the AWS Load Balancer Controller with automated SSL redirection and internet-facing routing. |
+| `templates/hpa.yaml` | `HorizontalPodAutoscaler` | Dynamic CPU-based pod autoscaling (2 to 8 replicas) for `product-service` and `order-service`. |
+
+---
+
+### C. Parameter Configuration Reference (`values.yaml`)
+
+| Parameter | Description | Default | Environment Override |
+|---|---|---|---|
+| `global.environment` | Environment identifier | `production` | Set to `development` for local/EC2 |
+| `global.awsRegion` | AWS deployment region | `us-east-1` | Cloud region |
+| `global.ecrRegistry` | Container registry prefix | `592306540354.dkr.ecr.us-east-1.amazonaws.com` | Set to `""` for local Docker images |
+| `global.tag` | Default image tag | `latest` | Release git commit SHA or semver |
+| `mysql.enabled` | Deploy in-cluster MySQL | `true` | Set `false` if connecting to Amazon RDS |
+| `mysql.storage` | MySQL PVC storage size | `10Gi` | `5Gi` (dev), `20Gi` (prod) |
+| `mysql.username` | App database username | `retail_user` | Automated across DB and microservices |
+| `mysql.password` | App database password | `RetailAppSecret2026!` | Synchronized across Secrets |
+| `redis.enabled` | Deploy in-cluster Redis | `true` | Set `false` if connecting to ElastiCache |
+| `redis.storage` | Redis PVC storage size | `2Gi` | `1Gi` (dev), `5Gi` (prod) |
+| `apiGateway.replicaCount` | Replicas for API Gateway | `2` | `1` (dev), `3` (prod) |
+| `productService.replicaCount` | Replicas for Product Service | `2` | `1` (dev), `3` (prod) |
+| `cartService.replicaCount` | Replicas for Cart Service | `2` | `1` (dev), `3` (prod) |
+| `orderService.replicaCount` | Replicas for Order Service | `2` | `1` (dev), `3` (prod) |
+| `frontend.replicaCount` | Replicas for React Frontend | `2` | `1` (dev), `3` (prod) |
+| `autoscaling.enabled` | Enable Horizontal Pod Autoscaling | `true` | `false` (dev), `true` (prod) |
+| `autoscaling.targetCPUUtilizationPercentage` | Target CPU % for scaling | `75` | Target threshold |
+| `ingress.enabled` | Deploy AWS ALB Ingress | `true` | `false` (dev), `true` (prod) |
+| `ingress.host` | Ingress hostname | `retail.yourdomain.com` | Production DNS name |
+
+---
+
+### D. Step-by-Step Helm Deployment Runbook
+
+#### 1. Validate & Lint the Chart
+Always execute linting and dry-run template rendering prior to running deployment:
 ```bash
-# 1. Lint chart syntax and conventions
+# Lint the chart against best practices
 helm lint ./helm/retail-platform
 
-# 2. Render templates locally (Dry-run without touching Kubernetes)
+# Dry-run template generation locally (no cluster modification)
 helm template retail-platform ./helm/retail-platform \
   --namespace retail-system \
-  --set global.ecrRegistry=592306540354.dkr.ecr.us-east-1.amazonaws.com \
-  --set global.tag=latest
+  -f ./helm/retail-platform/values-prod.yaml
 ```
 
-#### Step 2: Install or Upgrade the Release
-Deploy the entire stack with automatic namespace creation and readiness verification:
+#### 2. Scenario A: Deploying on Local Machine or Single-Node EC2 (K3s)
+For local testing or single-node EC2, use `values-local.yaml` (which uses single replicas, local Docker image names, and disables the AWS ALB):
 ```bash
 helm upgrade --install retail-platform ./helm/retail-platform \
   --namespace retail-system \
   --create-namespace \
-  --set global.ecrRegistry=592306540354.dkr.ecr.us-east-1.amazonaws.com \
+  -f ./helm/retail-platform/values-local.yaml \
+  --wait \
+  --timeout 10m
+```
+
+#### 3. Scenario B: Deploying to Production Amazon EKS
+For production Amazon EKS, authenticate with ECR and apply `values-prod.yaml`:
+```bash
+# Connect kubectl to your Amazon EKS cluster
+aws eks update-kubeconfig --name retail-platform-cluster --region us-east-1
+
+# Deploy or upgrade the Helm release
+helm upgrade --install retail-platform ./helm/retail-platform \
+  --namespace retail-system \
+  --create-namespace \
+  -f ./helm/retail-platform/values-prod.yaml \
   --set global.tag=latest \
   --wait \
   --timeout 10m
 ```
-> The `--wait` flag ensures Helm waits until all pods (MySQL, Redis, and all microservices) pass their readiness probes before marking the release as successful.
+> **What `--wait` does**: Helm will block and monitor pod rollouts until all containers pass their readiness probes (`/actuator/health` for Spring Boot, `mysqladmin ping` for MySQL, and `redis-cli ping` for Redis). If any pod fails, Helm halts and reports the failure.
 
-#### Step 3: Verify the Deployed Helm Release
+#### 4. Inspect & Verify Release Status
 ```bash
-# List all Helm releases in the namespace
-helm list -n retail-system
-
-# Inspect status of the specific release
+# Check release status and metadata
 helm status retail-platform -n retail-system
 
-# Check all deployed Kubernetes resources
+# View all active Kubernetes resources created by Helm
 kubectl get all,pvc,ingress -n retail-system
+
+# Check pod startup logs for MySQL initialization
+kubectl logs -n retail-system -l app=mysql --tail=50
 ```
 
-#### Step 4: Upgrading the Release (Zero-Downtime Rolling Update)
-When a new container image tag or configuration is released:
+#### 5. Executing Zero-Downtime Rolling Upgrades
+When deploying a new version of the microservices or updating a configuration value:
 ```bash
-# Example: Deploying a new image tag
+# Upgrade image tag with zero downtime
 helm upgrade retail-platform ./helm/retail-platform \
   --namespace retail-system \
-  --set global.tag=v1.0.1 \
-  --reuse-values
+  --set global.tag=v1.1.0 \
+  --reuse-values \
+  --wait
 ```
+Kubernetes will deploy the new pods, wait for the `wait-for-mysql` initContainer and the `/actuator/health` probe to succeed, switch traffic to the new pods, and cleanly terminate the old pods.
 
-#### Step 5: Rolling Back a Failed Release
-If an upgrade causes errors:
+#### 6. Rollback in Case of Failure
+If an upgrade causes errors, rollback to any previous release version:
 ```bash
-# View release revision history
+# List release revision history
 helm history retail-platform -n retail-system
 
-# Rollback to the previous revision (e.g. revision 1)
+# Instantly rollback to revision 1 (or any previous healthy revision)
 helm rollback retail-platform 1 -n retail-system
 ```
 
-#### Step 6: Uninstalling the Release
-To completely uninstall the application release:
+#### 7. Complete Uninstallation
+To tear down the application release:
 ```bash
 helm uninstall retail-platform -n retail-system
 ```
-*(PersistentVolumeClaims are retained to prevent accidental data loss until manually deleted).*
+> **Data Protection Note**: By default, PersistentVolumeClaims (`retail-platform-mysql-pvc` and `retail-platform-redis-pvc`) remain intact in the cluster to prevent catastrophic data loss. If you wish to delete storage volumes as well, run `kubectl delete pvc -l app=mysql -n retail-system`.
+
+---
+
+### E. Declarative GitOps Integration (Argo CD)
+
+In an automated CI/CD and GitOps workflow, Argo CD monitors this Helm chart repository and synchronizes state to Amazon EKS automatically.
+
+Create the Argo CD Application manifest (`argocd-retail-platform.yaml`):
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: retail-platform
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/riteshdawale02/retail-store-microservices.git
+    targetRevision: main
+    path: helm/retail-platform
+    helm:
+      valueFiles:
+        - values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: retail-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+```
+Apply to your Argo CD cluster:
+```bash
+kubectl apply -f argocd-retail-platform.yaml
+```
+
+---
+
+### F. CI/CD GitHub Actions Pipeline Snippet
+
+Automate chart linting and deployment within `.github/workflows/deploy.yml`:
+```yaml
+name: Lint and Deploy Helm Chart
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'helm/**'
+
+jobs:
+  lint-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+
+      - name: Lint Chart
+        run: |
+          helm lint ./helm/retail-platform -f ./helm/retail-platform/values-local.yaml
+          helm lint ./helm/retail-platform -f ./helm/retail-platform/values-prod.yaml
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update Kubeconfig
+        run: aws eks update-kubeconfig --name retail-platform-cluster --region us-east-1
+
+      - name: Deploy Helm Chart to Amazon EKS
+        run: |
+          helm upgrade --install retail-platform ./helm/retail-platform \
+            --namespace retail-system \
+            --create-namespace \
+            -f ./helm/retail-platform/values-prod.yaml \
+            --set global.tag=${{ github.sha }} \
+            --wait \
+            --timeout 10m
+```
+
+---
+
+### G. Helm CLI Troubleshooting & Cheat Sheet
+
+| Command | Action / Objective |
+|---|---|
+| `helm list -A` | List all deployed Helm releases across all namespaces. |
+| `helm get values <release> -n <ns>` | Inspect the user-supplied values applied to the active release. |
+| `helm get manifest <release> -n <ns>` | View all rendered Kubernetes manifests currently running in the cluster. |
+| `helm diff upgrade <release> <chart>` | View the exact YAML diff between the current release and pending changes (requires `helm-diff` plugin). |
+| `helm history <release> -n <ns>` | View deployment timeline, revision numbers, descriptions, and statuses. |
+| `helm rollback <release> <revision> -n <ns>` | Instantly restore a previous revision without downtime. |
+| `helm template <release> <chart> --debug` | Render all templates locally with full variable expansion and line numbers for debugging syntax issues. |
+
+---
 
 ---
 

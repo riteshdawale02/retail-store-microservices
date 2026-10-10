@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: "{{ $registry }}/{{ .Values.apiGateway.image.repository }}:{{ $tag }}"
+          image: "{{ if $registry }}{{ $registry }}/{{ end }}{{ .Values.apiGateway.image.repository }}:{{ $tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.apiGateway.service.port }}
@@ -98,7 +98,7 @@ spec:
           command: ['sh', '-c', 'until nc -z -w 2 mysql 3306; do echo "Waiting for MySQL..."; sleep 2; done; echo "MySQL ready!";']
       containers:
         - name: product-service
-          image: "{{ $registry }}/{{ .Values.productService.image.repository }}:{{ $tag }}"
+          image: "{{ if $registry }}{{ $registry }}/{{ end }}{{ .Values.productService.image.repository }}:{{ $tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.productService.service.port }}
@@ -157,7 +157,7 @@ spec:
           command: ['sh', '-c', 'until nc -z -w 2 redis 6379; do echo "Waiting for Redis..."; sleep 2; done; echo "Redis ready!";']
       containers:
         - name: cart-service
-          image: "{{ $registry }}/{{ .Values.cartService.image.repository }}:{{ $tag }}"
+          image: "{{ if $registry }}{{ $registry }}/{{ end }}{{ .Values.cartService.image.repository }}:{{ $tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.cartService.service.port }}
@@ -214,7 +214,7 @@ spec:
           command: ['sh', '-c', 'until nc -z -w 2 mysql 3306; do echo "Waiting for MySQL..."; sleep 2; done; echo "MySQL ready!";']
       containers:
         - name: order-service
-          image: "{{ $registry }}/{{ .Values.orderService.image.repository }}:{{ $tag }}"
+          image: "{{ if $registry }}{{ $registry }}/{{ end }}{{ .Values.orderService.image.repository }}:{{ $tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.orderService.service.port }}
@@ -279,7 +279,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "{{ $registry }}/{{ .Values.frontend.image.repository }}:{{ $tag }}"
+          image: "{{ if $registry }}{{ $registry }}/{{ end }}{{ .Values.frontend.image.repository }}:{{ $tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.frontend.service.port }}
