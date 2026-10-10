@@ -14,7 +14,7 @@ export default function Hero({ totalProducts }) {
               <Cpu size={13} /> Java Spring Boot 3
             </span>
             <span className="badge badge-success">
-              <Zap size={13} /> Redis Caching
+              <Zap size={13} /> Redis Caching Ritesh
             </span>
           </div>
 
