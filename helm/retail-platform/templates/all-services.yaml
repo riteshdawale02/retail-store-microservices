@@ -1,5 +1,14 @@
-{{- $registry := .Values.global.ecrRegistry -}}
-{{- $tag := .Values.global.tag -}}
+{{- $registry := "" -}}
+{{- if .Values.global.ecrRegistry -}}
+  {{- $registry = .Values.global.ecrRegistry -}}
+{{- else if and .Values.global.awsAccountId .Values.global.awsRegion -}}
+  {{- $accountId := printf "%v" .Values.global.awsAccountId -}}
+  {{- if contains "e+" $accountId -}}
+    {{- $accountId = printf "%.0f" (float64 .Values.global.awsAccountId) -}}
+  {{- end -}}
+  {{- $registry = printf "%s.dkr.ecr.%s.amazonaws.com" $accountId .Values.global.awsRegion -}}
+{{- end -}}
+{{- $tag := .Values.global.tag | default "latest" -}}
 {{- $release := .Release.Name -}}
 
 apiVersion: apps/v1

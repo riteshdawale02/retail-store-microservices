@@ -13,7 +13,7 @@ env:
 
 jobs:
   test-and-build:
-    name: Build & Verify Java Spring Boot Microservices
+    name: Build & Verify Backend Services & Frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -42,10 +42,24 @@ jobs:
           cd order-service
           mvn clean test-compile -B
 
-      - name: Build API Gateway & Frontend
+      - name: Build API Gateway
         run: |
           cd api-gateway
           mvn clean test-compile -B
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build and Test Frontend
+        run: |
+          cd frontend
+          npm ci || npm install
+          npm test
+          npm run build
 
   docker-build-push:
     name: Build & Push Container Images to Amazon ECR
