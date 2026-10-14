@@ -9,12 +9,25 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: api-gateway
                 port:
-                  number: 8080
+                  number: {{ .Values.apiGateway.service.port | default 8080 }}
+          - path: /actuator
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: {{ .Values.apiGateway.service.port | default 8080 }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-frontend
+                port:
+                  number: {{ .Values.frontend.service.port | default 80 }}
 {{- end }}
-
