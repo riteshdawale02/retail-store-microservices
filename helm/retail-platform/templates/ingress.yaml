@@ -7,8 +7,7 @@ metadata:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
   rules:
-    - host: {{ .Values.ingress.host }}
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
@@ -18,3 +17,4 @@ spec:
                 port:
                   number: 8080
 {{- end }}
+
