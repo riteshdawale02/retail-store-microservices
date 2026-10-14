@@ -221,9 +221,11 @@ export const api = {
 
   async getOrders(userId) {
     try {
-      const res = await fetch(`${API_BASE}/orders?userId=${userId}`);
+      if (!userId) return [];
+      const res = await fetch(`${API_BASE}/orders/user/${encodeURIComponent(userId)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const data = await res.json();
+      return Array.isArray(data) ? data.filter(order => order.userId === userId) : [];
     } catch (err) {
       console.warn('API error fetching orders:', err);
       return [];

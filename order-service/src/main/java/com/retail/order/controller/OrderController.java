@@ -35,7 +35,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<Order>> getAllOrders(@RequestParam(required = false) String userId) {
+        if (userId != null && !userId.trim().isEmpty()) {
+            return ResponseEntity.ok(orderService.getOrdersByUserId(userId.trim()));
+        }
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
