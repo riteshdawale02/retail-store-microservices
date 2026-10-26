@@ -1,22 +1,4 @@
 # Cloud-Native Retail Platform Using Microservices
-### BCA Semester V – Capstone Project (Academic Year: 2026–2027)
-**College of Management and Computer Science, Yavatmal**  
-**Department of Computer Science**  
-**Domain:** E-Commerce, Cloud Computing and DevOps  
-**GitHub Repository:** [riteshdawale02/retail-store-microservices](https://github.com/riteshdawale02/retail-store-microservices)
-
----
-
-## 👥 Project Team
-
-| Name of Student | Contact | Role |
-| :--- | :--- | :--- |
-| **Samir Anil Dhavane** | 8767621867 | Cloud Architecture, AWS & DevOps Lead |
-| **Ritesh Dhammanand Dawale** | 9699838302 | Product & Catalog Microservice Lead |
-| **Gauri Vinod Taksande** | 9226636115 | Shopping Cart & Caching Service Lead |
-| **Achal Sachin Ghosalkar** | 9011628025 | Checkout, Order Processing & DB Lead |
-
----
 
 ## 🚀 Architectural Overview
 
