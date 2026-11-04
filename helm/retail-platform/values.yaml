@@ -1,7 +1,7 @@
 global:
   environment: production
   awsRegion: us-east-1
-  ecrRegistry: 592306540354.dkr.ecr.us-east-1.amazonaws.com
+  ecrRegistry: ""
   tag: latest
 
 mysql:
@@ -112,10 +112,10 @@ autoscaling:
 
 ingress:
   enabled: true
-  host: retail.yourdomain.com
+  host: ""
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
