@@ -137,7 +137,7 @@ export const api = {
     try {
       const res = await fetch(`${API_BASE}/products`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       return (Array.isArray(data) && data.length > 0) ? data : FALLBACK_PRODUCTS;
     } catch (err) {
       console.warn('API error fetching products, using fallback:', err);
@@ -221,9 +221,13 @@ export const api = {
 
   async getOrders(userId) {
     try {
-      const res = await fetch(`${API_BASE}/orders?userId=${userId}`);
+      const endpoint = userId
+        ? `${API_BASE}/orders/user/${encodeURIComponent(userId)}`
+        : `${API_BASE}/orders`;
+      const res = await fetch(endpoint);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
     } catch (err) {
       console.warn('API error fetching orders:', err);
       return [];
@@ -237,8 +241,8 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Login failed');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `Login failed (${res.status})`);
     return data;
   },
 
@@ -248,8 +252,8 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registrationData)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Registration failed');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `Registration failed (${res.status})`);
     return data;
   },
 
@@ -263,8 +267,8 @@ export const api = {
       },
       body: JSON.stringify(product)
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to create product');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || `Failed to create product (${res.status})`);
     return data;
   },
 
@@ -277,7 +281,7 @@ export const api = {
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || 'Failed to delete product');
+      throw new Error(data.message || `Failed to delete product (${res.status})`);
     }
     return true;
   },
@@ -287,14 +291,16 @@ export const api = {
     try {
       const res = await fetch(`${API_BASE}/system/health`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const healthData = await res.json();
+      return { ...healthData, connected: true };
     } catch {
       return {
         overallHealth: 'DEGRADED',
         gatewayStatus: 'DOWN',
         cloudProvider: 'AWS',
         awsRegion: 'us-east-1',
-        environment: 'local-dev',
+        environment: 'offline-fallback',
+        connected: false,
         services: {}
       };
     }

@@ -58,6 +58,13 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
 
           {/* Info */}
           <div className="product-detail-info">
+            <div className="detail-breadcrumb hide-on-mobile">
+              <span>Catalog</span>
+              <span className="breadcrumb-separator">/</span>
+              <span>{product.category || 'Goods'}</span>
+              <span className="breadcrumb-separator">/</span>
+              <span className="breadcrumb-active">{product.name}</span>
+            </div>
             <div className="detail-rating-row">
               <div className="rating-stars">
                 <Star size={16} className="star-icon filled" />
@@ -88,8 +95,15 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
               </div>
               <div className="perk-item">
                 <ShieldCheck size={16} className="text-emerald" />
-                <span>1-Year comprehensive cloud hardware warranty</span>
+                <span>1-Year official manufacturer warranty</span>
               </div>
+            </div>
+
+            <div className="detail-telemetry-badge">
+              <span className="beacon-indicator">
+                <span className="beacon-core"></span>
+              </span>
+              <span>Dispatched via Order Microservice • Sub-15ms sync</span>
             </div>
 
             {/* Quantity and CTA */}

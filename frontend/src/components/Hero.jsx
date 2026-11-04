@@ -1,63 +1,94 @@
 import React from 'react';
-import { Layers, ShieldCheck, Zap, Database, Cpu, Cloud } from 'lucide-react';
+import { Truck, RotateCcw, ShieldCheck, ArrowRight, Layers, Cpu } from 'lucide-react';
 
-export default function Hero({ totalProducts }) {
+export default function Hero({ onExploreClick, totalProducts = 0 }) {
   return (
     <section className="hero-banner">
-      <div className="hero-glass-card glass-panel">
-        <div className="hero-content">
+      <div className="hero-simple-card">
+        <div className="hero-copy">
           <div className="hero-badge-row">
-            <span className="badge badge-purple">
-              <Cloud size={13} /> AWS Cloud-Native
-            </span>
-            <span className="badge badge-info">
-              <Cpu size={13} /> Java Spring Boot 3
-            </span>
-            <span className="badge badge-success">
-              <Zap size={13} /> Redis Caching Ritesh
+            <span className="hero-tag">DISTRIBUTED CLOUD COMMERCE</span>
+            {totalProducts > 0 && (
+              <span className="hero-count-chip">
+                <Layers size={13} />
+                <span>{totalProducts} Catalog Items</span>
+              </span>
+            )}
+            <span className="hero-engine-chip hide-on-mobile">
+              <Cpu size={13} />
+              <span>Edge Storefront v4.2</span>
             </span>
           </div>
 
-          <h1 className="hero-heading">
-            Enterprise Cloud Retail <br />
-            <span className="gradient-text">Orchestrated with Microservices</span>
+          <h1 className="hero-title">
+            Engineered for Scale. Curated for Performance.
           </h1>
-
-          <p className="hero-subtext">
-            High-throughput distributed commerce engine featuring isolated database partitions,
-            sub-millisecond Redis shopping cart persistence, and zero-downtime Kubernetes deployments.
+          <p className="hero-subtitle">
+            Curated developer hardware, audio, and everyday tech essentials powered by an isolated Spring Boot &amp; Redis microservices architecture.
           </p>
 
-          <div className="hero-stats-row">
-            <div className="stat-pill">
-              <span className="stat-value">4</span>
-              <span className="stat-label">Microservices</span>
+          <div className="hero-actions">
+            <button
+              className="btn btn-hero"
+              onClick={onExploreClick}
+              aria-label="Shop catalog products"
+            >
+              <span>Shop Collection</span>
+              <ArrowRight size={16} />
+            </button>
+            <button
+              className="btn btn-hero-secondary hide-on-mobile"
+              onClick={onExploreClick}
+              aria-label="Explore deals and specs"
+            >
+              <span>Explore Deals</span>
+            </button>
+          </div>
+
+          {/* Telemetry Metrics from Stitch Design System */}
+          <div className="hero-metrics-grid">
+            <div className="metric-chip">
+              <span className="metric-val text-emerald">99.99%</span>
+              <span className="metric-label">Edge Availability</span>
             </div>
-            <div className="stat-divider"></div>
-            <div className="stat-pill">
-              <span className="stat-value">{totalProducts || 10}+</span>
-              <span className="stat-label">Live Catalog Items</span>
+            <div className="metric-divider"></div>
+            <div className="metric-chip">
+              <span className="metric-val text-cyan">Sub-15ms</span>
+              <span className="metric-label">Checkout Dispatch</span>
             </div>
-            <div className="stat-divider"></div>
-            <div className="stat-pill">
-              <span className="stat-value">&lt; 10ms</span>
-              <span className="stat-label">Redis Cart Latency</span>
-            </div>
-            <div className="stat-divider"></div>
-            <div className="stat-pill">
-              <span className="stat-value">ACID</span>
-              <span className="stat-label">MySQL Transactions</span>
+            <div className="metric-divider"></div>
+            <div className="metric-chip">
+              <span className="metric-val text-indigo">Instant API</span>
+              <span className="metric-label">Webhook Provision</span>
             </div>
           </div>
         </div>
 
-        {/* Tech stack interactive badges */}
-        <div className="hero-tech-strip">
-          <div className="tech-chip"><Layers size={14} /> Amazon EKS</div>
-          <div className="tech-chip"><ShieldCheck size={14} /> Docker Multi-Stage</div>
-          <div className="tech-chip"><Database size={14} /> MySQL 8.0</div>
-          <div className="tech-chip"><Zap size={14} /> Redis 7 Cache</div>
-          <div className="tech-chip"><Cloud size={14} /> Terraform IaC</div>
+        {/* Customer trust guarantees */}
+        <div className="hero-trust-bar">
+          <div className="trust-item">
+            <Truck size={17} className="trust-icon" />
+            <div>
+              <strong>Free Express Shipping</strong>
+              <span>On all orders over $50</span>
+            </div>
+          </div>
+          <div className="trust-divider"></div>
+          <div className="trust-item">
+            <RotateCcw size={17} className="trust-icon" />
+            <div>
+              <strong>30-Day Easy Returns</strong>
+              <span>Hassle-free guarantee</span>
+            </div>
+          </div>
+          <div className="trust-divider"></div>
+          <div className="trust-item">
+            <ShieldCheck size={17} className="trust-icon" />
+            <div>
+              <strong>Secure Transactions</strong>
+              <span>256-Bit encrypted checkout</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

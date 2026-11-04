@@ -27,7 +27,7 @@ export default function OrderSuccessModal({ orderData, onClose, onOpenOrders }) 
           </div>
           <h2 className="success-title">Order Placed Successfully!</h2>
           <p className="success-subtitle">
-            Inventory stock deducted & order transaction committed in MySQL.
+            Thank you for your purchase. We've received your order and are preparing it for delivery.
           </p>
         </div>
 

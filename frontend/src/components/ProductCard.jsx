@@ -12,7 +12,7 @@ export default function ProductCard({
   const [justAdded, setJustAdded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 30;
+  const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 10;
   const isOutOfStock = product.stockQuantity <= 0;
 
   const handleAdd = async (e) => {
@@ -71,7 +71,9 @@ export default function ProductCard({
         ) : isLowStock ? (
           <span className="stock-badge low-stock">Only {product.stockQuantity} left</span>
         ) : (
-          <span className="stock-badge in-stock">{product.stockQuantity} in stock</span>
+          <span className="stock-badge in-stock">
+            <span className="stock-pulse-dot"></span> In Stock • {product.stockQuantity} left
+          </span>
         )}
 
         {/* Retailer Action: Delete Product */}

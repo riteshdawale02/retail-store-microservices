@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Search, Activity, PackageCheck, Server, User, LogOut, PlusCircle, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Search, PackageCheck, User, LogOut, PlusCircle, Sun, Moon } from 'lucide-react';
 
 export default function Navbar({
   searchQuery,
@@ -16,21 +16,29 @@ export default function Navbar({
   theme,
   onToggleTheme
 }) {
-  const isHealthy = healthData?.overallHealth === 'HEALTHY';
   const isRetailer = currentUser?.role === 'RETAILER';
   const isDark = theme === 'dark';
 
+  const isDegraded = healthData?.overallStatus === 'DEGRADED';
+  const isDown = healthData?.overallStatus === 'DOWN';
+
   return (
-    <header className="navbar-wrapper glass-panel">
+    <header className="navbar-wrapper">
       <div className="app-container navbar-content">
-        {/* Brand / Logo */}
-        <div className="brand-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        {/* Brand Logo */}
+        <div
+          className="brand-logo"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          role="button"
+          tabIndex={0}
+          title="CloudRetail - Return to Home"
+        >
           <div className="brand-icon-box">
-            <Server className="brand-icon" size={22} />
+            <ShoppingBag size={19} strokeWidth={2.2} />
           </div>
-          <div className="brand-text">
-            <span className="brand-title">Cloud<span>Retail</span></span>
-            <span className="brand-badge">MICROSERVICES</span>
+          <div className="brand-text-cluster">
+            <span className="brand-title">CloudRetail</span>
+            <span className="brand-subtitle">Microservices</span>
           </div>
         </div>
 
@@ -41,111 +49,116 @@ export default function Navbar({
             id="product-search-input"
             type="text"
             className="nav-search-input"
-            placeholder="Search products by title, category, specs..."
+            placeholder="Search products, categories, essentials..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          <kbd className="nav-search-kbd hide-on-mobile">⌘K</kbd>
           {searchQuery && (
             <button
               className="search-clear-btn"
               onClick={() => setSearchQuery('')}
               title="Clear search"
+              aria-label="Clear search input"
             >
               ✕
             </button>
           )}
         </div>
 
-        {/* Actions / Status */}
+        {/* Live Microservices Health Telemetry Pill (Stitch Component) */}
+        {onOpenHealth && (
+          <button
+            id="microservices-health-pill-btn"
+            className="nav-health-status-pill hide-on-mobile"
+            onClick={onOpenHealth}
+            title="Inspect AWS EKS Microservices Cluster Health"
+          >
+            <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
+              <span className="beacon-ping"></span>
+              <span className="beacon-core"></span>
+            </span>
+            <span className="health-pill-label">
+              {isDown ? 'Cluster Offline' : isDegraded ? 'Service Degraded' : 'All Systems Operational'}
+            </span>
+          </button>
+        )}
+
+        {/* Right Navigation Actions */}
         <div className="nav-actions">
-          {/* Theme Toggle (Dark / Light) */}
+          {/* Theme Toggle (Light / Dark) */}
           <button
             id="theme-toggle-btn"
-            className="theme-toggle-btn"
+            className="nav-icon-btn theme-toggle-btn"
             onClick={onToggleTheme}
             title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle theme"
+            aria-label="Toggle visual theme"
           >
-            {isDark ? (
-              <Sun size={18} className="theme-icon sun animate-fade" />
-            ) : (
-              <Moon size={18} className="theme-icon moon animate-fade" />
-            )}
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {/* Retailer "+ Add Product" CTA */}
+          {/* Retailer "+ Add Product" Button */}
           {isRetailer && (
             <button
               id="retailer-add-product-btn"
-              className="btn btn-primary nav-retailer-add-btn animate-fade"
+              className="btn btn-retailer-add"
               onClick={onOpenAddProduct}
               title="Publish a new product to catalog"
             >
-              <PlusCircle size={17} />
+              <PlusCircle size={16} />
               <span className="hide-on-mobile">Add Product</span>
             </button>
           )}
 
-          {/* Cloud DevOps Telemetry Pill */}
-          <button
-            id="system-health-btn"
-            className={`health-pill ${isHealthy ? 'healthy' : 'degraded'}`}
-            onClick={onOpenHealth}
-            title="Inspect AWS Cloud & Microservices Telemetry"
-          >
-            <span className={`pulse-dot ${isHealthy ? 'green' : 'amber'}`}></span>
-            <span className="health-text hide-on-mobile">
-              {healthData?.awsRegion ? `${healthData.awsRegion} • ` : 'AWS • '}
-              {isHealthy ? '4 Services UP' : 'Telemetry'}
-            </span>
-            <Activity size={15} className="health-icon" />
-          </button>
-
-          {/* Orders History Button */}
+          {/* Orders History */}
           <button
             id="view-orders-btn"
-            className="btn btn-secondary nav-action-btn"
+            className="nav-link-btn nav-action-desktop-only"
             onClick={onOpenOrders}
-            title="View placed orders"
+            title="View your orders"
           >
             <PackageCheck size={18} />
-            <span className="action-btn-text hide-on-mobile">Orders</span>
+            <span>Orders</span>
           </button>
 
-          {/* Cart Trigger */}
+          {/* Shopping Cart */}
           <button
             id="open-cart-btn"
-            className="btn btn-primary nav-cart-btn"
+            className="nav-cart-btn"
             onClick={onOpenCart}
-            title="Open Shopping Cart"
+            title="View Shopping Cart"
+            aria-label={`Shopping cart with ${cartCount} items`}
           >
             <ShoppingBag size={18} />
-            <span className="cart-btn-label hide-on-mobile">Cart</span>
+            <span className="hide-on-mobile">Cart</span>
             {cartCount > 0 && (
-              <span className="cart-badge-count animate-fade">{cartCount}</span>
+              <span className="nav-cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
             )}
           </button>
 
-          {/* User Account / Auth Section */}
+          {/* Customer / Retailer Account */}
           {currentUser ? (
-            <div className="user-profile-menu">
-              <div className="user-info-pill glass-card" title={`Logged in as ${currentUser.email}`}>
-                <div className="user-avatar-circle">
+            <div className="nav-user-cluster">
+              <button
+                id="user-account-btn"
+                className="nav-user-pill"
+                onClick={onOpenAuth}
+                title={`Account: ${currentUser.name} (${currentUser.role})`}
+              >
+                <span className="user-avatar-circle">
                   {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
-                </div>
-                <div className="user-text-meta hide-on-mobile">
-                  <span className="user-name-short">{currentUser.name?.split(' ')[0]}</span>
-                  <span className={`user-role-badge ${isRetailer ? 'retailer-role' : 'customer-role'}`}>
-                    {isRetailer ? '👑 Retailer' : 'Shopper'}
-                  </span>
-                </div>
-              </div>
+                </span>
+                <span className="user-name-short hide-on-mobile">
+                  {currentUser.name?.split(' ')[0]}
+                </span>
+              </button>
 
               <button
                 id="logout-btn"
-                className="btn-logout-icon"
+                className="nav-icon-btn nav-action-desktop-only"
                 onClick={onLogout}
                 title="Sign Out"
+                aria-label="Sign out of account"
               >
                 <LogOut size={16} />
               </button>
@@ -153,11 +166,11 @@ export default function Navbar({
           ) : (
             <button
               id="open-auth-btn"
-              className="btn btn-secondary nav-auth-btn"
+              className="btn btn-primary nav-signin-btn"
               onClick={onOpenAuth}
-              title="Sign In or Register"
+              title="Sign In or Create Account"
             >
-              <User size={17} />
+              <User size={16} />
               <span>Sign In</span>
             </button>
           )}

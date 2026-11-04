@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import CategoryFilter from './components/CategoryFilter';
@@ -12,6 +12,7 @@ import HealthModal from './components/HealthModal';
 import AuthModal from './components/AuthModal';
 import AddProductModal from './components/AddProductModal';
 import Toast from './components/Toast';
+import MobileBottomNav from './components/MobileBottomNav';
 import { api, getUserId } from './services/api';
 import './App.css';
 
@@ -90,7 +91,7 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const loadProducts = useCallback(async () => {
+  const loadProducts = async () => {
     setIsLoadingProducts(true);
     try {
       const data = await api.getProducts();
@@ -101,25 +102,25 @@ export default function App() {
     } finally {
       setIsLoadingProducts(false);
     }
-  }, []);
+  };
 
-  const loadCart = useCallback(async (uid) => {
+  const loadCart = async (uid) => {
     try {
       const data = await api.getCart(uid);
       setCart(data);
     } catch (err) {
       console.error('Failed to load cart:', err);
     }
-  }, []);
+  };
 
-  const loadHealth = useCallback(async () => {
+  const loadHealth = async () => {
     try {
       const data = await api.getSystemHealth();
       setHealthData(data);
     } catch (err) {
       console.error('Health check failed:', err);
     }
-  }, []);
+  };
 
   // Initial Data Fetching
   useEffect(() => {
@@ -129,7 +130,7 @@ export default function App() {
 
     const healthInterval = setInterval(loadHealth, 30000);
     return () => clearInterval(healthInterval);
-  }, [loadProducts, loadCart, loadHealth, activeUserId]);
+  }, [activeUserId]);
 
   const refreshHealthManual = async () => {
     setIsRefreshingHealth(true);
@@ -146,9 +147,20 @@ export default function App() {
     try {
       const data = await api.getOrders(activeUserId);
       setOrders(data);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
     } finally {
       setIsLoadingOrders(false);
     }
+  };
+
+  const handleOpenHealth = () => {
+    setIsHealthOpen(true);
+  };
+
+  const handleOpenOrders = () => {
+    loadOrders();
+    setIsOrdersOpen(true);
   };
 
   // Auth Handlers
@@ -313,11 +325,8 @@ export default function App() {
         setSearchQuery={setSearchQuery}
         cartCount={totalCartItems}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenHealth={() => setIsHealthOpen(true)}
-        onOpenOrders={() => {
-          loadOrders();
-          setIsOrdersOpen(true);
-        }}
+        onOpenHealth={handleOpenHealth}
+        onOpenOrders={handleOpenOrders}
         healthData={healthData}
         currentUser={currentUser}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -344,7 +353,7 @@ export default function App() {
           {isRetailer && (
             <div className="retailer-alert-strip glass-card animate-fade">
               <div className="retailer-strip-left">
-                <span className="badge badge-warning">👑 Retailer Mode Active</span>
+                <span className="badge badge-warning">Merchant Mode Active</span>
                 <p>You have merchant permissions to publish new products, modify pricing, and delete items from catalog.</p>
               </div>
               <button
@@ -369,7 +378,7 @@ export default function App() {
           {isLoadingProducts ? (
             <div className="loading-state">
               <span className="spinner-medium"></span>
-              <p>Connecting to Product Microservice on port 8081...</p>
+              <p>Loading catalog items...</p>
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="empty-catalog-state glass-card" style={{ padding: '60px', textAlign: 'center' }}>
@@ -404,6 +413,86 @@ export default function App() {
           )}
         </section>
       </main>
+
+      {/* Minimal Customer-Facing Store Footer */}
+      <footer className="store-footer">
+        <div className="app-container footer-content">
+          <div className="footer-col brand-col">
+            <div className="footer-brand">
+              <span className="footer-brand-title">CloudRetail</span>
+            </div>
+            <p className="footer-tagline">
+              Curated everyday essentials, electronics, and lifestyle goods designed for modern simplicity.
+            </p>
+          </div>
+
+          <div className="footer-col">
+            <h4 className="footer-heading">Shop</h4>
+            <ul className="footer-links">
+              {categories.filter(c => c !== 'ALL').slice(0, 5).map(cat => (
+                <li key={cat}>
+                  <button
+                    type="button"
+                    className="footer-link-btn"
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      const el = document.getElementById('catalog-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    {cat}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4 className="footer-heading">Account & Orders</h4>
+            <ul className="footer-links">
+              <li>
+                <button type="button" className="footer-link-btn" onClick={handleOpenOrders}>
+                  Track Orders
+                </button>
+              </li>
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => setIsCartOpen(true)}>
+                  Shopping Cart
+                </button>
+              </li>
+              <li>
+                <button type="button" className="footer-link-btn" onClick={() => setIsAuthOpen(true)}>
+                  {currentUser ? 'My Profile' : 'Sign In / Register'}
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  className="footer-link-btn status-indicator-link"
+                  onClick={handleOpenHealth}
+                  title="View System & Cloud Architecture Telemetry"
+                >
+                  <span className={`status-dot ${healthData?.overallHealth === 'HEALTHY' ? 'dot-online' : 'dot-degraded'}`}></span>
+                  <span>System Status</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="footer-bottom-bar app-container">
+          <p className="footer-copyright">
+            &copy; 2026 CloudRetail Platform. All rights reserved.
+          </p>
+          <div className="footer-trust-notes">
+            <span>Free Express Delivery</span>
+            <span>•</span>
+            <span>30-Day Hassle-Free Returns</span>
+            <span>•</span>
+            <span>256-Bit Encrypted Checkout</span>
+          </div>
+        </div>
+      </footer>
 
       {/* Slide-out Cart Drawer */}
       <CartDrawer
@@ -463,11 +552,13 @@ export default function App() {
         onAddToCart={handleAddToCart}
       />
 
-      {/* Auth Modal (Login / Sign Up) */}
+      {/* Auth Modal (Login / Sign Up / Account) */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={handleLoginSuccess}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {/* Retailer Add Product Modal */}
@@ -476,6 +567,20 @@ export default function App() {
         onClose={() => setIsAddProductOpen(false)}
         onProductCreated={handleCreateProduct}
         userRole={currentUser?.role}
+      />
+
+      {/* Mobile Bottom Navigation Bar */}
+      <MobileBottomNav
+        cartCount={cart.totalItems}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenOrders={handleOpenOrders}
+        currentUser={currentUser}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onScrollTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onOpenCategories={() => {
+          const el = document.getElementById('catalog-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
       />
 
       {/* Global Toast Notifications */}

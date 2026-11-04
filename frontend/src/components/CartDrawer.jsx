@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function CartDrawer({
   isOpen,
@@ -21,30 +21,35 @@ export default function CartDrawer({
     <div className="drawer-overlay" onClick={onClose}>
       <aside
         id="cart-drawer-panel"
-        className="drawer-panel glass-panel animate-slide-left"
+        className="drawer-panel"
         onClick={(e) => e.stopPropagation()}
+        aria-label="Shopping Cart Drawer"
       >
         {/* Header */}
         <div className="drawer-header">
           <div className="drawer-title-box">
-            <ShoppingBag size={20} className="drawer-icon" />
+            <ShoppingBag size={19} />
             <h2 className="drawer-title">Shopping Cart</h2>
-            <span className="badge badge-purple">{totalItems} items</span>
+            <span className="cart-count-pill">{totalItems} {totalItems === 1 ? 'item' : 'items'}</span>
           </div>
           <button
             id="close-cart-drawer"
             className="drawer-close-btn"
             onClick={onClose}
             title="Close Cart"
+            aria-label="Close cart drawer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Redis speed indicator */}
-        <div className="cart-cache-badge">
-          <Zap size={14} className="text-emerald" />
-          <span>Synced with Redis In-Memory Cache (Sub-10ms)</span>
+        {/* Free shipping progress indicator */}
+        <div className="cart-shipping-banner">
+          {totalAmount >= 50 ? (
+            <span>You qualify for <strong>Free Standard Shipping</strong>!</span>
+          ) : (
+            <span>Add <strong>${(50 - totalAmount).toFixed(2)}</strong> more to get Free Shipping</span>
+          )}
         </div>
 
         {/* Item List / Empty State */}
@@ -52,111 +57,103 @@ export default function CartDrawer({
           {items.length === 0 ? (
             <div className="cart-empty-state">
               <div className="empty-cart-icon-box">
-                <ShoppingBag size={48} />
+                <ShoppingBag size={44} strokeWidth={1.5} />
               </div>
               <h3>Your cart is empty</h3>
-              <p>Explore our catalog of cloud-native hardware and high-tech gear.</p>
+              <p>Explore our catalog to find items you love.</p>
               <button
                 className="btn btn-primary"
                 onClick={onClose}
               >
-                Start Shopping
+                Browse Products
               </button>
             </div>
           ) : (
             <div className="cart-items-list">
-              {items.map((item) => {
-                const subtotal = Number(item.subtotal || item.unitPrice * item.quantity);
-                return (
-                  <div key={item.productId} className="cart-item-row glass-card">
-                    {/* Thumbnail */}
-                    <div className="item-thumbnail">
-                      <img
-                        src={item.imageUrl || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&auto=format&fit=crop&q=80'}
-                        alt={item.productName}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&auto=format&fit=crop&q=80';
-                        }}
-                      />
-                    </div>
+              {items.map((item) => (
+                <div key={item.productId} className="cart-item-row">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.productName}
+                    className="cart-item-thumb"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&auto=format&fit=crop&q=80';
+                    }}
+                  />
 
-                    {/* Details */}
-                    <div className="item-details">
-                      <h4 className="item-name" title={item.productName}>
-                        {item.productName}
-                      </h4>
-                      <div className="item-unit-price">
-                        ${Number(item.unitPrice).toFixed(2)} each
-                      </div>
+                  <div className="cart-item-details">
+                    <h4 className="cart-item-title">{item.productName}</h4>
+                    <span className="cart-item-unit-price">${Number(item.unitPrice).toFixed(2)}</span>
 
-                      {/* Quantity Controls */}
-                      <div className="item-controls-row">
-                        <div className="quantity-selector">
-                          <button
-                            id={`decrease-qty-${item.productId}`}
-                            className="qty-btn"
-                            disabled={isUpdating}
-                            onClick={() => {
-                              if (item.quantity > 1) {
-                                onUpdateQuantity(item.productId, item.quantity - 1);
-                              } else {
-                                onRemoveItem(item.productId);
-                              }
-                            }}
-                            title="Decrease quantity"
-                          >
-                            <Minus size={14} />
-                          </button>
-                          <span className="qty-value">{item.quantity}</span>
-                          <button
-                            id={`increase-qty-${item.productId}`}
-                            className="qty-btn"
-                            disabled={isUpdating}
-                            onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-                            title="Increase quantity"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        </div>
-
-                        <div className="item-subtotal-price">
-                          ${subtotal.toFixed(2)}
-                        </div>
-
+                    <div className="cart-item-actions">
+                      {/* Quantity Stepper */}
+                      <div className="quantity-stepper">
                         <button
-                          id={`remove-item-${item.productId}`}
-                          className="item-delete-btn"
-                          disabled={isUpdating}
-                          onClick={() => onRemoveItem(item.productId)}
-                          title="Remove item"
+                          className="stepper-btn"
+                          disabled={isUpdating || item.quantity <= 1}
+                          onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
+                          title="Decrease quantity"
+                          aria-label="Decrease quantity"
                         >
-                          <Trash2 size={16} />
+                          <Minus size={13} />
+                        </button>
+                        <span className="stepper-count">{item.quantity}</span>
+                        <button
+                          className="stepper-btn"
+                          disabled={isUpdating}
+                          onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
+                          title="Increase quantity"
+                          aria-label="Increase quantity"
+                        >
+                          <Plus size={13} />
                         </button>
                       </div>
+
+                      {/* Remove Button */}
+                      <button
+                        className="item-remove-btn"
+                        disabled={isUpdating}
+                        onClick={() => onRemoveItem(item.productId)}
+                        title="Remove item"
+                        aria-label="Remove item from cart"
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
                   </div>
-                );
-              })}
+
+                  <div className="cart-item-total">
+                    ${Number(item.subtotal || item.unitPrice * item.quantity).toFixed(2)}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Footer Summary & Checkout */}
+        {/* Footer / Summary */}
         {items.length > 0 && (
-          <div className="drawer-footer glass-panel">
-            <div className="cart-summary-breakdown">
+          <div className="drawer-footer">
+            <div className="drawer-summary-rows">
               <div className="summary-row">
-                <span className="summary-label">Subtotal</span>
-                <span className="summary-value">${totalAmount.toFixed(2)}</span>
+                <span>Subtotal</span>
+                <span>${totalAmount.toFixed(2)}</span>
               </div>
               <div className="summary-row">
-                <span className="summary-label">Shipping</span>
-                <span className="summary-value text-emerald">FREE</span>
+                <span>Global Edge Freight</span>
+                <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
+                  {totalAmount >= 50 ? 'FREE' : '$4.99'}
+                </span>
               </div>
-              <div className="summary-row total-row">
-                <span className="summary-label">Estimated Total</span>
-                <span className="summary-value total-price">${totalAmount.toFixed(2)}</span>
+              <div className="summary-row">
+                <span>Estimated Tax (8%)</span>
+                <span>${(totalAmount * 0.08).toFixed(2)}</span>
+              </div>
+              <div className="summary-divider"></div>
+              <div className="summary-row summary-total">
+                <strong>Total</strong>
+                <strong>${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)}</strong>
               </div>
             </div>
 
@@ -168,7 +165,7 @@ export default function CartDrawer({
                 onClick={onProceedToCheckout}
               >
                 <span>Proceed to Checkout</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
               </button>
 
               <button
@@ -183,7 +180,7 @@ export default function CartDrawer({
 
             <div className="checkout-trust-badge">
               <ShieldCheck size={14} className="text-emerald" />
-              <span>ACID-Compliant Order Processing & Instant Stock Lock</span>
+              <span>256-Bit TLS Encrypted • Sub-15ms Edge Checkout</span>
             </div>
           </div>
         )}

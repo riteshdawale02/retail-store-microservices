@@ -29,7 +29,7 @@ export default function OrdersModal({ isOpen, onClose, orders, isLoading }) {
           {isLoading ? (
             <div className="loading-state">
               <span className="spinner-medium"></span>
-              <p>Fetching orders from MySQL database...</p>
+              <p>Loading your orders...</p>
             </div>
           ) : orders.length === 0 ? (
             <div className="orders-empty-state">

@@ -10,8 +10,8 @@ export default function CheckoutModal({
 }) {
   const [formData, setFormData] = useState({
     customerName: 'Samir Dhavane',
-    customerEmail: 'samir.dhavane@cloudretail.io',
-    shippingAddress: '42 Cloud Architecture Way, Yavatmal, MH - 445001',
+    customerEmail: 'samir.dhavane@example.com',
+    shippingAddress: '42 Market Street, Yavatmal, MH - 445001',
     paymentMethod: 'CARD', // 'CARD', 'UPI', 'COD'
     cardNumber: '4532 •••• •••• 8891',
     cardExpiry: '12/28',
@@ -37,13 +37,10 @@ export default function CheckoutModal({
     }
 
     setIsSubmitting(true);
-    setProcessingStep('Authorizing Payment Sandbox...');
+    setProcessingStep('Authorizing payment...');
 
     try {
-      // Simulate bank transaction delay for realistic UX
-      await new Promise((res) => setTimeout(res, 800));
-
-      setProcessingStep('Reserving Inventory & Creating Order in MySQL...');
+      setProcessingStep('Authorizing payment & confirming order...');
 
       const payload = {
         userId,
@@ -74,7 +71,7 @@ export default function CheckoutModal({
         <div className="modal-header">
           <div className="modal-title-row">
             <Lock size={20} className="text-primary" />
-            <h2 className="modal-title">Secure Microservices Checkout</h2>
+            <h2 className="modal-title">Secure Checkout</h2>
           </div>
           <button
             id="close-checkout-modal"
@@ -251,16 +248,36 @@ export default function CheckoutModal({
 
               <div className="checkout-price-divider"></div>
 
-              <div className="checkout-total-row">
-                <span className="total-label">Total Due</span>
-                <span className="total-amount">${totalAmount.toFixed(2)}</span>
+              <div className="checkout-subtotal-row">
+                <span>Subtotal</span>
+                <span>${totalAmount.toFixed(2)}</span>
+              </div>
+              <div className="checkout-subtotal-row">
+                <span>Edge Freight</span>
+                <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
+                  {totalAmount >= 50 ? 'FREE' : '$4.99'}
+                </span>
+              </div>
+              <div className="checkout-subtotal-row">
+                <span>Estimated Tax (8%)</span>
+                <span>${(totalAmount * 0.08).toFixed(2)}</span>
               </div>
 
-              <div className="architecture-note">
-                <p>
-                  <strong>Microservices Flow:</strong> <code>order-service</code> verifies Redis cart, validates payment token, and atomically reserves inventory in MySQL.
-                </p>
+              <div className="checkout-price-divider"></div>
+
+              <div className="checkout-total-row">
+                <span className="total-label">Total Due</span>
+                <span className="total-amount">${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)}</span>
               </div>
+
+              <div className="checkout-telemetry-note">
+                <span className="beacon-indicator">
+                  <span className="beacon-core"></span>
+                </span>
+                <span>Order Microservice • Sub-15ms Instant Dispatch</span>
+              </div>
+
+
             </div>
           </div>
 
