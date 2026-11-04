@@ -10,10 +10,9 @@
 
 | Sr. No. | Student Name | Contact | Primary Defense Area |
 | :---: | :--- | :---: | :--- |
-| 1 | **Ritesh Dhammanand Dawale** | 9699838302 | **Module 1 & 4:** Product Catalog Microservice, Category Browsing, REST APIs |
-| 2 | **Samir Anil Dhavane** | 8767621867 | **Module 6, 7 & 8:** Cloud Architecture, AWS EKS, Terraform, CI/CD & DevOps |
-| 3 | **Gauri Vinod Taksande** | 9226636115 | **Module 2:** Shopping Cart Microservice, Redis In-Memory Caching & TTL |
-| 4 | **Achal Sachin Ghosalkar** | 9011628025 | **Module 3:** Checkout, Order Processing, Relational Database & Transactions |
+| 1 | **Ritesh Dhammanand Dawale** | 9699838302 | **Module 1, 4, 6, 7 & 8:** Project Lead, Product Catalog, Cloud Architecture, AWS EKS, Terraform, CI/CD |
+| 2 | **Gauri Vinod Taksande** | 9226636115 | **Module 2:** Shopping Cart Microservice, Redis In-Memory Caching & TTL |
+| 3 | **Achal Sachin Ghosalkar** | 9011628025 | **Module 3:** Checkout, Order Processing, Relational Database & Transactions |
 
 ---
 

@@ -11,8 +11,7 @@
 
 | Name of Student | Contact | Role |
 | :--- | :--- | :--- |
-| **Samir Anil Dhavane** | 8767621867 | Cloud Architecture, AWS & DevOps Lead |
-| **Ritesh Dhammanand Dawale** | 9699838302 | Product & Catalog Microservice Lead |
+| **Ritesh Dhammanand Dawale** | 9699838302 | Project Lead, Cloud Architecture, AWS & Microservices Developer |
 | **Gauri Vinod Taksande** | 9226636115 | Shopping Cart & Caching Service Lead |
 | **Achal Sachin Ghosalkar** | 9011628025 | Checkout, Order Processing & DB Lead |
 
@@ -26,22 +25,23 @@ This project is a modern, enterprise-grade cloud-native e-commerce application s
 
 | Microservice | Port | Framework | Storage / Cache | Key Capabilities |
 | :--- | :--- | :--- | :--- | :--- |
-| [`product-service`](file:///Users/samir/ecom/product-service) | `8081` | Spring Boot 3 + JPA | MySQL (`retail_product_db`) | Product Catalog, category browsing, full-text search, atomic stock reservation |
-| [`cart-service`](file:///Users/samir/ecom/cart-service) | `8082` | Spring Boot 3 + Redis | Redis (`retail:cart:{id}`) | High-throughput cart management, quantity mutations, automatic TTL |
-| [`order-service`](file:///Users/samir/ecom/order-service) | `8083` | Spring Boot 3 + JPA | MySQL (`retail_order_db`) | Checkout orchestration, inter-service REST calls, order state machine |
-| [`api-gateway`](file:///Users/samir/ecom/api-gateway) | `8080` | Spring Boot 3 + Web | Dynamic / Proxy | Central entrypoint, reverse proxy routing, CORS, aggregated health telemetry, hosts Storefront UI |
+| [`product-service`](./product-service) | `8081` | Spring Boot 3 + JPA | MySQL (`retail_product_db`) | Product Catalog, category browsing, full-text search, atomic stock reservation |
+| [`cart-service`](./cart-service) | `8082` | Spring Boot 3 + Redis | Redis (`retail:cart:{id}`) | High-throughput cart management, quantity mutations, automatic TTL |
+| [`order-service`](./order-service) | `8083` | Spring Boot 3 + JPA | MySQL (`retail_order_db`) | Checkout orchestration, inter-service REST calls, order state machine |
+| [`api-gateway`](./api-gateway) | `8080` | Spring Boot 3 + Web | Dynamic / Proxy | Central entrypoint, reverse proxy routing, CORS, aggregated health telemetry, hosts Storefront UI |
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-/Users/samir/ecom/
+retail-store-microservices/
 ├── README.md                      # Project overview and quickstart 1
 ├── PROJECT_SYNOPSIS.md            # Exact academic capstone synopsis (15 Sections)
 ├── VIVA_VOCE_PREPARATION.md       # Capstone Viva Voce defense & examiner Q&A guide
 ├── ARCHITECTURE.md                # Microservices architecture & API contract specs
-├── DEPLOYMENT_AWS_GUIDE.md        # Comprehensive AWS production hosting guide
+├── AWS_EKS_DEPLOYMENT_GUIDE.md    # Production deployment on Amazon EKS v1.35, Helm & CI/CD
+├── LOCAL_AND_EC2_GUIDE.md         # Local Docker & Single-Node EC2 Kubernetes run guide
 ├── docker-compose.yml             # Local multi-container complete stack
 ├── init-db.sql                    # Initial database bootstrapper
 │
@@ -186,7 +186,7 @@ mvn spring-boot:run
 
 ## ☁️ Hosting on Amazon Web Services (AWS)
 
-For detailed step-by-step instructions with exact CLI commands, see [DEPLOYMENT_AWS_GUIDE.md](file:///Users/samir/ecom/DEPLOYMENT_AWS_GUIDE.md).
+For detailed production EKS instructions, see [AWS_EKS_DEPLOYMENT_GUIDE.md](./AWS_EKS_DEPLOYMENT_GUIDE.md). For local Docker Compose and single-node EC2 instructions, see [LOCAL_AND_EC2_GUIDE.md](./LOCAL_AND_EC2_GUIDE.md).
 
 ### Quick Summary:
 1. **Provision Infrastructure with Terraform:**
@@ -243,7 +243,7 @@ curl http://localhost:8081/actuator/prometheus
 
 ## 🔄 Continuous Integration (CI Pipeline)
 
-The repository features an enterprise GitHub Actions Continuous Integration pipeline defined in [`.github/workflows/ci.yaml`](file:///Users/samir/ecom/.github/workflows/ci.yaml):
+The repository features an enterprise GitHub Actions Continuous Integration pipeline defined in [`.github/workflows/ci.yaml`](./.github/workflows/ci.yaml):
 
 | CI Job | Scope | Tools / Checks |
 | :--- | :--- | :--- |
@@ -272,7 +272,7 @@ Simulate concurrent shopper traffic to test Kubernetes Horizontal Pod Autoscaler
 
 ## 🎓 Academic Capstone Viva Voce & Demonstration Guide
 
-A complete examiner presentation script and high-probability viva voce questions with model answers (microservices rationale, Redis vs MySQL trade-offs, HPA, Prometheus metrics, and Terraform state) is available in [VIVA_VOCE_PREPARATION.md](file:///Users/samir/ecom/VIVA_VOCE_PREPARATION.md).
+A complete examiner presentation script and high-probability viva voce questions with model answers (microservices rationale, Redis vs MySQL trade-offs, HPA, Prometheus metrics, and Terraform state) is available in [VIVA_VOCE_PREPARATION.md](./VIVA_VOCE_PREPARATION.md).
 
 ---
 
@@ -281,7 +281,7 @@ A complete examiner presentation script and high-probability viva voce questions
 The retail microservices platform includes production-grade observability:
 
 1. **Prometheus Scraping (`:9090`):**
-   - Configured via [`prometheus/prometheus.yml`](file:///Users/samir/ecom/prometheus/prometheus.yml).
+   - Configured via [`prometheus/prometheus.yml`](./prometheus/prometheus.yml).
    - Scrapes all 4 microservices every 5 seconds (`/actuator/prometheus`).
    - Targets page: [http://localhost:9090/targets](http://localhost:9090/targets) shows real-time health for all service pods.
 
@@ -297,10 +297,10 @@ The retail microservices platform includes production-grade observability:
      - MySQL HikariCP Active and Idle Connection pool counts
 
 3. **Kubernetes Monitoring:**
-   - Manifests in [`k8s/monitoring.yaml`](file:///Users/samir/ecom/k8s/monitoring.yaml) deploy Prometheus and Grafana as cluster services in the `retail-system` namespace.
+   - Manifests in [`k8s/monitoring.yaml`](./k8s/monitoring.yaml) deploy Prometheus and Grafana as cluster services in the `retail-system` namespace.
 
 ---
 
 ## 📜 Academic Capstone Synopsis
 
-The complete, official synopsis following all 15 academic guidelines (Objectives, Problem Statement, Scope, Methodology, Module breakdown, Hardware/Software requirements, Timeline, and References) is available in [PROJECT_SYNOPSIS.md](file:///Users/samir/ecom/PROJECT_SYNOPSIS.md).
+The complete, official synopsis following all 15 academic guidelines (Objectives, Problem Statement, Scope, Methodology, Module breakdown, Hardware/Software requirements, Timeline, and References) is available in [PROJECT_SYNOPSIS.md](./PROJECT_SYNOPSIS.md).

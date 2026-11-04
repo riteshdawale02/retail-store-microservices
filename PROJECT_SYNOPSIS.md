@@ -21,10 +21,9 @@
 
 | Sr. No. | Name of Student | Contact No. | Role / Responsibility |
 | :--- | :--- | :--- | :--- |
-| 1 | **Samir Anil Dhavane** | 8767621867 | Cloud Architecture, AWS & DevOps Lead |
-| 2 | **Ritesh Dhammanand Dawale** | 9699838302 | Product & Catalog Microservice Lead |
-| 3 | **Gauri Vinod Taksande** | 9226636115 | Shopping Cart & Caching Service Lead |
-| 4 | **Achal Sachin Ghosalkar** | 9011628025 | Checkout, Order Processing & DB Lead |
+| 1 | **Ritesh Dhammanand Dawale** | 9699838302 | Project Lead, Cloud Architecture, AWS & Microservices Lead |
+| 2 | **Gauri Vinod Taksande** | 9226636115 | Shopping Cart & Caching Service Lead |
+| 3 | **Achal Sachin Ghosalkar** | 9011628025 | Checkout, Order Processing & DB Lead |
 
 ---
 

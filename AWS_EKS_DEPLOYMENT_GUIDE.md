@@ -1,20 +1,21 @@
 # Complete End-to-End Enterprise Deployment Guide
-### Cloud-Native Retail Platform on Amazon EKS, ECR, Terraform, Helm, ArgoCD, Prometheus, Grafana & GitHub Actions
+### Cloud-Native Retail Platform on Amazon EKS v1.35, ECR, Terraform, Helm, ArgoCD, Prometheus, Grafana & GitHub Actions
 
 ---
 
 ## 1. Architectural Blueprint & Automated Workflow
 
-This guide covers the production deployment of the Cloud-Native Retail Platform on **Amazon Web Services (AWS)**. It covers infrastructure provisioning, automated CI/CD pipelines, GitOps synchronization, zero-downtime rolling updates, and monitoring.
+This guide covers the complete production deployment of the Cloud-Native Retail Platform on **Amazon Web Services (AWS)**. It encompasses infrastructure provisioning via Terraform, automated CI/CD pipelines, GitOps synchronization via ArgoCD, zero-downtime rolling updates, and full observability.
 
 ```mermaid
 flowchart TD
     subgraph Phase 1: Infrastructure as Code
         TF[Terraform CLI] -->|Provisions| VPC[AWS VPC Multi-AZ]
-        TF -->|Provisions| EKS[Amazon EKS v1.30]
+        TF -->|Provisions| EKS[Amazon EKS v1.35]
         TF -->|Provisions| ECR[Amazon ECR Repositories]
         TF -->|Provisions| RDS[Amazon RDS MySQL / In-Cluster DB]
         TF -->|Provisions| REDIS[Amazon ElastiCache / In-Cluster Redis]
+        TF -->|Provisions| CSI[AWS EBS CSI Driver Add-on]
     end
 
     subgraph Phase 2: CI/CD Pipeline [GitHub Actions]
@@ -42,19 +43,19 @@ flowchart TD
 
 ## 2. Prerequisites & Local Tooling
 
-Ensure the following CLIs are installed and configured on your machine (or management workstation):
+Ensure the following CLIs are installed and configured on your machine:
 
 ```bash
 # Verify tooling versions
-aws --version          # AWS CLI v2.x
-terraform version      # Terraform v1.8+
-kubectl version --client # Kubectl v1.30+
-helm version           # Helm v3.14+
-docker --version       # Docker Engine v24+
+aws --version            # AWS CLI v2.x
+terraform version        # Terraform v1.5+ (recommended v1.8+)
+kubectl version --client   # Kubectl v1.30+
+helm version             # Helm v3.14+
+docker --version         # Docker Engine v24+
 ```
 
 ### AWS Authentication
-Authenticate your terminal with administrator credentials:
+Authenticate your terminal with active AWS credentials:
 ```bash
 aws configure
 # Enter AWS Access Key ID, Secret Access Key, Region (us-east-1), Output format (json)
@@ -68,14 +69,16 @@ aws sts get-caller-identity
 ## 3. Phase 1: Provision Cloud Infrastructure with Terraform
 
 The `terraform/` directory defines the entire AWS cloud footprint:
-- **Multi-AZ VPC** (`10.0.0.0/16`) across 2 Availability Zones with public/private subnets and NAT Gateways.
-- **Amazon EKS Managed Cluster** (v1.30) with managed node groups (`t3.medium`).
-- **Amazon ECR Repositories** for all microservices.
-- **Security Groups** and IAM OIDC Provider for Kubernetes Service Accounts (IRSA).
+- **Multi-AZ VPC** (`10.0.0.0/16`) across 2 Availability Zones with public/private subnets, NAT Gateway, and Internet Gateway. Subnets are tagged with `kubernetes.io/role/elb = 1` for AWS ALB Ingress autodiscovery.
+- **Amazon EKS Managed Cluster** (v1.35) with managed node groups (`t3.medium`).
+- **Amazon ECR Repositories** for all 5 services (`product-service`, `cart-service`, `order-service`, `api-gateway`, and `frontend`).
+- **AWS EBS CSI Driver Add-on** with `AmazonEBSCSIDriverPolicy` for persistent volume lifecycle management.
+- **Dynamic IAM OIDC Provider** for Kubernetes Service Accounts (IRSA).
+- **Amazon RDS MySQL** and **Amazon ElastiCache Redis** clusters with security groups.
 
 ### Step-by-Step Execution:
 ```bash
-cd /Users/samir/ecom/terraform
+cd terraform
 
 # 1. Initialize Terraform plugins
 terraform init
@@ -88,18 +91,14 @@ terraform apply tfplan
 
 # 4. Save and inspect Terraform outputs
 terraform output
+cd ..
 ```
-
-Save the exported output values:
-- `eks_cluster_name` (e.g., `retail-platform-cluster`)
-- `ecr_repository_urls`
-- `vpc_id`
 
 ---
 
 ## 4. Phase 2: Connect Kubectl to Amazon EKS
 
-Configure your local `kubectl` to communicate with the newly provisioned EKS cluster:
+Configure `kubectl` to communicate with the newly provisioned EKS cluster:
 
 ```bash
 REGION="us-east-1"
@@ -113,33 +112,25 @@ kubectl get nodes -o wide
 
 Create the application namespace:
 ```bash
-kubectl create namespace retail-system
+kubectl create namespace retail-system --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 ---
 
 ## 5. Phase 3: Build & Push Production Images to Amazon ECR
 
-Build all 5 microservices for the `linux/amd64` architecture (matching EKS worker nodes) and push them to ECR:
+Build all 5 microservices for `linux/amd64` architecture (matching EKS worker nodes) and push them to ECR:
 
 ```bash
-cd /Users/samir/ecom
-
-# Fetch your AWS Account ID
+# Fetch active AWS Account ID dynamically
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+REGION="us-east-1"
 ECR_REGISTRY="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
 
 # Authenticate Docker daemon to Amazon ECR
 aws ecr get-login-password --region "${REGION}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
-# Ensure ECR repositories exist
-SERVICES=("retail/api-gateway" "retail/product-service" "retail/cart-service" "retail/order-service" "retail/frontend")
-for repo in "${SERVICES[@]}"; do
-  aws ecr describe-repositories --repository-names "${repo}" --region "${REGION}" >/dev/null 2>&1 || \
-    aws ecr create-repository --repository-name "${repo}" --region "${REGION}"
-done
-
-# Build and Push using the automated helper script
+# Run the automated multi-service build and push script
 chmod +x ./scripts/build-and-push-ecr.sh
 ./scripts/build-and-push-ecr.sh
 ```
@@ -151,6 +142,10 @@ chmod +x ./scripts/build-and-push-ecr.sh
 The AWS Load Balancer Controller manages AWS Application Load Balancers for Kubernetes `Ingress` resources:
 
 ```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+REGION="us-east-1"
+CLUSTER_NAME="retail-platform-cluster"
+
 # 1. Associate IAM OIDC Provider with your EKS cluster
 eksctl utils associate-iam-oidc-provider --cluster "${CLUSTER_NAME}" --region "${REGION}" --approve
 
@@ -180,16 +175,19 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 
 ---
 
-## 7. Phase 5: Deploy Microservices via Helm
+## 7. Phase 5: Deploy Microservices via Helm or Scripts
 
-Deploy the complete application using the Helm chart located at `helm/retail-platform/`:
+Deploy the application using the automated deployment script (or direct Helm upgrade):
 
 ```bash
-cd /Users/samir/ecom
+# Option A: Run automated deployment script (handles dynamic account ID & Helm rollout)
+chmod +x ./scripts/deploy-eks.sh
+./scripts/deploy-eks.sh
 
-GIT_SHA=$(git rev-parse --short HEAD)
+# Option B: Direct Helm upgrade
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+ECR_REGISTRY="${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com"
 
-# Install or upgrade the release on Amazon EKS
 helm upgrade --install retail-platform ./helm/retail-platform \
   --namespace retail-system \
   --create-namespace \
@@ -200,20 +198,17 @@ helm upgrade --install retail-platform ./helm/retail-platform \
   --timeout 10m
 ```
 
-### Verify Deployment:
-```bash
-# Check status of all pods and services
-kubectl get pods,svc,pvc,ingress -n retail-system -o wide
-```
-Wait 2–3 minutes for the AWS Application Load Balancer to provision. Retrieve your public ALB DNS:
+### Retrieve Multi-Device Public ALB URL
+Wait ~2 minutes for the AWS Application Load Balancer to provision. Retrieve the public DNS:
 ```bash
 kubectl get ingress -n retail-system -o jsonpath="{.items[0].status.loadBalancer.ingress[0].hostname}"
 echo ""
 ```
+**Access this URL from ANY mobile phone, laptop, or browser anywhere in the world.**
 
 ---
 
-## 8. Phase 6: Deploy Monitoring (Prometheus & Grafana)
+## 8. Phase 6: Observability (Prometheus & Grafana)
 
 The platform includes Prometheus metrics scraping on `/actuator/prometheus` and pre-built Grafana dashboards.
 
@@ -231,11 +226,19 @@ kubectl port-forward --address 0.0.0.0 svc/grafana 3001:3000 -n retail-system > 
 kubectl port-forward --address 0.0.0.0 svc/prometheus 9090:9090 -n retail-system > /dev/null 2>&1 &
 ```
 
-### Step 3: Configure Grafana
+### Step 3: Configure Grafana Dashboard
 1. Open `http://<HOST_IP>:3001` (Credentials: `admin` / `admin`).
-2. Add Prometheus Datasource: URL `http://prometheus:9090`.
+2. Add Prometheus Datasource: URL `http://prometheus:9090` -> Click **Save & test**.
 3. Import the pre-built dashboard:
-   - Go to **Dashboards -> Import** -> Paste contents of [`grafana/provisioning/dashboards/retail-microservices-dashboard.json`](file:///Users/samir/ecom/grafana/provisioning/dashboards/retail-microservices-dashboard.json).
+   - Navigate to **Dashboards -> Import**.
+   - Paste contents of `grafana/provisioning/dashboards/retail-microservices-dashboard.json`.
+   - Select the Prometheus datasource and click **Import**.
+
+### Key Telemetry Visualized:
+- **JVM Heap & Non-Heap Memory**: Microservice memory consumption.
+- **HTTP Request Rates (RPS)**: Throughput per microservice and status code (200, 4xx, 5xx).
+- **Latency Percentiles**: p95 and p99 response times.
+- **HikariCP Connection Pools**: Active vs. idle MySQL database connections.
 
 ---
 
@@ -250,26 +253,53 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 kubectl wait --namespace argocd --for=condition=ready pod -l app.kubernetes.io/name=argocd-server --timeout=180s
 ```
 
-### Step 2: Retrieve Admin Password
+### Step 2: Access ArgoCD UI & Retrieve Password
 ```bash
+# Retrieve initial admin password
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 echo ""
+
+# Port-forward ArgoCD Web UI on port 8085
+kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 8085:443 > /dev/null 2>&1 &
 ```
+Open `https://<HOST_IP>:8085` (Username: `admin`).
 
 ### Step 3: Deploy GitOps Application
-Apply the ArgoCD Application manifest:
 ```bash
 kubectl apply -f argocd/application.yaml
 ```
 
 ---
 
-## 10. Phase 8: Automated Rolling Updates on Code Changes
+## 10. Phase 8: Automated CI/CD Pipelines (GitHub Actions)
 
-A primary requirement is that **any code change committed to Git must automatically build, push, and roll out to the cluster with ZERO DOWNTIME**.
+The repository implements a two-tier pipeline architecture in `.github/workflows/`:
 
-### How the Automated Rolling Update Works:
+### 1. Workflow 1: Continuous Integration (`.github/workflows/ci.yaml`)
+- **Triggers**: On push / PR targeting `main` and `develop`.
+- **Jobs Executed**:
+  1. `iac-validation`: Runs `terraform fmt -check`, `terraform validate`, `helm lint`, and manifest YAML validation.
+  2. `frontend-ci`: Runs Node.js 20 `oxlint` linting, `vitest` unit tests, and production `vite build`.
+  3. `backend-microservices-ci`: Parallel Maven matrix testing on JDK 17 for `product-service`, `cart-service`, `order-service`, and `api-gateway`.
+  4. `docker-build-verification`: Docker Buildx compilation gate with GitHub Actions layer caching.
 
+### 2. Workflow 2: Continuous Delivery (`.github/workflows/ci-cd.yaml`)
+- **Triggers**: On `git push origin main`.
+- **Jobs Executed**:
+  1. `test-and-build`: Verifies microservices compile and package.
+  2. `docker-build-push`: Builds and pushes all 5 images to Amazon ECR with tags `latest` and `${{ github.sha }}`.
+  3. `deploy-eks`: Updates EKS kubeconfig and triggers a rolling update via `helm upgrade`.
+
+### Required GitHub Repository Secrets:
+Configure in **GitHub Repository -> Settings -> Secrets and variables -> Actions**:
+
+| Secret Name | Description | Example |
+|---|---|---|
+| `AWS_ACCESS_KEY_ID` | IAM User Access Key with ECR & EKS permissions | `AKIAIOSFODNN7EXAMPLE` |
+| `AWS_SECRET_ACCESS_KEY` | IAM User Secret Key | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
+| `AWS_ACCOUNT_ID` | Your 12-digit AWS Account ID | `123456789012` |
+
+### Zero-Downtime Rolling Update Demonstration:
 ```mermaid
 sequenceDiagram
     autonumber
@@ -281,66 +311,20 @@ sequenceDiagram
     participant PodOld as Old Pods (v1)
     participant PodNew as New Pods (v2)
 
-    Dev->>Git: git push origin main (e.g. commit ab12cd3)
-    Git->>GHA: Webhook Triggers .github/workflows/ci-cd.yaml
+    Dev->>Git: git push origin main
+    Git->>GHA: Webhook Triggers ci-cd.yaml
     GHA->>GHA: Run Unit Tests (Maven & Vitest)
-    GHA->>ECR: Build & Push Image with tag ab12cd3 and latest
-    GHA->>K8s: helm upgrade --set global.tag=ab12cd3
+    GHA->>ECR: Build & Push Image with SHA tag and latest
+    GHA->>K8s: helm upgrade --set global.tag=<SHA>
     Note over K8s: RollingUpdate Strategy Triggered<br/>(maxSurge: 1, maxUnavailable: 0)
-    K8s->>PodNew: Spin up new Pod with image:ab12cd3
+    K8s->>PodNew: Spin up new Pod
     K8s->>PodNew: Run Readiness Probe (/actuator/health)
     PodNew-->>K8s: Status: Ready (200 OK)
     K8s->>K8s: Route incoming traffic to New Pod
-    K8s->>PodOld: Send SIGTERM, drain connections (Grace Period 30s)
+    K8s->>PodOld: Send SIGTERM, drain connections
     K8s->>PodOld: Terminate Old Pod
     Note over Dev,K8s: Zero dropped requests during entire update!
 ```
-
-### 1. Rolling Update Configuration in Helm
-Each Deployment template in [`helm/retail-platform/templates/all-services.yaml`](file:///Users/samir/ecom/helm/retail-platform/templates/all-services.yaml) defines:
-
-```yaml
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 1          # Spin up 1 new container BEFORE terminating an old one
-    maxUnavailable: 0    # Never allow available pods to drop below replica count
-```
-
-### 2. Readiness Probes Prevent Premature Traffic Routing
-Traffic is never shifted to a newly started container until Spring Boot passes its health check:
-```yaml
-readinessProbe:
-  httpGet:
-    path: /actuator/health
-    port: 8081
-  initialDelaySeconds: 25
-  periodSeconds: 10
-```
-
-### 3. Required GitHub Repository Secrets
-Ensure these 3 secrets are configured in **GitHub Repository -> Settings -> Secrets and variables -> Actions**:
-1. `AWS_ACCESS_KEY_ID`
-2. `AWS_SECRET_ACCESS_KEY`
-3. `AWS_ACCOUNT_ID`
-
-### 4. Testing the Live Rolling Update Flow:
-Make an edit (e.g., in [`frontend/src/components/Hero.jsx`](file:///Users/samir/ecom/frontend/src/components/Hero.jsx)):
-```bash
-git add .
-git commit -m "feat: updated hero banner"
-git push origin main
-```
-
-Watch the rolling update happen in real-time in your terminal:
-```bash
-kubectl get pods -n retail-system -w
-```
-You will observe:
-1. New pods start in `ContainerCreating` state alongside old pods.
-2. New pods transition to `Running` and wait for readiness probes to pass (`1/1 Ready`).
-3. Once ready, traffic shifts seamlessly, and old pods enter `Terminating` state.
-4. **Result:** Zero downtime and zero 5xx HTTP errors during the release!
 
 ---
 
@@ -351,18 +335,18 @@ You will observe:
 ALB_URL=$(kubectl get ingress -n retail-system -o jsonpath="{.items[0].status.loadBalancer.ingress[0].hostname}")
 
 curl -s "http://${ALB_URL}/actuator/health"
-# Output: {"status":"UP"}
+# Expected: {"status":"UP"}
 ```
 
 ### 2. Complete End-to-End Shopping Flow Test
 ```bash
-# 1. Fetch Products from Product Service via Gateway
+# 1. Fetch Products
 curl -i "http://${ALB_URL}/api/products"
 
 # 2. Add an item to Cart (Redis)
 curl -i -X POST "http://${ALB_URL}/api/cart/1/items" \
   -H "Content-Type: application/json" \
-  -d '{"productId": 1, "productName": "Wireless Headphones", "price": 99.99, "quantity": 1}'
+  -d '{"productId": 1, "productName": "UltraBook Pro 16", "price": 1299.99, "quantity": 1}'
 
 # 3. Retrieve Cart
 curl -i "http://${ALB_URL}/api/cart/1"
@@ -377,12 +361,12 @@ curl -i -X POST "http://${ALB_URL}/api/orders" \
 
 ## 12. Phase 10: Teardown & Clean Up
 
-To avoid unnecessary AWS cloud costs when finished testing:
+To avoid unnecessary AWS cloud costs after evaluation:
 
 ```bash
 # 1. Uninstall Helm applications
-helm uninstall retail-platform -n retail-system
-helm uninstall aws-load-balancer-controller -n kube-system
+helm uninstall retail-platform -n retail-system || true
+helm uninstall aws-load-balancer-controller -n kube-system || true
 
 # 2. Delete ArgoCD and Monitoring resources
 kubectl delete -f argocd/application.yaml || true
@@ -390,8 +374,9 @@ kubectl delete -f k8s/monitoring.yaml || true
 kubectl delete namespace argocd retail-system || true
 
 # 3. Destroy AWS infrastructure via Terraform
-cd /Users/samir/ecom/terraform
+cd terraform
 terraform destroy -auto-approve
+cd ..
 ```
 
 ---
@@ -400,12 +385,12 @@ terraform destroy -auto-approve
 
 | Component | Technology | Role |
 |---|---|---|
-| **IaC** | Terraform v1.8+ | VPC, EKS Cluster, ECR, IAM Roles |
-| **Orchestration** | Amazon EKS v1.30 | Kubernetes Container Orchestration |
-| **Registry** | Amazon ECR | Docker Container Image Storage |
-| **Packaging** | Helm 3 | Templated Application Deployments |
-| **CI/CD** | GitHub Actions | Automated Linting, Testing, Build & Push |
-| **GitOps** | ArgoCD | Git-to-Cluster Synchronization |
-| **Traffic Routing** | AWS ALB Controller | External HTTP/HTTPS Ingress |
-| **Observability** | Prometheus & Grafana | Real-time Metrics, Alerts & Dashboards |
+| **IaC** | Terraform v1.5+ | Multi-AZ VPC, EKS Cluster, ECR, Node Groups, IAM Roles |
+| **Orchestration** | Amazon EKS v1.35 | Managed Kubernetes Container Orchestration |
+| **Registry** | Amazon ECR | Private Docker Image Repositories with vulnerability scanning |
+| **Packaging** | Helm 3 | Parametrized Application Chart & Config Management |
+| **CI/CD** | GitHub Actions | Automated Linting, Multi-Stage Tests, Build & Push |
+| **GitOps** | ArgoCD | Git-to-Cluster Continuous Synchronization |
+| **Traffic Routing**| AWS ALB Controller | External HTTP Ingress with dynamic IP targets |
+| **Observability** | Prometheus & Grafana | Real-time Metrics, Alerts & System Dashboards |
 | **Zero-Downtime** | Kubernetes RollingUpdate | `maxSurge: 1`, `maxUnavailable: 0` with health checks |
