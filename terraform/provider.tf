@@ -21,7 +21,7 @@ provider "aws" {
       Project     = "Cloud-Native-Retail-Platform"
       Environment = var.environment
       ManagedBy   = "Terraform"
-      Team        = "Samir-Ritesh-Gauri-Achal"
+      Team        = "CloudRetail-DevOps"
     }
   }
 }

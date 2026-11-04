@@ -13,6 +13,11 @@ output "eks_cluster_endpoint" {
   value       = aws_eks_cluster.main.endpoint
 }
 
+output "oidc_provider_arn" {
+  description = "IAM OIDC Provider ARN for EKS IRSA"
+  value       = aws_iam_openid_connect_provider.eks.arn
+}
+
 output "ecr_repository_urls" {
   description = "URLs of the Amazon ECR repositories"
   value       = { for k, v in aws_ecr_repository.services : k => v.repository_url }

@@ -36,6 +36,17 @@ resource "aws_eks_cluster" "main" {
   ]
 }
 
+# IAM OIDC Provider for EKS ServiceAccounts (IRSA)
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
 # IAM Role for Managed Node Group
 resource "aws_iam_role" "eks_nodes" {
   name = "${var.project_name}-node-role"
@@ -67,6 +78,11 @@ resource "aws_iam_role_policy_attachment" "node_ecr" {
   role       = aws_iam_role.eks_nodes.name
 }
 
+resource "aws_iam_role_policy_attachment" "node_ebs_csi" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.eks_nodes.name
+}
+
 # Managed Node Group
 resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
@@ -89,6 +105,18 @@ resource "aws_eks_node_group" "main" {
   depends_on = [
     aws_iam_role_policy_attachment.node_worker,
     aws_iam_role_policy_attachment.node_cni,
-    aws_iam_role_policy_attachment.node_ecr
+    aws_iam_role_policy_attachment.node_ecr,
+    aws_iam_role_policy_attachment.node_ebs_csi
+  ]
+}
+
+# AWS EBS CSI Driver Addon (Required for MySQL & Redis PersistentVolumeClaims)
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name = aws_eks_cluster.main.name
+  addon_name   = "aws-ebs-csi-driver"
+
+  depends_on = [
+    aws_eks_node_group.main,
+    aws_iam_role_policy_attachment.node_ebs_csi
   ]
 }

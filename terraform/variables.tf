@@ -25,7 +25,7 @@ variable "vpc_cidr" {
 variable "eks_version" {
   description = "Kubernetes version for Amazon EKS"
   type        = string
-  default     = "1.30"
+  default     = "1.35"
 }
 
 variable "node_instance_types" {

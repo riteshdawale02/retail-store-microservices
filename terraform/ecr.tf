@@ -3,7 +3,8 @@ locals {
     "retail/product-service",
     "retail/cart-service",
     "retail/order-service",
-    "retail/api-gateway"
+    "retail/api-gateway",
+    "retail/frontend"
   ]
 }
 
