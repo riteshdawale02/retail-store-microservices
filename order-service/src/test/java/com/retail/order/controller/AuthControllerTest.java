@@ -65,14 +65,14 @@ public class AuthControllerTest {
     @DisplayName("POST /api/auth/login authenticates user successfully")
     void testLoginSuccess() throws Exception {
         LoginRequest req = new LoginRequest();
-        req.setEmail("samir@example.com");
+        req.setEmail("shopper@example.com");
         req.setPassword("Password123!");
 
         User user = new User();
         user.setId(2L);
         user.setUserId("user-s2");
-        user.setName("samir");
-        user.setEmail("samir@example.com");
+        user.setName("Shopper");
+        user.setEmail("shopper@example.com");
         user.setRole("USER");
         UserDto userDto = new UserDto(user);
         AuthResponse resp = new AuthResponse(true, "Login successful", "dummy-jwt-token", userDto);
@@ -84,6 +84,6 @@ public class AuthControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.user.name").value("samir"));
+                .andExpect(jsonPath("$.user.name").value("Shopper"));
     }
 }

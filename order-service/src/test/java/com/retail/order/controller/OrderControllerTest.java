@@ -68,8 +68,8 @@ public class OrderControllerTest {
     void testCheckoutSuccess() throws Exception {
         CheckoutRequest req = new CheckoutRequest();
         req.setUserId("user-101");
-        req.setCustomerName("Samir Dhavane");
-        req.setCustomerEmail("samir@example.com");
+        req.setCustomerName("Alex Morgan");
+        req.setCustomerEmail("customer@example.com");
         req.setShippingAddress("123 Cloud St, AWS City");
 
         Order order = new Order();

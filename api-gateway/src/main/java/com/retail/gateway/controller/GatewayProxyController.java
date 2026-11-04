@@ -49,12 +49,12 @@ public class GatewayProxyController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping(value = "/api/products/**", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+    @RequestMapping(value = {"/api/products", "/api/products/**"}, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
     public ResponseEntity<?> proxyProduct(HttpServletRequest request, @RequestBody(required = false) byte[] body) {
         return forwardRequest(request, productServiceUrl, body);
     }
 
-    @RequestMapping(value = "/api/cart/**", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+    @RequestMapping(value = {"/api/cart", "/api/cart/**"}, method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
     public ResponseEntity<?> proxyCart(HttpServletRequest request, @RequestBody(required = false) byte[] body) {
         return forwardRequest(request, cartServiceUrl, body);
     }

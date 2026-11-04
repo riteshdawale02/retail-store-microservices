@@ -36,7 +36,7 @@ public class AuthService {
             // 1. Retailer Account (Has privilege to add & manage products)
             User retailer = new User(
                     "usr-retailer-01",
-                    "Samir Retailer",
+                    "Merchant Admin",
                     "retailer@cloudretail.io",
                     hashPassword("password123"),
                     "RETAILER",
