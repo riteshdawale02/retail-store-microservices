@@ -515,6 +515,7 @@ export default function App() {
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
         userId={activeUserId}
+        currentUser={currentUser}
         onOrderSuccess={handleOrderSuccess}
       />
 
