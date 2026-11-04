@@ -29,3 +29,7 @@ terraform.tfvars
 
 # Logs
 *.log
+
+# Agentic & Design System Tooling
+.agents/
+.stitch/
