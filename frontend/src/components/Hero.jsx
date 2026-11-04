@@ -37,7 +37,7 @@ export default function Hero({ onExploreClick, totalProducts = 0 }) {
               <ArrowRight size={16} />
             </button>
             <button
-              className="btn btn-hero-secondary hide-on-mobile"
+              className="btn btn-hero-secondary hero-deals-btn"
               onClick={onExploreClick}
               aria-label="Explore deals and specs"
             >

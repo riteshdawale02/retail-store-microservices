@@ -25,6 +25,9 @@ export default function CartDrawer({
         onClick={(e) => e.stopPropagation()}
         aria-label="Shopping Cart Drawer"
       >
+        {/* Stitch Mobile Sheet Drag Handle */}
+        <div className="mobile-sheet-pull-handle hide-on-desktop"></div>
+
         {/* Header */}
         <div className="drawer-header">
           <div className="drawer-title-box">

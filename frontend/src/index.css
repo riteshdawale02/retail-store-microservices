@@ -104,6 +104,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -125,7 +126,18 @@ body {
     radial-gradient(circle 500px at 100% 15%, rgba(56, 189, 248, 0.05), transparent);
   background-attachment: fixed;
   color: var(--text-main);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overscroll-behavior-y: none;
   transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Touch & momentum scroll utility classes from Stitch */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 [data-theme="light"] body,

@@ -37,8 +37,27 @@ export default function Navbar({
             <ShoppingBag size={19} strokeWidth={2.2} />
           </div>
           <div className="brand-text-cluster">
-            <span className="brand-title">CloudRetail</span>
-            <span className="brand-subtitle">Microservices</span>
+            <div className="brand-title-row">
+              <span className="brand-title">CloudRetail</span>
+              {/* Stitch Mobile Live Edge Status Beacon */}
+              <div
+                className="mobile-live-beacon hide-on-desktop"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onOpenHealth) onOpenHealth();
+                }}
+                title="Inspect System Telemetry"
+              >
+                <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
+                  <span className="beacon-ping"></span>
+                  <span className="beacon-core"></span>
+                </span>
+                <span className="mobile-beacon-text">
+                  {isDown ? 'OFFLINE' : isDegraded ? 'DEGRADED' : 'ALL SYSTEMS LIVE'}
+                </span>
+              </div>
+            </div>
+            <span className="brand-subtitle hide-on-mobile">Microservices</span>
           </div>
         </div>
 

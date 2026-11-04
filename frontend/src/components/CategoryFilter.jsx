@@ -11,7 +11,7 @@ export default function CategoryFilter({
 }) {
   return (
     <div className="filter-bar-wrapper">
-      <div className="category-chips-list">
+      <div className="category-chips-list no-scrollbar">
         {categories.map((cat) => {
           const count = productCounts[cat] || 0;
           const isActive = selectedCategory === cat;

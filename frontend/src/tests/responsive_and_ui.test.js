@@ -42,6 +42,15 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
     expect(appCss).toContain('safe-area-inset-bottom');
     expect(appCss).toContain('.mobile-bottom-nav');
   });
+
+  it('implements Stitch mobile responsiveness patterns and slide-up sheets', () => {
+    expect(indexCss).toContain('-webkit-tap-highlight-color: transparent');
+    expect(indexCss).toContain('.no-scrollbar');
+    expect(appCss).toContain('slideUpSheet');
+    expect(appCss).toContain('.mobile-sheet-pull-handle');
+    expect(appCss).toContain('.toast-container');
+    expect(appCss).toContain('.toast-pill');
+  });
 });
 
 describe('Component Module Integrity', () => {
