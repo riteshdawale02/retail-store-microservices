@@ -1793,7 +1793,7 @@
   justify-content: center;
 }
 
-/* Tablet & Mobile Breakpoints (<= 880px) - Stitch Architecture */
+/* Tablet & Mobile Breakpoints (<= 880px) */
 @media (max-width: 880px) {
   body {
     padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
@@ -1813,43 +1813,41 @@
     grid-template-areas: 
       "brand actions"
       "search search";
-    gap: 8px 12px;
+    gap: 10px 12px;
     height: auto;
-    padding: 10px 16px 8px;
+    padding: 10px 16px 12px;
   }
 
   .brand-logo {
     grid-area: brand;
-  }
-
-  .brand-title-row {
-    display: flex;
-    align-items: center;
     gap: 8px;
   }
 
-  .mobile-live-beacon {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 2px 7px;
-    border-radius: var(--radius-full);
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    cursor: pointer;
+  .brand-icon-box {
+    width: 32px;
+    height: 32px;
   }
 
-  .mobile-beacon-text {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: var(--accent-emerald);
-    letter-spacing: 0.04em;
+  .brand-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .brand-subtitle {
+    display: none !important;
   }
 
   .nav-actions {
     grid-area: actions;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     justify-content: flex-end;
+  }
+
+  /* Hide desktop health telemetry pill in mobile navbar */
+  .nav-health-status-pill {
+    display: none !important;
   }
 
   .nav-search-container {
@@ -1860,8 +1858,55 @@
   }
 
   .nav-search-input {
-    height: 40px;
+    height: 42px;
     font-size: 16px !important;
+    border-radius: 12px;
+  }
+
+  .nav-search-kbd {
+    display: none !important;
+  }
+
+  /* Hide text labels on action buttons on mobile to prevent overflow */
+  .nav-btn-text {
+    display: none !important;
+  }
+
+  .nav-icon-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-cart-btn {
+    padding: 0 10px;
+    height: 38px;
+    min-width: 38px;
+    gap: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-signin-btn {
+    padding: 0 10px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-retailer-add {
+    padding: 0 10px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-user-pill {
+    padding: 3px 6px;
+    height: 38px;
   }
 
   /* Thumb-scrollable horizontal categories carousel from Stitch */

@@ -37,27 +37,8 @@ export default function Navbar({
             <ShoppingBag size={19} strokeWidth={2.2} />
           </div>
           <div className="brand-text-cluster">
-            <div className="brand-title-row">
-              <span className="brand-title">CloudRetail</span>
-              {/* Stitch Mobile Live Edge Status Beacon */}
-              <div
-                className="mobile-live-beacon hide-on-desktop"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onOpenHealth) onOpenHealth();
-                }}
-                title="Inspect System Telemetry"
-              >
-                <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
-                  <span className="beacon-ping"></span>
-                  <span className="beacon-core"></span>
-                </span>
-                <span className="mobile-beacon-text">
-                  {isDown ? 'OFFLINE' : isDegraded ? 'DEGRADED' : 'ALL SYSTEMS LIVE'}
-                </span>
-              </div>
-            </div>
-            <span className="brand-subtitle hide-on-mobile">Microservices</span>
+            <span className="brand-title">CloudRetail</span>
+            <span className="brand-subtitle">Microservices Platform</span>
           </div>
         </div>
 
@@ -72,7 +53,7 @@ export default function Navbar({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <kbd className="nav-search-kbd hide-on-mobile">⌘K</kbd>
+          <kbd className="nav-search-kbd">⌘K</kbd>
           {searchQuery && (
             <button
               className="search-clear-btn"
@@ -85,26 +66,26 @@ export default function Navbar({
           )}
         </div>
 
-        {/* Live Microservices Health Telemetry Pill (Stitch Component) */}
-        {onOpenHealth && (
-          <button
-            id="microservices-health-pill-btn"
-            className="nav-health-status-pill hide-on-mobile"
-            onClick={onOpenHealth}
-            title="Inspect AWS EKS Microservices Cluster Health"
-          >
-            <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
-              <span className="beacon-ping"></span>
-              <span className="beacon-core"></span>
-            </span>
-            <span className="health-pill-label">
-              {isDown ? 'Cluster Offline' : isDegraded ? 'Service Degraded' : 'All Systems Operational'}
-            </span>
-          </button>
-        )}
-
         {/* Right Navigation Actions */}
         <div className="nav-actions">
+          {/* Live Microservices Health Telemetry Pill (Desktop Only) */}
+          {onOpenHealth && (
+            <button
+              id="microservices-health-pill-btn"
+              className="nav-health-status-pill"
+              onClick={onOpenHealth}
+              title="Inspect AWS EKS Microservices Cluster Health"
+            >
+              <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
+                <span className="beacon-ping"></span>
+                <span className="beacon-core"></span>
+              </span>
+              <span className="health-pill-label">
+                {isDown ? 'Cluster Offline' : isDegraded ? 'Service Degraded' : 'All Systems Operational'}
+              </span>
+            </button>
+          )}
+
           {/* Theme Toggle (Light / Dark) */}
           <button
             id="theme-toggle-btn"
@@ -125,11 +106,11 @@ export default function Navbar({
               title="Publish a new product to catalog"
             >
               <PlusCircle size={16} />
-              <span className="hide-on-mobile">Add Product</span>
+              <span className="nav-btn-text">Add Product</span>
             </button>
           )}
 
-          {/* Orders History */}
+          {/* Orders History (Desktop Only) */}
           <button
             id="view-orders-btn"
             className="nav-link-btn nav-action-desktop-only"
@@ -149,7 +130,7 @@ export default function Navbar({
             aria-label={`Shopping cart with ${cartCount} items`}
           >
             <ShoppingBag size={18} />
-            <span className="hide-on-mobile">Cart</span>
+            <span className="nav-btn-text">Cart</span>
             {cartCount > 0 && (
               <span className="nav-cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
             )}
@@ -167,7 +148,7 @@ export default function Navbar({
                 <span className="user-avatar-circle">
                   {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
                 </span>
-                <span className="user-name-short hide-on-mobile">
+                <span className="user-name-short nav-btn-text">
                   {currentUser.name?.split(' ')[0]}
                 </span>
               </button>
@@ -190,7 +171,7 @@ export default function Navbar({
               title="Sign In or Create Account"
             >
               <User size={16} />
-              <span>Sign In</span>
+              <span className="nav-btn-text">Sign In</span>
             </button>
           )}
         </div>
