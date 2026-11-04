@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Lock, CheckCircle2, AlertCircle, PackageCheck, Truck, CreditCard, Smartphone, Banknote, ShieldCheck } from 'lucide-react';
 
 export default function CheckoutModal({
@@ -6,21 +6,34 @@ export default function CheckoutModal({
   onClose,
   cart,
   userId,
+  currentUser = null,
   onOrderSuccess
 }) {
   const [formData, setFormData] = useState({
-    customerName: 'Samir Dhavane',
-    customerEmail: 'samir.dhavane@example.com',
-    shippingAddress: '42 Market Street, Yavatmal, MH - 445001',
+    customerName: currentUser?.name || '',
+    customerEmail: currentUser?.email || '',
+    shippingAddress: currentUser?.address || '',
     paymentMethod: 'CARD', // 'CARD', 'UPI', 'COD'
     cardNumber: '4532 •••• •••• 8891',
     cardExpiry: '12/28',
     cardCvv: '889',
-    upiId: 'samir@upi'
+    upiId: 'user@upi'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processingStep, setProcessingStep] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Sync form with logged-in user details whenever modal opens or user changes
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        customerName: currentUser?.name || prev.customerName || '',
+        customerEmail: currentUser?.email || prev.customerEmail || '',
+        shippingAddress: currentUser?.address || prev.shippingAddress || ''
+      }));
+    }
+  }, [isOpen, currentUser]);
 
   if (!isOpen) return null;
 
@@ -47,7 +60,14 @@ export default function CheckoutModal({
         customerName: formData.customerName.trim(),
         customerEmail: formData.customerEmail.trim(),
         shippingAddress: formData.shippingAddress.trim(),
-        paymentMethod: formData.paymentMethod
+        paymentMethod: formData.paymentMethod,
+        items: items.map((it) => ({
+          productId: it.productId,
+          productName: it.productName,
+          unitPrice: Number(it.unitPrice),
+          quantity: it.quantity,
+          imageUrl: it.imageUrl
+        }))
       };
 
       await onOrderSuccess(payload);
@@ -105,7 +125,7 @@ export default function CheckoutModal({
                   id="customer-name-input"
                   type="text"
                   required
-                  placeholder="e.g. Samir Dhavane"
+                  placeholder="Enter your full name"
                   value={formData.customerName}
                   onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                   disabled={isSubmitting}
@@ -118,7 +138,7 @@ export default function CheckoutModal({
                   id="customer-email-input"
                   type="email"
                   required
-                  placeholder="e.g. samir@example.com"
+                  placeholder="Enter your email address"
                   value={formData.customerEmail}
                   onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
                   disabled={isSubmitting}
@@ -131,7 +151,7 @@ export default function CheckoutModal({
                   id="shipping-address-input"
                   rows="2"
                   required
-                  placeholder="Street address, city, state, postal code"
+                  placeholder="Street address, apartment/suite, city, state, postal code"
                   value={formData.shippingAddress}
                   onChange={(e) => setFormData({ ...formData, shippingAddress: e.target.value })}
                   disabled={isSubmitting}
@@ -214,6 +234,7 @@ export default function CheckoutModal({
                       <label style={{ fontSize: '0.75rem' }}>Virtual Payment Address (VPA)</label>
                       <input
                         type="text"
+                        placeholder="e.g. user@okhdfcbank"
                         value={formData.upiId}
                         onChange={(e) => setFormData({ ...formData, upiId: e.target.value })}
                         disabled={isSubmitting}
@@ -276,8 +297,6 @@ export default function CheckoutModal({
                 </span>
                 <span>Order Microservice • Sub-15ms Instant Dispatch</span>
               </div>
-
-
             </div>
           </div>
 

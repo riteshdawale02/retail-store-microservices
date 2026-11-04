@@ -249,7 +249,7 @@ export default function AuthModal({
                         id="auth-name"
                         type="text"
                         required
-                        placeholder="e.g. Samir Dhavane"
+                        placeholder="Enter your full name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         disabled={isSubmitting}
