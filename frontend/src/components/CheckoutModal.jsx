@@ -287,7 +287,17 @@ export default function CheckoutModal({
                     <div key={item.productId} className="checkout-item-preview-row">
                       <div className="preview-item-info">
                         {item.imageUrl && (
-                          <img src={item.imageUrl} alt={item.productName} className="checkout-item-thumb" />
+                          <img
+                            src={item.imageUrl}
+                            alt={item.productName}
+                            className="checkout-item-thumb"
+                            loading="lazy"
+                            decoding="async"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&auto=format&fit=crop&q=80';
+                            }}
+                          />
                         )}
                         <div className="preview-item-texts">
                           <span className="preview-name">{item.productName}</span>

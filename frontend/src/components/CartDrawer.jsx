@@ -79,6 +79,8 @@ export default function CartDrawer({
                     src={item.imageUrl}
                     alt={item.productName}
                     className="cart-item-thumb"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&auto=format&fit=crop&q=80';
