@@ -1,6 +1,6 @@
 /* ==========================================================================
    CloudRetail Storefront Design System & Global Styles
-   Earthy Ochre & Espresso Palette (#FCF0DA, #AEAC78, #F2C46A, #4C4541)
+   Restrained Industrial-Tech Aesthetic (#F4F1EA, #FFFFFF, #20252C, #D99535, #858B91)
    ========================================================================== */
 
 :root {
@@ -8,96 +8,96 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
 
-  /* Earthy Ochre & Espresso Palette */
-  --bg-primary: #252220;
-  --bg-secondary: #2E2A27;
-  --bg-tertiary: #3A3532;
-  --bg-card: #322D2A;
-  --bg-card-hover: #3E3834;
-  --bg-overlay: rgba(37, 34, 32, 0.88);
-  --bg-input: #252220;
+  /* Dark Theme Tokens (Restrained Charcoal/Slate Canvas) */
+  --bg-primary: #181B1F;
+  --bg-secondary: #22262C;
+  --bg-tertiary: #2B3037;
+  --bg-card: #22262C;
+  --bg-card-hover: #292E36;
+  --bg-overlay: rgba(15, 18, 22, 0.85);
+  --bg-input: #181B1F;
 
-  --border-subtle: rgba(252, 240, 218, 0.12);
-  --border-strong: #4C4541;
-  --border-focus: #F2C46A;
-  --border-highlight: rgba(242, 196, 106, 0.35);
+  --border-subtle: rgba(244, 241, 234, 0.1);
+  --border-strong: #3A414B;
+  --border-focus: #D99535;
+  --border-highlight: rgba(217, 149, 53, 0.3);
 
-  --primary: #F2C46A;
-  --primary-contrast: #252220;
-  --primary-hover: #E3B455;
-  --primary-glow: rgba(242, 196, 106, 0.28);
+  --primary: #D99535;
+  --primary-contrast: #FFFFFF;
+  --primary-hover: #C2822B;
+  --primary-glow: rgba(217, 149, 53, 0.2);
 
-  --accent-indigo: #F2C46A;
-  --accent-indigo-hover: #F8D385;
-  --accent-indigo-glow: rgba(242, 196, 106, 0.25);
-  --accent-cyan-bright: #AEAC78;
+  --accent-indigo: #D99535;
+  --accent-indigo-hover: #C2822B;
+  --accent-indigo-glow: rgba(217, 149, 53, 0.15);
+  --accent-cyan-bright: #858B91;
 
-  --accent-emerald: #AEAC78;
-  --accent-amber: #F2C46A;
-  --accent-rose: #D96B6B;
-  --accent-cyan: #AEAC78;
+  --accent-emerald: #10B981;
+  --accent-amber: #D99535;
+  --accent-rose: #D9534F;
+  --accent-cyan: #78909C;
 
-  --text-main: #FCF0DA;
-  --text-muted: #C4BCAC;
-  --text-subtle: #8E8678;
+  --text-main: #F4F1EA;
+  --text-muted: #858B91;
+  --text-subtle: #5E646C;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(242, 196, 106, 0.08);
-  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(242, 196, 106, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 18px -2px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.6);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
-  --card-radius: 12px;
-  --control-radius: 8px;
+  --card-radius: 8px;
+  --control-radius: 6px;
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Mode (Vanilla Cream & Deep Espresso) */
+/* Light Mode (Restrained Premium Industrial-Tech Palette) */
 [data-theme="light"],
 .light-theme {
-  --bg-primary: #FCF0DA;
-  --bg-secondary: #F3E4C8;
-  --bg-tertiary: #E8D5B3;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #FAF4E8;
-  --bg-overlay: rgba(76, 69, 65, 0.45);
+  --bg-primary: #F4F1EA;       /* Canvas */
+  --bg-secondary: #EBE7DF;
+  --bg-tertiary: #E2DDD3;
+  --bg-card: #FFFFFF;          /* Surface */
+  --bg-card-hover: #F8F7F4;
+  --bg-overlay: rgba(32, 37, 44, 0.45);
   --bg-input: #FFFFFF;
 
-  --border-subtle: #E2D1B3;
-  --border-strong: #C4B18F;
-  --border-focus: #4C4541;
-  --border-highlight: rgba(76, 69, 65, 0.25);
+  --border-subtle: #E2DDD3;
+  --border-strong: #CBC4B5;
+  --border-focus: #D99535;      /* Accent */
+  --border-highlight: rgba(217, 149, 53, 0.25);
 
-  --primary: #4C4541;
-  --primary-contrast: #FCF0DA;
-  --primary-hover: #36312E;
-  --primary-glow: rgba(76, 69, 65, 0.15);
+  --primary: #D99535;          /* Consistent Single Accent */
+  --primary-contrast: #FFFFFF;
+  --primary-hover: #C2822B;
+  --primary-glow: rgba(217, 149, 53, 0.18);
 
-  --accent-indigo: #876523;
-  --accent-indigo-hover: #6D511B;
-  --accent-indigo-glow: rgba(135, 101, 35, 0.15);
-  --accent-cyan-bright: #686742;
+  --accent-indigo: #D99535;
+  --accent-indigo-hover: #C2822B;
+  --accent-indigo-glow: rgba(217, 149, 53, 0.15);
+  --accent-cyan-bright: #687076;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
-  --card-radius: 12px;
-  --control-radius: 8px;
+  --card-radius: 8px;
+  --control-radius: 6px;
 
-  --accent-emerald: #686742;
-  --accent-amber: #C69533;
-  --accent-rose: #B84A4A;
-  --accent-cyan: #74734D;
+  --accent-emerald: #10B981;
+  --accent-amber: #D99535;
+  --accent-rose: #D9534F;
+  --accent-cyan: #4A6B82;
 
-  --text-main: #4C4541;
-  --text-muted: #6B625C;
-  --text-subtle: #8E847C;
+  --text-main: #20252C;        /* Text */
+  --text-muted: #858B91;       /* Muted */
+  --text-subtle: #A3A8AE;
 
-  --shadow-sm: 0 1px 2px rgba(76, 69, 65, 0.05);
-  --shadow-md: 0 4px 12px rgba(76, 69, 65, 0.08);
-  --shadow-lg: 0 12px 24px rgba(76, 69, 65, 0.1);
+  --shadow-sm: 0 1px 2px rgba(32, 37, 44, 0.05);
+  --shadow-md: 0 4px 12px rgba(32, 37, 44, 0.07);
+  --shadow-lg: 0 12px 28px rgba(32, 37, 44, 0.09);
 }
 
 /* Reset & Global Elements */
@@ -122,10 +122,6 @@ body {
   position: relative;
   overflow-x: hidden;
   background-color: var(--bg-primary);
-  background-image:
-    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(242, 196, 106, 0.12), transparent),
-    radial-gradient(circle 500px at 100% 15%, rgba(174, 172, 120, 0.08), transparent);
-  background-attachment: fixed;
   color: var(--text-main);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overscroll-behavior-y: none;
@@ -139,12 +135,6 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-[data-theme="light"] body,
-.light-theme body {
-  background-image:
-    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(242, 196, 106, 0.08), transparent);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -224,14 +214,14 @@ input:focus, textarea:focus, select:focus {
   background: var(--primary);
   color: var(--primary-contrast) !important;
   border: 1px solid var(--primary);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 10px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 .btn-primary:hover {
-  background: var(--accent-indigo-hover);
-  border-color: var(--accent-indigo-hover);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
   opacity: 1;
   transform: translateY(-1px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
 }
 .btn-primary:active {
   transform: translateY(0);

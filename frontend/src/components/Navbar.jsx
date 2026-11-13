@@ -37,7 +37,7 @@ export default function Navbar({
           <img src="/logo.png" alt="Logo" className="brand-logo-img" />
         </div>
 
-        {/* Search Bar */}
+        {/* Primary Search Bar */}
         <div className="nav-search-container">
           <Search className="search-icon" size={17} />
           <input
@@ -61,114 +61,122 @@ export default function Navbar({
           )}
         </div>
 
-        {/* Right Navigation Actions */}
+        {/* Right Navigation: Structured Visual Groups */}
         <div className="nav-actions">
-          {/* Live Microservices Health Telemetry Pill (Desktop Only) */}
-          {onOpenHealth && (
-            <button
-              id="microservices-health-pill-btn"
-              className="nav-health-status-pill"
-              onClick={onOpenHealth}
-              title="Inspect AWS EKS Microservices Cluster Health"
-            >
-              <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
-                <span className="beacon-ping"></span>
-                <span className="beacon-core"></span>
-              </span>
-              <span className="health-pill-label">
-                {isDown ? 'Cluster Offline' : isDegraded ? 'Service Degraded' : 'All Systems Operational'}
-              </span>
-            </button>
-          )}
-
-          {/* Theme Toggle (Light / Dark) */}
-          <button
-            id="theme-toggle-btn"
-            className="nav-icon-btn theme-toggle-btn"
-            onClick={onToggleTheme}
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle visual theme"
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
-          {/* Retailer "+ Add Product" Button */}
-          {isRetailer && (
-            <button
-              id="retailer-add-product-btn"
-              className="btn btn-retailer-add"
-              onClick={onOpenAddProduct}
-              title="Publish a new product to catalog"
-            >
-              <PlusCircle size={16} />
-              <span className="nav-btn-text">Add Product</span>
-            </button>
-          )}
-
-          {/* Orders History (Desktop Only) */}
-          <button
-            id="view-orders-btn"
-            className="nav-link-btn nav-action-desktop-only"
-            onClick={onOpenOrders}
-            title="View your orders"
-          >
-            <PackageCheck size={18} />
-            <span>Orders</span>
-          </button>
-
-          {/* Shopping Cart */}
-          <button
-            id="open-cart-btn"
-            className="nav-cart-btn"
-            onClick={onOpenCart}
-            title="View Shopping Cart"
-            aria-label={`Shopping cart with ${cartCount} items`}
-          >
-            <ShoppingBag size={18} />
-            <span className="nav-btn-text">Cart</span>
-            {cartCount > 0 && (
-              <span className="nav-cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+          {/* Group 1: Quiet System Utilities */}
+          <div className="nav-utilities-group">
+            {/* Live Microservices Health Telemetry Indicator */}
+            {onOpenHealth && (
+              <button
+                id="microservices-health-pill-btn"
+                className="nav-health-status-pill"
+                onClick={onOpenHealth}
+                title="Inspect AWS EKS Microservices Cluster Health"
+              >
+                <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
+                  <span className="beacon-ping"></span>
+                  <span className="beacon-core"></span>
+                </span>
+                <span className="health-pill-label">
+                  {isDown ? 'Offline' : isDegraded ? 'Degraded' : 'Operational'}
+                </span>
+              </button>
             )}
-          </button>
 
-          {/* Customer / Retailer Account */}
-          {currentUser ? (
-            <div className="nav-user-cluster">
-              <button
-                id="user-account-btn"
-                className="nav-user-pill"
-                onClick={onOpenAuth}
-                title={`Account: ${currentUser.name} (${currentUser.role})`}
-              >
-                <span className="user-avatar-circle">
-                  {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
-                </span>
-                <span className="user-name-short nav-btn-text">
-                  {currentUser.name?.split(' ')[0]}
-                </span>
-              </button>
-
-              <button
-                id="logout-btn"
-                className="nav-icon-btn nav-action-desktop-only"
-                onClick={onLogout}
-                title="Sign Out"
-                aria-label="Sign out of account"
-              >
-                <LogOut size={16} />
-              </button>
-            </div>
-          ) : (
+            {/* Theme Toggle (Ghost Icon Button) */}
             <button
-              id="open-auth-btn"
-              className="btn btn-primary nav-signin-btn"
-              onClick={onOpenAuth}
-              title="Sign In or Create Account"
+              id="theme-toggle-btn"
+              className="nav-ghost-icon-btn theme-toggle-btn"
+              onClick={onToggleTheme}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle visual theme"
             >
-              <User size={16} />
-              <span className="nav-btn-text">Sign In</span>
+              {isDark ? <Sun size={17} /> : <Moon size={17} />}
             </button>
-          )}
+          </div>
+
+          <div className="nav-cluster-divider" aria-hidden="true" />
+
+          {/* Group 2: Core E-Commerce Actions */}
+          <div className="nav-commerce-group">
+            {/* Retailer "+ Add Product" Button */}
+            {isRetailer && (
+              <button
+                id="retailer-add-product-btn"
+                className="btn btn-retailer-add"
+                onClick={onOpenAddProduct}
+                title="Publish a new product to catalog"
+              >
+                <PlusCircle size={15} />
+                <span className="nav-btn-text">Add Product</span>
+              </button>
+            )}
+
+            {/* Orders History */}
+            <button
+              id="view-orders-btn"
+              className="nav-link-btn nav-action-desktop-only"
+              onClick={onOpenOrders}
+              title="View your orders"
+            >
+              <PackageCheck size={17} />
+              <span>Orders</span>
+            </button>
+
+            {/* Shopping Cart */}
+            <button
+              id="open-cart-btn"
+              className="nav-cart-btn"
+              onClick={onOpenCart}
+              title="View Shopping Cart"
+              aria-label={`Shopping cart with ${cartCount} items`}
+            >
+              <ShoppingBag size={17} />
+              <span className="nav-btn-text">Cart</span>
+              {cartCount > 0 && (
+                <span className="nav-cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+              )}
+            </button>
+
+            {/* Account / Authentication */}
+            {currentUser ? (
+              <div className="nav-user-cluster">
+                <button
+                  id="user-account-btn"
+                  className="nav-user-pill"
+                  onClick={onOpenAuth}
+                  title={`Account: ${currentUser.name} (${currentUser.role})`}
+                >
+                  <span className="user-avatar-circle">
+                    {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
+                  </span>
+                  <span className="user-name-short nav-btn-text">
+                    {currentUser.name?.split(' ')[0]}
+                  </span>
+                </button>
+
+                <button
+                  id="logout-btn"
+                  className="nav-ghost-icon-btn nav-action-desktop-only"
+                  onClick={onLogout}
+                  title="Sign Out"
+                  aria-label="Sign out of account"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <button
+                id="open-auth-btn"
+                className="btn btn-primary nav-signin-btn"
+                onClick={onOpenAuth}
+                title="Sign In or Create Account"
+              >
+                <User size={15} />
+                <span className="nav-btn-text">Sign In</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </header>

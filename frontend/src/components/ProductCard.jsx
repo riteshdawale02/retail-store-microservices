@@ -44,10 +44,10 @@ export default function ProductCard({
   return (
     <article
       id={`product-card-${product.id}`}
-      className="product-card glass-card"
+      className="product-card"
       onClick={() => onQuickView(product)}
     >
-      {/* Image Container */}
+      {/* Neutral Image Container */}
       <div className="product-image-container">
         <img
           src={product.imageUrl}
@@ -60,21 +60,12 @@ export default function ProductCard({
           }}
         />
 
-        {/* Category Tag Overlay */}
-        <span className="product-category-overlay">
-          {product.category || 'Retail'}
-        </span>
-
-        {/* Stock Status Badge */}
+        {/* Minimal Stock Notice: Only shown when actionable (out of stock or low) */}
         {isOutOfStock ? (
-          <span className="stock-badge out-of-stock">Out of Stock</span>
+          <span className="stock-notice-pill out-of-stock">Sold Out</span>
         ) : isLowStock ? (
-          <span className="stock-badge low-stock">Only {product.stockQuantity} left</span>
-        ) : (
-          <span className="stock-badge in-stock">
-            <span className="stock-pulse-dot"></span> In Stock • {product.stockQuantity} left
-          </span>
-        )}
+          <span className="stock-notice-pill low-stock">Only {product.stockQuantity} Left</span>
+        ) : null}
 
         {/* Retailer Action: Delete Product */}
         {isRetailer && (
@@ -91,12 +82,15 @@ export default function ProductCard({
 
       {/* Content */}
       <div className="product-content">
-        <div className="product-rating-row">
-          <div className="rating-stars">
-            <Star size={14} className="star-icon filled" />
+        <div className="product-meta-header">
+          <span className="product-category-label">
+            {product.category || 'Hardware'}
+          </span>
+          <div className="product-rating-row">
+            <Star size={13} className="star-icon filled" />
             <span className="rating-value">{product.rating || '4.8'}</span>
+            <span className="review-count">({product.reviewCount || 42})</span>
           </div>
-          <span className="review-count">({product.reviewCount || 42} reviews)</span>
         </div>
 
         <h3 className="product-title" title={product.name}>
@@ -125,7 +119,7 @@ export default function ProductCard({
           >
             {justAdded ? (
               <>
-                <Check size={16} />
+                <Check size={15} />
                 <span>Added</span>
               </>
             ) : isAdding ? (
@@ -137,7 +131,7 @@ export default function ProductCard({
               </>
             ) : (
               <>
-                <ShoppingBag size={16} />
+                <ShoppingBag size={15} />
                 <span>Add</span>
               </>
             )}

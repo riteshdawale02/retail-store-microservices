@@ -341,6 +341,8 @@ export default function App() {
         {/* High-Tech Hero Banner */}
         <Hero
           totalProducts={products.length}
+          featuredProduct={products[0]}
+          onQuickView={setQuickViewProduct}
           onExploreClick={() => {
             const el = document.getElementById('catalog-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
