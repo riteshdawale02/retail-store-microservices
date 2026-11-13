@@ -8,6 +8,11 @@ metadata:
     tier: presentation
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: retail-frontend
@@ -21,6 +26,8 @@ spec:
         - name: frontend
           image: 592306540354.dkr.ecr.us-east-1.amazonaws.com/retail/frontend:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 80
           resources:
@@ -32,13 +39,13 @@ spec:
               memory: 128Mi
           livenessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: 80
             initialDelaySeconds: 10
             periodSeconds: 15
           readinessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 10
