@@ -1,6 +1,6 @@
 /* ==========================================================================
    CloudRetail Storefront Design System & Global Styles
-   Forest & Botanical Organic Palette (#1F3A2F, #7F8C6A, #C8B48A, #F5F0E6)
+   Earthy Ochre & Espresso Palette (#FCF0DA, #AEAC78, #F2C46A, #4C4541)
    ========================================================================== */
 
 :root {
@@ -8,42 +8,42 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
 
-  /* Deep Forest & Botanical Palette */
-  --bg-primary: #111E18;
-  --bg-secondary: #172821;
-  --bg-tertiary: #1F3A2F;
-  --bg-card: #16241E;
-  --bg-card-hover: #1F3A2F;
-  --bg-overlay: rgba(17, 30, 24, 0.88);
-  --bg-input: #111E18;
+  /* Earthy Ochre & Espresso Palette */
+  --bg-primary: #252220;
+  --bg-secondary: #2E2A27;
+  --bg-tertiary: #3A3532;
+  --bg-card: #322D2A;
+  --bg-card-hover: #3E3834;
+  --bg-overlay: rgba(37, 34, 32, 0.88);
+  --bg-input: #252220;
 
-  --border-subtle: rgba(245, 240, 230, 0.1);
-  --border-strong: #2A4438;
-  --border-focus: #C8B48A;
-  --border-highlight: rgba(200, 180, 138, 0.35);
+  --border-subtle: rgba(252, 240, 218, 0.12);
+  --border-strong: #4C4541;
+  --border-focus: #F2C46A;
+  --border-highlight: rgba(242, 196, 106, 0.35);
 
-  --primary: #7F8C6A;
-  --primary-contrast: #FFFFFF;
-  --primary-hover: #6E7C5A;
-  --primary-glow: rgba(127, 140, 106, 0.3);
+  --primary: #F2C46A;
+  --primary-contrast: #252220;
+  --primary-hover: #E3B455;
+  --primary-glow: rgba(242, 196, 106, 0.28);
 
-  --accent-indigo: #C8B48A;
-  --accent-indigo-hover: #D8C7A0;
-  --accent-indigo-glow: rgba(200, 180, 138, 0.25);
-  --accent-cyan-bright: #A3B899;
+  --accent-indigo: #F2C46A;
+  --accent-indigo-hover: #F8D385;
+  --accent-indigo-glow: rgba(242, 196, 106, 0.25);
+  --accent-cyan-bright: #AEAC78;
 
-  --accent-emerald: #7F8C6A;
-  --accent-amber: #C8B48A;
-  --accent-rose: #E06C6C;
-  --accent-cyan: #98AA84;
+  --accent-emerald: #AEAC78;
+  --accent-amber: #F2C46A;
+  --accent-rose: #D96B6B;
+  --accent-cyan: #AEAC78;
 
-  --text-main: #F5F0E6;
-  --text-muted: #B8C2B3;
-  --text-subtle: #82917D;
+  --text-main: #FCF0DA;
+  --text-muted: #C4BCAC;
+  --text-subtle: #8E8678;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(127, 140, 106, 0.08);
-  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(127, 140, 106, 0.12);
+  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(242, 196, 106, 0.08);
+  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(242, 196, 106, 0.12);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -56,48 +56,48 @@
   --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Mode (Warm Cream & Forest Pine) */
+/* Light Mode (Vanilla Cream & Deep Espresso) */
 [data-theme="light"],
 .light-theme {
-  --bg-primary: #F5F0E6;
-  --bg-secondary: #ECE5D8;
-  --bg-tertiary: #E2DACB;
+  --bg-primary: #FCF0DA;
+  --bg-secondary: #F3E4C8;
+  --bg-tertiary: #E8D5B3;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #FAF7F2;
-  --bg-overlay: rgba(31, 58, 47, 0.45);
+  --bg-card-hover: #FAF4E8;
+  --bg-overlay: rgba(76, 69, 65, 0.45);
   --bg-input: #FFFFFF;
 
-  --border-subtle: #DCD4C4;
-  --border-strong: #C4BAA6;
-  --border-focus: #1F3A2F;
-  --border-highlight: rgba(31, 58, 47, 0.25);
+  --border-subtle: #E2D1B3;
+  --border-strong: #C4B18F;
+  --border-focus: #4C4541;
+  --border-highlight: rgba(76, 69, 65, 0.25);
 
-  --primary: #1F3A2F;
-  --primary-contrast: #F5F0E6;
-  --primary-hover: #14271F;
-  --primary-glow: rgba(31, 58, 47, 0.15);
+  --primary: #4C4541;
+  --primary-contrast: #FCF0DA;
+  --primary-hover: #36312E;
+  --primary-glow: rgba(76, 69, 65, 0.15);
 
-  --accent-indigo: #1F3A2F;
-  --accent-indigo-hover: #14271F;
-  --accent-indigo-glow: rgba(31, 58, 47, 0.15);
-  --accent-cyan-bright: #7F8C6A;
+  --accent-indigo: #876523;
+  --accent-indigo-hover: #6D511B;
+  --accent-indigo-glow: rgba(135, 101, 35, 0.15);
+  --accent-cyan-bright: #686742;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
   --card-radius: 12px;
   --control-radius: 8px;
 
-  --accent-emerald: #527058;
-  --accent-amber: #C8B48A;
-  --accent-rose: #C04D4D;
-  --accent-cyan: #7F8C6A;
+  --accent-emerald: #686742;
+  --accent-amber: #C69533;
+  --accent-rose: #B84A4A;
+  --accent-cyan: #74734D;
 
-  --text-main: #1F3A2F;
-  --text-muted: #5C6E5F;
-  --text-subtle: #7F8C6A;
+  --text-main: #4C4541;
+  --text-muted: #6B625C;
+  --text-subtle: #8E847C;
 
-  --shadow-sm: 0 1px 2px rgba(31, 58, 47, 0.05);
-  --shadow-md: 0 4px 12px rgba(31, 58, 47, 0.08);
-  --shadow-lg: 0 12px 24px rgba(31, 58, 47, 0.1);
+  --shadow-sm: 0 1px 2px rgba(76, 69, 65, 0.05);
+  --shadow-md: 0 4px 12px rgba(76, 69, 65, 0.08);
+  --shadow-lg: 0 12px 24px rgba(76, 69, 65, 0.1);
 }
 
 /* Reset & Global Elements */
@@ -123,8 +123,8 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-primary);
   background-image:
-    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(127, 140, 106, 0.15), transparent),
-    radial-gradient(circle 500px at 100% 15%, rgba(200, 180, 138, 0.08), transparent);
+    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(242, 196, 106, 0.12), transparent),
+    radial-gradient(circle 500px at 100% 15%, rgba(174, 172, 120, 0.08), transparent);
   background-attachment: fixed;
   color: var(--text-main);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -144,7 +144,7 @@ body {
 [data-theme="light"] body,
 .light-theme body {
   background-image:
-    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(127, 140, 106, 0.06), transparent);
+    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(242, 196, 106, 0.08), transparent);
 }
 
 h1, h2, h3, h4, h5, h6 {
