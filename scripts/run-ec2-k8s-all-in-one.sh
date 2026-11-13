@@ -197,7 +197,7 @@ log_success "All 5 container images built and imported to K3s."
 # ------------------------------------------------------------------------------
 echo -e "\n${BOLD}${BLUE}🐙 [2/5] Installing & Setting up ArgoCD...${NC}"
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 # Download ArgoCD CLI if not present
 if ! command -v argocd >/dev/null 2>&1; then
