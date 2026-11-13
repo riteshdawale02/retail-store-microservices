@@ -1,6 +1,7 @@
 /* ==========================================================================
    CloudRetail Storefront Design System & Global Styles
-   Earthy Ochre & Espresso Palette (#FCF0DA, #AEAC78, #F2C46A, #4C4541)
+   Burgundy, Champagne, Linen & Powder Blue Palette
+   (#790D16, #E5D3AF, #F5EFE1, #AEC4D4)
    ========================================================================== */
 
 :root {
@@ -8,42 +9,42 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
 
-  /* Earthy Ochre & Espresso Palette */
-  --bg-primary: #252220;
-  --bg-secondary: #2E2A27;
-  --bg-tertiary: #3A3532;
-  --bg-card: #322D2A;
-  --bg-card-hover: #3E3834;
-  --bg-overlay: rgba(37, 34, 32, 0.88);
-  --bg-input: #252220;
+  /* Deep Burgundy & Champagne Palette */
+  --bg-primary: #1A0A0C;
+  --bg-secondary: #240E12;
+  --bg-tertiary: #36141A;
+  --bg-card: #2A1115;
+  --bg-card-hover: #3B181E;
+  --bg-overlay: rgba(26, 10, 12, 0.88);
+  --bg-input: #1A0A0C;
 
-  --border-subtle: rgba(252, 240, 218, 0.12);
-  --border-strong: #4C4541;
-  --border-focus: #F2C46A;
-  --border-highlight: rgba(242, 196, 106, 0.35);
+  --border-subtle: rgba(245, 239, 225, 0.12);
+  --border-strong: #542028;
+  --border-focus: #E5D3AF;
+  --border-highlight: rgba(229, 211, 175, 0.35);
 
-  --primary: #F2C46A;
-  --primary-contrast: #252220;
-  --primary-hover: #E3B455;
-  --primary-glow: rgba(242, 196, 106, 0.28);
+  --primary: #790D16;
+  --primary-contrast: #F5EFE1;
+  --primary-hover: #91121C;
+  --primary-glow: rgba(121, 13, 22, 0.35);
 
-  --accent-indigo: #F2C46A;
-  --accent-indigo-hover: #F8D385;
-  --accent-indigo-glow: rgba(242, 196, 106, 0.25);
-  --accent-cyan-bright: #AEAC78;
+  --accent-indigo: #E5D3AF;
+  --accent-indigo-hover: #F2E4C7;
+  --accent-indigo-glow: rgba(229, 211, 175, 0.25);
+  --accent-cyan-bright: #AEC4D4;
 
-  --accent-emerald: #AEAC78;
-  --accent-amber: #F2C46A;
-  --accent-rose: #D96B6B;
-  --accent-cyan: #AEAC78;
+  --accent-emerald: #8FB89E;
+  --accent-amber: #E5D3AF;
+  --accent-rose: #C73E47;
+  --accent-cyan: #AEC4D4;
 
-  --text-main: #FCF0DA;
-  --text-muted: #C4BCAC;
-  --text-subtle: #8E8678;
+  --text-main: #F5EFE1;
+  --text-muted: #C4B7A0;
+  --text-subtle: #8F7E68;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(242, 196, 106, 0.08);
-  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(242, 196, 106, 0.12);
+  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(121, 13, 22, 0.1);
+  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(121, 13, 22, 0.15);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -56,48 +57,48 @@
   --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Mode (Vanilla Cream & Deep Espresso) */
+/* Light Mode (Linen Cream & Deep Burgundy) */
 [data-theme="light"],
 .light-theme {
-  --bg-primary: #FCF0DA;
-  --bg-secondary: #F3E4C8;
-  --bg-tertiary: #E8D5B3;
+  --bg-primary: #F5EFE1;
+  --bg-secondary: #ECE4D2;
+  --bg-tertiary: #E0D5C0;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #FAF4E8;
-  --bg-overlay: rgba(76, 69, 65, 0.45);
+  --bg-card-hover: #FAF6EE;
+  --bg-overlay: rgba(121, 13, 22, 0.45);
   --bg-input: #FFFFFF;
 
-  --border-subtle: #E2D1B3;
-  --border-strong: #C4B18F;
-  --border-focus: #4C4541;
-  --border-highlight: rgba(76, 69, 65, 0.25);
+  --border-subtle: #DED4BF;
+  --border-strong: #C8BBA0;
+  --border-focus: #790D16;
+  --border-highlight: rgba(121, 13, 22, 0.25);
 
-  --primary: #4C4541;
-  --primary-contrast: #FCF0DA;
-  --primary-hover: #36312E;
-  --primary-glow: rgba(76, 69, 65, 0.15);
+  --primary: #790D16;
+  --primary-contrast: #F5EFE1;
+  --primary-hover: #5F0910;
+  --primary-glow: rgba(121, 13, 22, 0.2);
 
-  --accent-indigo: #876523;
-  --accent-indigo-hover: #6D511B;
-  --accent-indigo-glow: rgba(135, 101, 35, 0.15);
-  --accent-cyan-bright: #686742;
+  --accent-indigo: #790D16;
+  --accent-indigo-hover: #5F0910;
+  --accent-indigo-glow: rgba(121, 13, 22, 0.15);
+  --accent-cyan-bright: #5A7E94;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
   --card-radius: 12px;
   --control-radius: 8px;
 
-  --accent-emerald: #686742;
-  --accent-amber: #C69533;
-  --accent-rose: #B84A4A;
-  --accent-cyan: #74734D;
+  --accent-emerald: #48775B;
+  --accent-amber: #9C6E2E;
+  --accent-rose: #8E1620;
+  --accent-cyan: #6B8B9E;
 
-  --text-main: #4C4541;
-  --text-muted: #6B625C;
-  --text-subtle: #8E847C;
+  --text-main: #26080B;
+  --text-muted: #685951;
+  --text-subtle: #8E7E74;
 
-  --shadow-sm: 0 1px 2px rgba(76, 69, 65, 0.05);
-  --shadow-md: 0 4px 12px rgba(76, 69, 65, 0.08);
-  --shadow-lg: 0 12px 24px rgba(76, 69, 65, 0.1);
+  --shadow-sm: 0 1px 2px rgba(121, 13, 22, 0.05);
+  --shadow-md: 0 4px 12px rgba(121, 13, 22, 0.08);
+  --shadow-lg: 0 12px 24px rgba(121, 13, 22, 0.1);
 }
 
 /* Reset & Global Elements */
@@ -123,8 +124,8 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-primary);
   background-image:
-    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(242, 196, 106, 0.12), transparent),
-    radial-gradient(circle 500px at 100% 15%, rgba(174, 172, 120, 0.08), transparent);
+    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(121, 13, 22, 0.2), transparent),
+    radial-gradient(circle 500px at 100% 15%, rgba(174, 196, 212, 0.08), transparent);
   background-attachment: fixed;
   color: var(--text-main);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -144,7 +145,8 @@ body {
 [data-theme="light"] body,
 .light-theme body {
   background-image:
-    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(242, 196, 106, 0.08), transparent);
+    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(121, 13, 22, 0.06), transparent),
+    radial-gradient(circle 500px at 100% 15%, rgba(174, 196, 212, 0.08), transparent);
 }
 
 h1, h2, h3, h4, h5, h6 {

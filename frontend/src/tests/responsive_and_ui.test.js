@@ -9,17 +9,17 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
 
   it('defines pure Light Mode variables without blue tints', () => {
     expect(indexCss).toContain('[data-theme="light"]');
-    expect(indexCss).toContain('--bg-primary: #FCF0DA');
-    expect(indexCss).toContain('--text-main: #4C4541');
-    expect(indexCss).toContain('--border-subtle: #E2D1B3');
+    expect(indexCss).toContain('--bg-primary: #F5EFE1');
+    expect(indexCss).toContain('--text-main: #26080B');
+    expect(indexCss).toContain('--border-subtle: #DED4BF');
   });
 
   it('defines Stitch AI premium Dark Mode tokens', () => {
     expect(indexCss).toContain(':root');
-    expect(indexCss).toContain('--bg-primary: #252220');
-    expect(indexCss).toContain('--bg-card: #322D2A');
-    expect(indexCss).toContain('--text-main: #FCF0DA');
-    expect(indexCss).toContain('--accent-indigo: #F2C46A');
+    expect(indexCss).toContain('--bg-primary: #1A0A0C');
+    expect(indexCss).toContain('--bg-card: #2A1115');
+    expect(indexCss).toContain('--text-main: #F5EFE1');
+    expect(indexCss).toContain('--accent-indigo: #E5D3AF');
   });
 
   it('implements responsive mobile header rules in App.css', () => {
