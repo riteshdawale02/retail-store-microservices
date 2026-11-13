@@ -31,7 +31,7 @@ export default function ProductCard({
 
   const handleDelete = async (e) => {
     e.stopPropagation();
-    if (!window.confirm(`Delete product "${product.name}" from MySQL database?`)) return;
+    if (!window.confirm(`Are you sure you want to remove "${product.name}" from the store catalog?`)) return;
 
     setIsDeleting(true);
     try {

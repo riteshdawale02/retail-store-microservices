@@ -233,7 +233,7 @@ export default function AddProductModal({
                   <span>Publishing...</span>
                 </>
               ) : (
-                <span>Publish to MySQL Catalog</span>
+                <span>Publish Product to Catalog</span>
               )}
             </button>
           </div>

@@ -71,7 +71,7 @@ export default function Navbar({
                 id="microservices-health-pill-btn"
                 className="nav-health-status-pill"
                 onClick={onOpenHealth}
-                title="Inspect AWS EKS Microservices Cluster Health"
+                title="View System Status"
               >
                 <span className={`beacon-indicator ${isDown ? 'down' : isDegraded ? 'degraded' : ''}`}>
                   <span className="beacon-ping"></span>

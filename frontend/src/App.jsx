@@ -215,7 +215,7 @@ export default function App() {
     try {
       await api.deleteProduct(productId, currentUser?.role || 'RETAILER');
       await loadProducts();
-      addToast('Product successfully deleted from MySQL database.', 'info', 'Product Removed');
+      addToast('Product successfully removed from catalog.', 'info', 'Product Removed');
     } catch (err) {
       addToast(err.message || 'Failed to delete product.', 'error', 'Error');
     }
@@ -289,7 +289,7 @@ export default function App() {
     await loadCart(activeUserId);
     await loadProducts();
 
-    addToast(`Order ${result.order?.orderNumber || 'placed'} confirmed! Stock locked in MySQL.`, 'success', 'Order Confirmed');
+    addToast(`Order ${result.order?.orderNumber || 'placed'} confirmed successfully!`, 'success', 'Order Confirmed');
     return result;
   };
 
