@@ -14,10 +14,10 @@ export default function CheckoutModal({
     customerEmail: currentUser?.email || '',
     shippingAddress: currentUser?.address || '',
     paymentMethod: 'COD', // Default to COD ('COD', 'CARD', 'UPI')
-    cardNumber: '4532 •••• •••• 8891',
-    cardExpiry: '12/28',
-    cardCvv: '889',
-    upiId: 'user@upi'
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
+    upiId: ''
   }));
   const [prevUser, setPrevUser] = useState(currentUser);
   if (currentUser !== prevUser) {
@@ -45,6 +45,20 @@ export default function CheckoutModal({
     if (!formData.customerName.trim() || !formData.customerEmail.trim() || !formData.shippingAddress.trim()) {
       setErrorMessage('Please fill in all required customer details.');
       return;
+    }
+
+    if (formData.paymentMethod === 'CARD') {
+      if (!formData.cardNumber.trim() || !formData.cardExpiry.trim() || !formData.cardCvv.trim()) {
+        setErrorMessage('Please enter all card payment details.');
+        return;
+      }
+    }
+
+    if (formData.paymentMethod === 'UPI') {
+      if (!formData.upiId.trim()) {
+        setErrorMessage('Please enter your UPI ID.');
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -197,7 +211,7 @@ export default function CheckoutModal({
                       <input
                         id="card-number-input"
                         type="text"
-                        placeholder="4532 •••• •••• 8891"
+                        placeholder="1234 5678 9012 3456"
                         value={formData.cardNumber}
                         onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
                         disabled={isSubmitting}
@@ -209,7 +223,7 @@ export default function CheckoutModal({
                         <input
                           id="card-expiry-input"
                           type="text"
-                          placeholder="12/28"
+                          placeholder="MM / YY"
                           value={formData.cardExpiry}
                           onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
                           disabled={isSubmitting}
@@ -220,7 +234,7 @@ export default function CheckoutModal({
                         <input
                           id="card-cvv-input"
                           type="password"
-                          placeholder="889"
+                          placeholder="123"
                           value={formData.cardCvv}
                           maxLength={4}
                           onChange={(e) => setFormData({ ...formData, cardCvv: e.target.value })}
@@ -238,7 +252,7 @@ export default function CheckoutModal({
                       <input
                         id="upi-id-input"
                         type="text"
-                        placeholder="e.g. user@okhdfcbank"
+                        placeholder="e.g. username@bank"
                         value={formData.upiId}
                         onChange={(e) => setFormData({ ...formData, upiId: e.target.value })}
                         disabled={isSubmitting}
