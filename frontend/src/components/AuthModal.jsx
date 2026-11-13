@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Lock, Mail, User, Shield, Store, ShoppingBag, ArrowRight, AlertCircle, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { X, Mail, Lock, User, Store, ShoppingBag, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { api } from '../services/api';
 
 export default function AuthModal({
@@ -92,36 +92,23 @@ export default function AuthModal({
         className="modal-box auth-modal-card animate-fade auth-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Ambient Top Glow from Stitch */}
-        <div className="auth-ambient-top-glow"></div>
-
         {/* Modal Header */}
         <div className="modal-header auth-modal-header">
-          <div className="modal-title-row">
-            <div className="auth-header-icon-box">
-              <Lock size={18} className="text-indigo" />
-            </div>
-            <div>
-              <div className="auth-title-cluster">
-                <h2 className="modal-title auth-title">
-                  {currentUser && !isSwitchingAccount
-                    ? 'User Profile'
-                    : mode === 'login'
-                    ? 'CloudRetail Identity'
-                    : 'Create Cloud Account'}
-                </h2>
-                <span className="auth-gateway-badge">
-                  <span className="beacon-indicator">
-                    <span className="beacon-ping"></span>
-                    <span className="beacon-core"></span>
-                  </span>
-                  GATEWAY v4.2
-                </span>
-              </div>
-              <p className="auth-subtitle">
-                Zero-trust federated developer &amp; retail authentication
-              </p>
-            </div>
+          <div>
+            <h2 className="modal-title auth-title">
+              {currentUser && !isSwitchingAccount
+                ? 'My Account'
+                : mode === 'login'
+                ? 'Sign In'
+                : 'Create Account'}
+            </h2>
+            <p className="auth-subtitle">
+              {currentUser && !isSwitchingAccount
+                ? 'Manage your active session and details'
+                : mode === 'login'
+                ? 'Welcome back. Enter your details to continue.'
+                : 'Join our store to track orders and checkout faster.'}
+            </p>
           </div>
           <button
             id="close-auth-modal"
@@ -144,13 +131,8 @@ export default function AuthModal({
                 <h3 className="auth-profile-name">{currentUser.name}</h3>
                 <p className="auth-profile-email">{currentUser.email}</p>
                 <div className="auth-profile-role-badge">
-                  {currentUser.role === 'RETAILER' ? '👑 Retailer Merchant' : '🛍️ Verified Customer'}
+                  {currentUser.role === 'RETAILER' ? 'Merchant / Seller' : 'Customer'}
                 </div>
-                {currentUser.userId && (
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginTop: '8px', fontFamily: 'var(--font-mono)' }}>
-                    User ID: {currentUser.userId}
-                  </p>
-                )}
               </div>
 
               <div className="auth-profile-actions">
@@ -171,13 +153,13 @@ export default function AuthModal({
                   style={{ width: '100%', justifyContent: 'center' }}
                   onClick={() => setIsSwitchingAccount(true)}
                 >
-                  Switch or Sign In to Another Account
+                  Switch Account
                 </button>
               </div>
             </div>
           ) : (
             <>
-              {/* Tab switchers */}
+              {/* Tab Switcher */}
               <div className="auth-tab-row">
                 <button
                   type="button"
@@ -203,37 +185,34 @@ export default function AuthModal({
                 </button>
               </div>
 
-              {/* Quick Demo Credentials */}
-              <div className="demo-accounts-card">
-                <div className="demo-header">
-                  <Shield size={14} className="text-cyan" />
-                  <span>1-CLICK SEEDED DEMO CREDENTIALS</span>
-                </div>
-                <div className="demo-buttons-grid">
+              {/* Minimal Demo Helper Bar */}
+              <div className="auth-demo-bar">
+                <span className="demo-bar-label">Quick Demo:</span>
+                <div className="demo-chips-group">
                   <button
                     type="button"
-                    className="btn-demo retailer"
-                    onClick={() => handleQuickDemoLogin('retailer@cloudretail.io', 'password123')}
-                    disabled={isSubmitting}
-                  >
-                    <Store size={15} />
-                    <span>Merchant Demo (Seller)</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-demo customer"
+                    className="demo-chip-btn"
                     onClick={() => handleQuickDemoLogin('user@cloudretail.io', 'password123')}
                     disabled={isSubmitting}
                   >
-                    <ShoppingBag size={15} />
-                    <span>Customer Demo (Shopper)</span>
+                    <ShoppingBag size={12} />
+                    <span>Customer</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="demo-chip-btn"
+                    onClick={() => handleQuickDemoLogin('retailer@cloudretail.io', 'password123')}
+                    disabled={isSubmitting}
+                  >
+                    <Store size={12} />
+                    <span>Merchant</span>
                   </button>
                 </div>
               </div>
 
               {errorMessage && (
                 <div className="alert-box alert-error">
-                  <AlertCircle size={18} />
+                  <AlertCircle size={16} />
                   <span>{errorMessage}</span>
                 </div>
               )}
@@ -242,14 +221,14 @@ export default function AuthModal({
               <form onSubmit={handleSubmit} className="auth-form">
                 {mode === 'signup' && (
                   <div className="form-group">
-                    <label htmlFor="auth-name">Full Name *</label>
+                    <label htmlFor="auth-name">Full Name</label>
                     <div className="input-with-icon auth-input-wrapper">
                       <User size={16} className="input-icon" />
                       <input
                         id="auth-name"
                         type="text"
                         required
-                        placeholder="Enter your full name"
+                        placeholder="John Doe"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         disabled={isSubmitting}
@@ -259,14 +238,14 @@ export default function AuthModal({
                 )}
 
                 <div className="form-group">
-                  <label htmlFor="auth-email">Developer / Work Email *</label>
+                  <label htmlFor="auth-email">Email Address</label>
                   <div className="input-with-icon auth-input-wrapper">
                     <Mail size={16} className="input-icon" />
                     <input
                       id="auth-email"
                       type="email"
                       required
-                      placeholder="dev@company.com"
+                      placeholder="you@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       disabled={isSubmitting}
@@ -276,9 +255,16 @@ export default function AuthModal({
 
                 <div className="form-group">
                   <div className="auth-label-row">
-                    <label htmlFor="auth-password">Password *</label>
+                    <label htmlFor="auth-password">Password</label>
                     {mode === 'login' && (
-                      <a href="#forgot" className="auth-forgot-link" onClick={(e) => { e.preventDefault(); alert('Demo password is: password123'); }}>
+                      <a
+                        href="#forgot"
+                        className="auth-forgot-link"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          alert('Demo password is: password123');
+                        }}
+                      >
                         Forgot password?
                       </a>
                     )}
@@ -310,67 +296,37 @@ export default function AuthModal({
                 {/* Sign Up Mode Extras: Role Selection */}
                 {mode === 'signup' && (
                   <>
-                    {/* Role selector */}
                     <div className="form-group">
-                      <label>Select Your Account Type *</label>
-                      <div className="role-selector-grid">
-                        <div
-                          className={`role-option-card ${formData.role === 'USER' ? 'selected' : ''}`}
+                      <label>Account Type</label>
+                      <div className="role-segmented-control">
+                        <button
+                          type="button"
+                          className={`role-segment-btn ${formData.role === 'USER' ? 'active' : ''}`}
                           onClick={() => setFormData({ ...formData, role: 'USER' })}
-                          role="button"
-                          tabIndex={0}
                         >
-                          <div className="role-card-top">
-                            <div className="role-badge-icon customer-icon">
-                              <ShoppingBag size={18} />
-                            </div>
-                            <div className="role-title-box">
-                              <strong>Customer</strong>
-                              <span className="role-sublabel">Shopper</span>
-                            </div>
-                            <div className="role-radio-circle">
-                              {formData.role === 'USER' && <div className="role-radio-dot" />}
-                            </div>
-                          </div>
-                          <p className="role-desc">
-                            Browse catalog, manage shopping cart, checkout &amp; track orders.
-                          </p>
-                        </div>
-
-                        <div
-                          className={`role-option-card ${formData.role === 'RETAILER' ? 'selected' : ''}`}
+                          <ShoppingBag size={14} />
+                          <span>Customer (Shopper)</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`role-segment-btn ${formData.role === 'RETAILER' ? 'active' : ''}`}
                           onClick={() => setFormData({ ...formData, role: 'RETAILER' })}
-                          role="button"
-                          tabIndex={0}
                         >
-                          <div className="role-card-top">
-                            <div className="role-badge-icon retailer-icon">
-                              <Store size={18} />
-                            </div>
-                            <div className="role-title-box">
-                              <strong>Retailer</strong>
-                              <span className="role-sublabel">Merchant</span>
-                            </div>
-                            <div className="role-radio-circle">
-                              {formData.role === 'RETAILER' && <div className="role-radio-dot" />}
-                            </div>
-                          </div>
-                          <p className="role-desc">
-                            Publish products, manage stock quantities, and remove listings.
-                          </p>
-                        </div>
+                          <Store size={14} />
+                          <span>Merchant (Seller)</span>
+                        </button>
                       </div>
                     </div>
 
                     <div className="form-group">
                       <label htmlFor="auth-address">
-                        {formData.role === 'RETAILER' ? 'Store / Business Location' : 'Delivery / Shipping Address'}
+                        {formData.role === 'RETAILER' ? 'Store Location' : 'Shipping Address'}
                       </label>
                       <div className="auth-input-wrapper">
                         <input
                           id="auth-address"
                           type="text"
-                          placeholder={formData.role === 'RETAILER' ? 'Shop Name, Commercial Street, City' : 'Street Address, City, Postal Code'}
+                          placeholder={formData.role === 'RETAILER' ? 'City, State' : 'Street address, City, ZIP'}
                           value={formData.address}
                           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                           disabled={isSubmitting}
@@ -380,7 +336,7 @@ export default function AuthModal({
                   </>
                 )}
 
-                {/* Remember me row for login */}
+                {/* Remember Me Checkbox */}
                 {mode === 'login' && (
                   <div className="auth-remember-row">
                     <label className="auth-remember-label">
@@ -392,17 +348,13 @@ export default function AuthModal({
                       />
                       <span>Remember this session</span>
                     </label>
-                    <span className="auth-tls-badge">
-                      <CheckCircle2 size={13} className="text-emerald" />
-                      TLS 1.3 Strict
-                    </span>
                   </div>
                 )}
 
-                <div className="modal-footer" style={{ marginTop: '16px' }}>
+                <div className="modal-footer auth-footer-actions">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-secondary auth-cancel-btn"
                     onClick={onClose}
                     disabled={isSubmitting}
                   >
@@ -411,19 +363,18 @@ export default function AuthModal({
                   <button
                     id="auth-submit-btn"
                     type="submit"
-                    className="btn btn-primary"
+                    className="btn btn-primary auth-submit-btn"
                     disabled={isSubmitting}
-                    style={{ flex: 1 }}
                   >
                     {isSubmitting ? (
                       <>
                         <span className="spinner-small"></span>
-                        <span>{mode === 'login' ? 'Authenticating...' : 'Registering...'}</span>
+                        <span>{mode === 'login' ? 'Signing In...' : 'Creating Account...'}</span>
                       </>
                     ) : (
                       <>
-                        <span>{mode === 'login' ? 'Sign In to CloudRetail' : 'Create Cloud Account'}</span>
-                        <ArrowRight size={16} />
+                        <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                        <ArrowRight size={15} />
                       </>
                     )}
                   </button>
@@ -431,19 +382,6 @@ export default function AuthModal({
               </form>
             </>
           )}
-        </div>
-
-        {/* Modal Status Footer Bar from Stitch */}
-        <div className="auth-status-footer-bar">
-          <div className="auth-footer-status-item">
-            <span className="beacon-indicator">
-              <span className="beacon-core"></span>
-            </span>
-            <span>Zero-Trust Auth Tokenizer active</span>
-          </div>
-          <div className="auth-footer-status-item">
-            <span>FIDO2 / WebAuthn ready</span>
-          </div>
         </div>
       </div>
     </div>
