@@ -13,7 +13,7 @@ export default function CheckoutModal({
     customerName: currentUser?.name || '',
     customerEmail: currentUser?.email || '',
     shippingAddress: currentUser?.address || '',
-    paymentMethod: 'CARD', // 'CARD', 'UPI', 'COD'
+    paymentMethod: 'COD', // Default to COD ('COD', 'CARD', 'UPI')
     cardNumber: '4532 •••• •••• 8891',
     cardExpiry: '12/28',
     cardCvv: '889',
@@ -48,10 +48,10 @@ export default function CheckoutModal({
     }
 
     setIsSubmitting(true);
-    setProcessingStep('Authorizing payment...');
+    setProcessingStep(formData.paymentMethod === 'COD' ? 'Confirming order...' : 'Authorizing payment...');
 
     try {
-      setProcessingStep('Authorizing payment & confirming order...');
+      setProcessingStep(formData.paymentMethod === 'COD' ? 'Confirming order...' : 'Authorizing payment & confirming order...');
 
       const payload = {
         userId,
@@ -88,7 +88,7 @@ export default function CheckoutModal({
         <div className="modal-header">
           <div className="modal-title-row">
             <Lock size={20} className="text-primary" />
-            <h2 className="modal-title">Secure Checkout</h2>
+            <h2 className="modal-title">Checkout</h2>
           </div>
           <button
             id="close-checkout-modal"
@@ -328,7 +328,7 @@ export default function CheckoutModal({
                     ) : (
                       <>
                         <CheckCircle2 size={18} />
-                        <span>Pay & Place Order (${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)})</span>
+                        <span>{formData.paymentMethod === 'COD' ? 'Place Order' : 'Pay & Place Order'} (${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)})</span>
                       </>
                     )}
                   </button>
@@ -341,11 +341,6 @@ export default function CheckoutModal({
                   >
                     Cancel and return to store
                   </button>
-                </div>
-
-                <div className="checkout-telemetry-note">
-                  <ShieldCheck size={14} className="text-emerald" />
-                  <span>Secure 256-Bit Encrypted Checkout</span>
                 </div>
               </div>
             </div>

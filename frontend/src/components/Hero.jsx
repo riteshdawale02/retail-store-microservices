@@ -154,7 +154,7 @@ export default function Hero({
             </div>
             <div className="trust-text-stack">
               <strong className="trust-heading">Secure Transactions</strong>
-              <span className="trust-caption">256-Bit end-to-end encrypted microservice checkout</span>
+              <span className="trust-caption">Buyer protection guarantee on every order</span>
             </div>
           </div>
         </div>

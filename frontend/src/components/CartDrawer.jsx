@@ -183,7 +183,7 @@ export default function CartDrawer({
 
             <div className="checkout-trust-badge">
               <ShieldCheck size={14} className="text-emerald" />
-              <span>256-Bit Encrypted Secure Checkout</span>
+              <span>Secure Checkout & Buyer Protection</span>
             </div>
           </div>
         )}

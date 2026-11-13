@@ -509,7 +509,7 @@ export default function App() {
             <span>•</span>
             <span>30-Day Hassle-Free Returns</span>
             <span>•</span>
-            <span>256-Bit Encrypted Checkout</span>
+            <span>Secure Buyer Protection</span>
           </div>
         </div>
       </footer>
