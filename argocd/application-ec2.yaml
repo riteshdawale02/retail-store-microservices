@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloud-retail-platform
+  name: retail-platform
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -12,6 +12,7 @@ spec:
     targetRevision: kubernetes-testing
     path: helm/retail-platform
     helm:
+      releaseName: retail-platform
       valueFiles:
         - values-local.yaml
   destination:
@@ -23,4 +24,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-

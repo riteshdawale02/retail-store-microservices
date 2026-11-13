@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloud-retail-platform
+  name: retail-platform
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,9 +9,10 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/riteshdawale02/retail-store-microservices.git'
-    targetRevision: HEAD
+    targetRevision: kubernetes-testing
     path: helm/retail-platform
     helm:
+      releaseName: retail-platform
       valueFiles:
         - values.yaml
   destination:

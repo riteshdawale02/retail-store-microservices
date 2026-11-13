@@ -220,6 +220,9 @@ for i in {1..30}; do
   sleep 2
 done
 
+# Remove duplicate legacy app if present
+kubectl delete application cloud-retail-platform -n argocd 2>/dev/null || true
+
 # Apply ArgoCD Application
 if [ -f "argocd/application-ec2.yaml" ]; then
   kubectl apply -f argocd/application-ec2.yaml
