@@ -157,69 +157,72 @@ export default function CheckoutModal({
               </div>
 
               {/* Payment Gateway Method Selection */}
-              <div style={{ marginTop: '1rem' }}>
+              <div className="checkout-payment-section">
                 <h3 className="section-subtitle">
-                  <ShieldCheck size={16} /> Payment Method (Sandbox)
+                  <ShieldCheck size={16} /> Payment Method
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <div className="checkout-payment-selector">
                   <button
                     type="button"
-                    className={`btn ${formData.paymentMethod === 'CARD' ? 'btn-primary' : 'btn-secondary'}`}
-                    style={{ padding: '0.5rem 0.25rem', fontSize: '0.8rem', justifyContent: 'center' }}
+                    className={`checkout-payment-tab ${formData.paymentMethod === 'CARD' ? 'active' : ''}`}
                     onClick={() => setFormData({ ...formData, paymentMethod: 'CARD' })}
                   >
-                    <CreditCard size={14} /> Card
+                    <CreditCard size={15} />
+                    <span>Card</span>
                   </button>
                   <button
                     type="button"
-                    className={`btn ${formData.paymentMethod === 'UPI' ? 'btn-primary' : 'btn-secondary'}`}
-                    style={{ padding: '0.5rem 0.25rem', fontSize: '0.8rem', justifyContent: 'center' }}
+                    className={`checkout-payment-tab ${formData.paymentMethod === 'UPI' ? 'active' : ''}`}
                     onClick={() => setFormData({ ...formData, paymentMethod: 'UPI' })}
                   >
-                    <Smartphone size={14} /> UPI / QR
+                    <Smartphone size={15} />
+                    <span>UPI / QR</span>
                   </button>
                   <button
                     type="button"
-                    className={`btn ${formData.paymentMethod === 'COD' ? 'btn-primary' : 'btn-secondary'}`}
-                    style={{ padding: '0.5rem 0.25rem', fontSize: '0.8rem', justifyContent: 'center' }}
+                    className={`checkout-payment-tab ${formData.paymentMethod === 'COD' ? 'active' : ''}`}
                     onClick={() => setFormData({ ...formData, paymentMethod: 'COD' })}
                   >
-                    <Banknote size={14} /> COD
+                    <Banknote size={15} />
+                    <span>COD</span>
                   </button>
                 </div>
 
                 {formData.paymentMethod === 'CARD' && (
-                  <div style={{ background: 'var(--bg-glass)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                    <div className="form-group" style={{ marginBottom: '0.5rem' }}>
-                      <label style={{ fontSize: '0.75rem' }}>Card Number</label>
+                  <div className="checkout-payment-box">
+                    <div className="form-group">
+                      <label htmlFor="card-number-input">Card Number</label>
                       <input
+                        id="card-number-input"
                         type="text"
+                        placeholder="4532 •••• •••• 8891"
                         value={formData.cardNumber}
                         onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
                         disabled={isSubmitting}
-                        style={{ fontSize: '0.85rem' }}
                       />
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label style={{ fontSize: '0.75rem' }}>Expiry (MM/YY)</label>
+                    <div className="checkout-card-row">
+                      <div className="form-group">
+                        <label htmlFor="card-expiry-input">Expiry (MM/YY)</label>
                         <input
+                          id="card-expiry-input"
                           type="text"
+                          placeholder="12/28"
                           value={formData.cardExpiry}
                           onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
                           disabled={isSubmitting}
-                          style={{ fontSize: '0.85rem' }}
                         />
                       </div>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label style={{ fontSize: '0.75rem' }}>CVV</label>
+                      <div className="form-group">
+                        <label htmlFor="card-cvv-input">CVV</label>
                         <input
+                          id="card-cvv-input"
                           type="password"
+                          placeholder="•••"
                           value={formData.cardCvv}
                           maxLength={4}
                           onChange={(e) => setFormData({ ...formData, cardCvv: e.target.value })}
                           disabled={isSubmitting}
-                          style={{ fontSize: '0.85rem' }}
                         />
                       </div>
                     </div>
@@ -227,24 +230,24 @@ export default function CheckoutModal({
                 )}
 
                 {formData.paymentMethod === 'UPI' && (
-                  <div style={{ background: 'var(--bg-glass)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label style={{ fontSize: '0.75rem' }}>Virtual Payment Address (VPA)</label>
+                  <div className="checkout-payment-box">
+                    <div className="form-group">
+                      <label htmlFor="upi-id-input">Virtual Payment Address (VPA)</label>
                       <input
+                        id="upi-id-input"
                         type="text"
                         placeholder="e.g. user@okhdfcbank"
                         value={formData.upiId}
                         onChange={(e) => setFormData({ ...formData, upiId: e.target.value })}
                         disabled={isSubmitting}
-                        style={{ fontSize: '0.85rem' }}
                       />
                     </div>
                   </div>
                 )}
 
                 {formData.paymentMethod === 'COD' && (
-                  <div style={{ background: 'var(--bg-glass)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    💵 Cash will be collected by courier upon doorstep delivery.
+                  <div className="checkout-payment-box checkout-cod-note">
+                    <span>Cash or UPI payment will be collected by courier upon doorstep delivery.</span>
                   </div>
                 )}
               </div>
@@ -253,7 +256,7 @@ export default function CheckoutModal({
             {/* Order Review */}
             <div className="form-section order-review-box glass-card">
               <h3 className="section-subtitle">
-                <PackageCheck size={16} /> Order Summary ({items.length} items)
+                <PackageCheck size={16} /> Order Summary ({items.length} {items.length === 1 ? 'item' : 'items'})
               </h3>
 
               <div className="checkout-items-preview">
@@ -291,7 +294,7 @@ export default function CheckoutModal({
 
               <div className="checkout-telemetry-note">
                 <ShieldCheck size={14} className="text-emerald" />
-                <span>Secure 256-Bit Encrypted Transaction</span>
+                <span>Secure 256-Bit Encrypted Checkout</span>
               </div>
             </div>
           </div>

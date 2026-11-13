@@ -33,20 +33,20 @@ export default function Hero({
         <div className="hero-main-grid">
           <div className="hero-copy">
             <div className="hero-badge-row">
-              <span className="hero-tag">DISTRIBUTED CLOUD COMMERCE</span>
+              <span className="hero-tag">PREMIUM HARDWARE & ESSENTIALS</span>
               {totalProducts > 0 && (
                 <span className="hero-count-chip">
                   <Layers size={13} />
-                  <span>{totalProducts} Catalog Items</span>
+                  <span>{totalProducts} Curated Products</span>
                 </span>
               )}
             </div>
 
             <h1 className="hero-title">
-              Engineered for Scale.<br />Curated for Performance.
+              Crafted for Precision.<br />Curated for Performance.
             </h1>
             <p className="hero-subtitle">
-              Curated developer hardware, studio acoustics, and everyday technical essentials designed for modern engineering teams.
+              Curated hardware, studio acoustics, and everyday essentials designed for modern professionals.
             </p>
 
             <div className="hero-actions">
@@ -78,7 +78,7 @@ export default function Hero({
               title={`Inspect ${featuredItem.name}`}
             >
               <div className="spotlight-header">
-                <span className="spotlight-kicker">FEATURED ARCHITECTURE</span>
+                <span className="spotlight-kicker">FEATURED PRODUCT</span>
                 <span className="spotlight-stock-pill">
                   <span className="status-dot dot-online"></span> In Stock
                 </span>

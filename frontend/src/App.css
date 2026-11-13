@@ -1408,165 +1408,474 @@
   transition: all var(--transition-fast);
 }
 
-.payment-card-option.active {
-  border-color: var(--primary);
-  color: var(--text-main);
+/* Checkout Modal & Payment Controls */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkout-form .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.checkout-payment-section {
+  margin-top: 16px;
+}
+
+.checkout-payment-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.checkout-payment-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 12px;
   background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.checkout-payment-tab:hover {
+  border-color: var(--border-hover);
+  color: var(--text-main);
+}
+
+.checkout-payment-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(217, 149, 53, 0.25);
+}
+
+.checkout-payment-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.checkout-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkout-cod-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding: 12px 14px;
+}
+
+.order-review-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 16px;
 }
 
 .checkout-items-preview {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin: 12px 0;
-  max-height: 140px;
+  max-height: 160px;
   overflow-y: auto;
 }
 
 .checkout-item-preview-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.82rem;
+  align-items: center;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
-.preview-qty {
-  font-size: 0.75rem;
-  opacity: 0.7;
+
+.checkout-item-preview-row .preview-name {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.checkout-item-preview-row .preview-qty {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.checkout-item-preview-row .preview-price {
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .checkout-price-divider {
   height: 1px;
   background: var(--border-subtle);
-  margin: 10px 0;
+  margin: 12px 0;
+}
+
+.checkout-subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 .checkout-total-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--text-main);
+  margin-top: 4px;
 }
 
-/* Order Success Modal */
+.checkout-telemetry-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+/* Order Success Receipt Modal */
+.receipt-modal {
+  max-width: 540px;
+}
+
 .success-icon-banner {
   text-align: center;
-  padding: 16px 0 20px;
+  padding: 8px 0 16px;
 }
+
 .success-pulse-circle {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: rgba(16, 185, 129, 0.12);
-  color: var(--accent-emerald);
+  color: #10B981;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 12px;
 }
+
 .success-title {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
   margin-bottom: 6px;
 }
+
 .success-subtitle {
   font-size: 0.88rem;
   color: var(--text-muted);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.45;
 }
 
 .receipt-meta-box {
-  background: var(--bg-card);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px 16px;
   margin: 16px 0;
 }
 
 .meta-item {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
+
 .meta-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
+
 .meta-value {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-main);
+  word-break: break-all;
 }
+
 .meta-value-copy {
   display: flex;
   align-items: center;
   gap: 6px;
 }
+
+.meta-value-copy code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
 .copy-btn {
-  padding: 2px 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
   color: var(--text-muted);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  color: var(--text-main);
+  background: var(--border-subtle);
+}
+
+.receipt-meta-box .badge {
+  align-self: flex-start;
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.receipt-items-container {
+  margin: 16px 0;
+}
+
+.receipt-items-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.receipt-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.receipt-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.receipt-item-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.receipt-item-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.receipt-item-qty-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--border-subtle);
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.receipt-item-price {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  margin-left: 12px;
 }
 
 .receipt-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 12px;
+  margin-top: 20px;
 }
+
 .receipt-actions .btn {
   flex: 1;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 /* Orders History Modal */
-.orders-list-body {
-  padding: 8px 0;
+.orders-modal {
+  max-width: 600px;
 }
+
+.orders-list-body {
+  padding: 6px 0 12px;
+}
+
 .orders-empty-state {
   text-align: center;
-  padding: 40px 16px;
+  padding: 48px 16px;
   color: var(--text-muted);
 }
 
 .orders-cards-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .order-history-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 14px;
+  padding: 16px;
+  transition: border-color 0.18s ease;
+}
+
+.order-history-card:hover {
+  border-color: var(--border-hover);
 }
 
 .order-card-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border-subtle);
 }
-.order-num-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  display: block;
+
+.order-card-id-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.order-num-value {
-  font-size: 0.95rem;
+
+.order-card-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+
+.order-card-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.order-card-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.order-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  padding: 4px 0;
+  color: var(--text-main);
+}
+
+.order-item-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+
+.order-item-qty {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .order-card-footer {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-top: 8px;
-  padding-top: 8px;
+  align-items: center;
+  padding-top: 10px;
   border-top: 1px solid var(--border-subtle);
   font-size: 0.85rem;
+}
+
+.order-card-summary-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.order-card-total-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.order-total-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.order-total-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
 /* Product Detail Modal */

@@ -39,46 +39,56 @@ export default function OrdersModal({ isOpen, onClose, orders, isLoading }) {
             </div>
           ) : (
             <div className="orders-cards-list">
-              {orders.map((ord) => (
-                <div key={ord.id} className="order-history-card glass-card">
-                  <div className="order-card-header">
-                    <div>
-                      <span className="order-num-label">Order</span>
-                      <h4 className="order-num-value">{ord.orderNumber || `ORD-${ord.id}`}</h4>
-                    </div>
-                    <span className="badge badge-success">
-                      <CheckCircle2 size={13} />
-                      {ord.status || 'CONFIRMED'}
-                    </span>
-                  </div>
+              {orders.map((ord) => {
+                const formattedDate = ord.createdAt
+                  ? new Date(ord.createdAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })
+                  : 'Today';
+                const totalItemCount = ord.items?.reduce((sum, it) => sum + (it.quantity || 1), 0) || 1;
 
-                  <div className="order-card-details">
-                    <div className="order-card-info-item">
-                      <Calendar size={14} className="text-muted" />
-                      <span>{ord.createdAt ? new Date(ord.createdAt).toLocaleDateString() : 'Today'}</span>
-                    </div>
-                    <div className="order-card-info-item">
-                      <Clock size={14} className="text-muted" />
-                      <span>{ord.items?.length || 1} item(s)</span>
-                    </div>
-                  </div>
-
-                  {ord.items && ord.items.length > 0 && (
-                    <div className="order-card-items-preview">
-                      {ord.items.map((it, idx) => (
-                        <span key={idx} className="order-item-chip">
-                          {it.productName} ({it.quantity})
+                return (
+                  <div key={ord.id} className="order-history-card glass-card">
+                    <div className="order-card-header">
+                      <div className="order-card-id-group">
+                        <span className="order-card-code">{ord.orderNumber || `ORD-${ord.id}`}</span>
+                        <span className="order-card-date-badge">
+                          <Calendar size={13} />
+                          <span>{formattedDate}</span>
                         </span>
-                      ))}
+                      </div>
+                      <span className="badge badge-success">
+                        <CheckCircle2 size={13} />
+                        <span>{ord.status || 'CONFIRMED'}</span>
+                      </span>
                     </div>
-                  )}
 
-                  <div className="order-card-footer">
-                    <span className="order-total-label">Total Amount:</span>
-                    <span className="order-total-value">${Number(ord.totalAmount).toFixed(2)}</span>
+                    {ord.items && ord.items.length > 0 && (
+                      <div className="order-card-items-list">
+                        {ord.items.map((it, idx) => (
+                          <div key={idx} className="order-item-row">
+                            <span className="order-item-name">{it.productName}</span>
+                            <span className="order-item-qty">Qty: {it.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="order-card-footer">
+                      <span className="order-card-summary-count">
+                        <Clock size={13} />
+                        <span>{totalItemCount} {totalItemCount === 1 ? 'item' : 'items'}</span>
+                      </span>
+                      <div className="order-card-total-group">
+                        <span className="order-total-label">Total</span>
+                        <span className="order-total-value">${Number(ord.totalAmount).toFixed(2)}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

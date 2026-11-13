@@ -68,6 +68,16 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
     expect(appCss).toContain('.toast-container');
     expect(appCss).toContain('.toast-pill');
   });
+
+  it('implements streamlined checkout and receipt modal styling', () => {
+    expect(appCss).toContain('.checkout-payment-selector');
+    expect(appCss).toContain('.checkout-payment-tab');
+    expect(appCss).toContain('.receipt-items-container');
+    expect(appCss).toContain('.receipt-item-row');
+    expect(appCss).toContain('.receipt-item-qty-badge');
+    expect(appCss).toContain('.order-history-card');
+    expect(appCss).toContain('.order-card-code');
+  });
 });
 
 describe('Component Module Integrity', () => {
@@ -78,6 +88,21 @@ describe('Component Module Integrity', () => {
 
   it('exports AuthModal component', async () => {
     const mod = await import('../components/AuthModal.jsx');
+    expect(mod.default).toBeDefined();
+  });
+
+  it('exports CheckoutModal component', async () => {
+    const mod = await import('../components/CheckoutModal.jsx');
+    expect(mod.default).toBeDefined();
+  });
+
+  it('exports OrdersModal component', async () => {
+    const mod = await import('../components/OrdersModal.jsx');
+    expect(mod.default).toBeDefined();
+  });
+
+  it('exports OrderSuccessModal component', async () => {
+    const mod = await import('../components/OrderSuccessModal.jsx');
     expect(mod.default).toBeDefined();
   });
 

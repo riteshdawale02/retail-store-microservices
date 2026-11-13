@@ -68,14 +68,13 @@ export default function OrderSuccessModal({ orderData, onClose, onOpenOrders }) 
         {/* Items List */}
         {order.items && order.items.length > 0 && (
           <div className="receipt-items-container">
-            <h4 className="receipt-items-title">Purchased Items:</h4>
+            <h4 className="receipt-items-title">Purchased Items</h4>
             <div className="receipt-items-list">
               {order.items.map((it, idx) => (
                 <div key={idx} className="receipt-item-row">
-                  <div className="receipt-item-left">
-                    <span className="receipt-item-bullet">•</span>
+                  <div className="receipt-item-info">
                     <span className="receipt-item-name">{it.productName}</span>
-                    <span className="receipt-item-qty">× {it.quantity}</span>
+                    <span className="receipt-item-qty-badge">Qty: {it.quantity}</span>
                   </div>
                   <span className="receipt-item-price">
                     ${Number(it.subtotal || it.unitPrice * it.quantity).toFixed(2)}
