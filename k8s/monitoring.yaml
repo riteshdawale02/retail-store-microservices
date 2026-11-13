@@ -91,6 +91,20 @@ spec:
               value: "admin"
           ports:
             - containerPort: 3000
+          volumeMounts:
+            - name: grafana-datasources-vol
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboards-vol
+              mountPath: /etc/grafana/provisioning/dashboards
+      volumes:
+        - name: grafana-datasources-vol
+          configMap:
+            name: grafana-datasources
+            optional: true
+        - name: grafana-dashboards-vol
+          configMap:
+            name: grafana-dashboards
+            optional: true
 ---
 apiVersion: v1
 kind: Service
