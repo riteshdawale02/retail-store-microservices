@@ -92,7 +92,6 @@ export default function App() {
   };
 
   const loadProducts = async () => {
-    setIsLoadingProducts(true);
     try {
       const data = await api.getProducts();
       setProducts(data);
@@ -124,12 +123,31 @@ export default function App() {
 
   // Initial Data Fetching
   useEffect(() => {
-    loadProducts();
-    loadCart(activeUserId);
-    loadHealth();
+    let ignore = false;
+    async function initData() {
+      try {
+        const [prods, cartData, health] = await Promise.allSettled([
+          api.getProducts(),
+          api.getCart(activeUserId),
+          api.getSystemHealth()
+        ]);
+        if (!ignore) {
+          if (prods.status === 'fulfilled') setProducts(prods.value);
+          if (cartData.status === 'fulfilled') setCart(cartData.value);
+          if (health.status === 'fulfilled') setHealthData(health.value);
+          setIsLoadingProducts(false);
+        }
+      } catch (err) {
+        console.error('Initial fetch failed:', err);
+      }
+    }
 
+    initData();
     const healthInterval = setInterval(loadHealth, 30000);
-    return () => clearInterval(healthInterval);
+    return () => {
+      ignore = true;
+      clearInterval(healthInterval);
+    };
   }, [activeUserId]);
 
   const refreshHealthManual = async () => {

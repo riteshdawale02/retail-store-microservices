@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, Lock, CheckCircle2, AlertCircle, PackageCheck, Truck, CreditCard, Smartphone, Banknote, ShieldCheck } from 'lucide-react';
 
 export default function CheckoutModal({
@@ -9,7 +9,7 @@ export default function CheckoutModal({
   currentUser = null,
   onOrderSuccess
 }) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(() => ({
     customerName: currentUser?.name || '',
     customerEmail: currentUser?.email || '',
     shippingAddress: currentUser?.address || '',
@@ -18,22 +18,20 @@ export default function CheckoutModal({
     cardExpiry: '12/28',
     cardCvv: '889',
     upiId: 'user@upi'
-  });
+  }));
+  const [prevUser, setPrevUser] = useState(currentUser);
+  if (currentUser !== prevUser) {
+    setPrevUser(currentUser);
+    setFormData((prev) => ({
+      ...prev,
+      customerName: currentUser?.name || '',
+      customerEmail: currentUser?.email || '',
+      shippingAddress: currentUser?.address || ''
+    }));
+  }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processingStep, setProcessingStep] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  // Sync form with logged-in user details whenever modal opens or user changes
-  useEffect(() => {
-    if (isOpen) {
-      setFormData((prev) => ({
-        ...prev,
-        customerName: currentUser?.name || prev.customerName || '',
-        customerEmail: currentUser?.email || prev.customerEmail || '',
-        shippingAddress: currentUser?.address || prev.shippingAddress || ''
-      }));
-    }
-  }, [isOpen, currentUser]);
 
   if (!isOpen) return null;
 
