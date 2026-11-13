@@ -272,7 +272,7 @@ export default function CheckoutModal({
                 <span>${totalAmount.toFixed(2)}</span>
               </div>
               <div className="checkout-subtotal-row">
-                <span>Edge Freight</span>
+                <span>Shipping</span>
                 <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
                   {totalAmount >= 50 ? 'FREE' : '$4.99'}
                 </span>
@@ -290,10 +290,8 @@ export default function CheckoutModal({
               </div>
 
               <div className="checkout-telemetry-note">
-                <span className="beacon-indicator">
-                  <span className="beacon-core"></span>
-                </span>
-                <span>Order Microservice • Sub-15ms Instant Dispatch</span>
+                <ShieldCheck size={14} className="text-emerald" />
+                <span>Secure 256-Bit Encrypted Transaction</span>
               </div>
             </div>
           </div>

@@ -144,7 +144,7 @@ export default function CartDrawer({
                 <span>${totalAmount.toFixed(2)}</span>
               </div>
               <div className="summary-row">
-                <span>Global Edge Freight</span>
+                <span>Shipping</span>
                 <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
                   {totalAmount >= 50 ? 'FREE' : '$4.99'}
                 </span>
@@ -183,7 +183,7 @@ export default function CartDrawer({
 
             <div className="checkout-trust-badge">
               <ShieldCheck size={14} className="text-emerald" />
-              <span>256-Bit TLS Encrypted • Sub-15ms Edge Checkout</span>
+              <span>256-Bit Encrypted Secure Checkout</span>
             </div>
           </div>
         )}
