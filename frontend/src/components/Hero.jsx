@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, RotateCcw, ShieldCheck, ArrowRight, Layers, Cpu } from 'lucide-react';
+import { Truck, RotateCcw, ShieldCheck, ArrowRight, Layers } from 'lucide-react';
 
 export default function Hero({ onExploreClick, totalProducts = 0 }) {
   return (
@@ -14,17 +14,13 @@ export default function Hero({ onExploreClick, totalProducts = 0 }) {
                 <span>{totalProducts} Catalog Items</span>
               </span>
             )}
-            <span className="hero-engine-chip hide-on-mobile">
-              <Cpu size={13} />
-              <span>Edge Storefront v4.2</span>
-            </span>
           </div>
 
           <h1 className="hero-title">
             Engineered for Scale. Curated for Performance.
           </h1>
           <p className="hero-subtitle">
-            Curated developer hardware, audio, and everyday tech essentials powered by an isolated Spring Boot &amp; Redis microservices architecture.
+            Curated developer hardware, audio, and everyday tech essentials for modern creators and engineering teams.
           </p>
 
           <div className="hero-actions">
@@ -43,24 +39,6 @@ export default function Hero({ onExploreClick, totalProducts = 0 }) {
             >
               <span>Explore Deals</span>
             </button>
-          </div>
-
-          {/* Telemetry Metrics from Stitch Design System */}
-          <div className="hero-metrics-grid">
-            <div className="metric-chip">
-              <span className="metric-val text-emerald">99.99%</span>
-              <span className="metric-label">Edge Availability</span>
-            </div>
-            <div className="metric-divider"></div>
-            <div className="metric-chip">
-              <span className="metric-val text-cyan">Sub-15ms</span>
-              <span className="metric-label">Checkout Dispatch</span>
-            </div>
-            <div className="metric-divider"></div>
-            <div className="metric-chip">
-              <span className="metric-val text-indigo">Instant API</span>
-              <span className="metric-label">Webhook Provision</span>
-            </div>
           </div>
         </div>
 

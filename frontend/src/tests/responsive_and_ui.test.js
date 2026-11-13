@@ -9,17 +9,17 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
 
   it('defines pure Light Mode variables without blue tints', () => {
     expect(indexCss).toContain('[data-theme="light"]');
-    expect(indexCss).toContain('--bg-primary: #ffffff');
-    expect(indexCss).toContain('--text-main: #111827');
-    expect(indexCss).toContain('--border-subtle: #e5e7eb');
+    expect(indexCss).toContain('--bg-primary: #F5F0E6');
+    expect(indexCss).toContain('--text-main: #1F3A2F');
+    expect(indexCss).toContain('--border-subtle: #DCD4C4');
   });
 
   it('defines Stitch AI premium Dark Mode tokens', () => {
     expect(indexCss).toContain(':root');
-    expect(indexCss).toContain('--bg-primary: #090D16');
-    expect(indexCss).toContain('--bg-card: #0D1322');
-    expect(indexCss).toContain('--text-main: #F8FAFC');
-    expect(indexCss).toContain('--accent-indigo: #6366F1');
+    expect(indexCss).toContain('--bg-primary: #111E18');
+    expect(indexCss).toContain('--bg-card: #16241E');
+    expect(indexCss).toContain('--text-main: #F5F0E6');
+    expect(indexCss).toContain('--accent-indigo: #C8B48A');
   });
 
   it('implements responsive mobile header rules in App.css', () => {
@@ -41,6 +41,23 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
   it('implements bottom nav elevation and mobile safe area insets', () => {
     expect(appCss).toContain('safe-area-inset-bottom');
     expect(appCss).toContain('.mobile-bottom-nav');
+  });
+
+  it('prevents icon overlapping in auth modal inputs', () => {
+    expect(appCss).toMatch(/\.auth-input-wrapper\.input-with-icon input[\s\S]*padding-left:\s*40px/);
+    expect(appCss).toMatch(/\.auth-input-wrapper input#auth-password[\s\S]*padding-right:\s*42px/);
+  });
+
+  it('implements aligned, simplified hero banner styles', () => {
+    expect(appCss).toContain('.hero-badge-row');
+    expect(appCss).toContain('.hero-count-chip');
+    expect(appCss).toContain('.hero-actions');
+  });
+
+  it('implements clean, aligned health telemetry modal layout', () => {
+    expect(appCss).toContain('.services-telemetry-list');
+    expect(appCss).toContain('.service-status-pill');
+    expect(appCss).toContain('.telemetry-banner');
   });
 
   it('implements Stitch mobile responsiveness patterns and slide-up sheets', () => {

@@ -15,11 +15,11 @@ export default function HealthModal({
 
   const getServiceStatus = (serviceKey) => {
     const s = services[serviceKey];
-    if (!s) return { status: 'UNKNOWN', latency: 'N/A', isUp: false };
+    if (!s) return { status: 'Standby', latency: null, isUp: false };
     const isUp = s.status === 'UP';
     return {
-      status: s.status || 'UNKNOWN',
-      latency: s.latencyMs !== undefined ? `${s.latencyMs}ms` : 'N/A',
+      status: isUp ? 'Operational' : (s.status || 'Offline'),
+      latency: s.latencyMs !== undefined ? `${s.latencyMs}ms` : null,
       isUp,
       url: s.url || ''
     };
@@ -30,6 +30,45 @@ export default function HealthModal({
   const orderStatus = getServiceStatus('orderService');
   const gatewayUp = healthData?.gatewayStatus === 'UP';
 
+  const serviceList = [
+    {
+      id: 'gateway',
+      name: 'API Gateway',
+      desc: 'Reverse Proxy & Route Dispatcher',
+      icon: Server,
+      isUp: gatewayUp,
+      status: gatewayUp ? 'Operational' : 'Offline',
+      latency: gatewayUp ? '< 5ms' : null,
+    },
+    {
+      id: 'product',
+      name: 'Product Service',
+      desc: 'Spring Boot 3 • MySQL Catalog',
+      icon: Database,
+      isUp: productStatus.isUp,
+      status: productStatus.status,
+      latency: productStatus.latency,
+    },
+    {
+      id: 'cart',
+      name: 'Cart Service',
+      desc: 'Spring Boot 3 • Redis Cache',
+      icon: Zap,
+      isUp: cartStatus.isUp,
+      status: cartStatus.status,
+      latency: cartStatus.latency,
+    },
+    {
+      id: 'order',
+      name: 'Order Service',
+      desc: 'Spring Boot 3 • MySQL Transactions',
+      icon: Database,
+      isUp: orderStatus.isUp,
+      status: orderStatus.status,
+      latency: orderStatus.latency,
+    },
+  ];
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -39,8 +78,8 @@ export default function HealthModal({
       >
         <div className="modal-header">
           <div className="modal-title-row">
-            <Activity size={22} className="text-cyan" />
-            <h2 className="modal-title">Cloud Infrastructure & Microservices Telemetry</h2>
+            <Activity size={20} className="text-cyan" />
+            <h2 className="modal-title">System &amp; Service Telemetry</h2>
           </div>
           <button
             id="close-health-modal"
@@ -48,7 +87,7 @@ export default function HealthModal({
             onClick={onClose}
             aria-label="Close telemetry modal"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
@@ -57,20 +96,20 @@ export default function HealthModal({
           <div className="telemetry-item">
             <span className="telemetry-label">Cloud Platform</span>
             <div className="telemetry-val-row">
-              <Cloud size={16} className="text-primary" />
-              <strong>{healthData?.cloudProvider || 'AWS'} EKS Cluster</strong>
+              <Cloud size={15} className="text-primary" />
+              <span>{healthData?.cloudProvider || 'AWS'} EKS</span>
             </div>
           </div>
 
           <div className="telemetry-item">
             <span className="telemetry-label">Region</span>
-            <strong>{healthData?.awsRegion || 'us-east-1'}</strong>
+            <span className="telemetry-val">{healthData?.awsRegion || 'us-east-1'}</span>
           </div>
 
           <div className="telemetry-item">
             <span className="telemetry-label">Cluster Mode</span>
             <span className={`badge ${healthData?.connected ? 'badge-purple' : 'badge-warning'}`}>
-              {healthData?.connected ? 'Live Kubernetes Mesh' : 'Offline / Local Dev'}
+              {healthData?.connected ? 'Live Mesh' : 'Offline / Local Dev'}
             </span>
           </div>
 
@@ -78,109 +117,52 @@ export default function HealthModal({
             <span className="telemetry-label">Cluster Status</span>
             <span className={`badge ${isHealthy ? 'badge-success' : 'badge-warning'}`}>
               <span className={`pulse-dot ${isHealthy ? 'green' : 'amber'}`}></span>
-              {isHealthy ? 'ALL SYSTEMS OPERATIONAL' : 'DEGRADED / RECOVERING'}
+              {isHealthy ? 'Operational' : 'Degraded'}
             </span>
           </div>
         </div>
 
         {/* Microservices Matrix */}
-        <div className="services-telemetry-grid">
-          {/* API Gateway */}
-          <div className="service-card glass-card">
-            <div className="service-card-top">
-              <div className="service-icon-box gateway">
-                <Server size={18} />
+        <div className="services-telemetry-list">
+          {serviceList.map((srv) => (
+            <div className="service-card glass-card" key={srv.id}>
+              <div className="service-info-row">
+                <div className={`service-icon-box ${srv.id}`}>
+                  <srv.icon size={17} />
+                </div>
+                <div className="service-text">
+                  <h4 className="service-name">{srv.name}</h4>
+                  <span className="service-desc">{srv.desc}</span>
+                </div>
               </div>
-              <div>
-                <h4 className="service-name">API Gateway</h4>
-                <span className="service-port">Reverse Proxy & Route Dispatcher</span>
-              </div>
-            </div>
-            <div className="service-status-pill">
-              <span className={`status-badge-text ${gatewayUp ? 'text-emerald' : 'text-rose'}`}>
-                {gatewayUp ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                {gatewayUp ? ' UP' : ' DOWN'}
-              </span>
-              <span className="service-latency">{gatewayUp ? 'Connected' : 'Unreachable'}</span>
-            </div>
-          </div>
-
-          {/* Product Service */}
-          <div className="service-card glass-card">
-            <div className="service-card-top">
-              <div className="service-icon-box product">
-                <Database size={18} />
-              </div>
-              <div>
-                <h4 className="service-name">Product Service</h4>
-                <span className="service-port">Spring Boot 3 • MySQL Catalog</span>
+              <div className="service-status-cluster">
+                <span className={`service-status-pill ${srv.isUp ? 'status-up' : srv.status === 'Standby' ? 'status-standby' : 'status-down'}`}>
+                  {srv.isUp ? <CheckCircle2 size={13} /> : <AlertCircle size={13} />}
+                  <span>{srv.status}</span>
+                </span>
+                {srv.latency && (
+                  <span className="service-latency-pill">{srv.latency}</span>
+                )}
               </div>
             </div>
-            <div className="service-status-pill">
-              <span className={`status-badge-text ${productStatus.isUp ? 'text-emerald' : 'text-rose'}`}>
-                {productStatus.isUp ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                {productStatus.status}
-              </span>
-              <span className="service-latency">{productStatus.latency}</span>
-            </div>
-          </div>
-
-          {/* Cart Service */}
-          <div className="service-card glass-card">
-            <div className="service-card-top">
-              <div className="service-icon-box cart">
-                <Zap size={18} />
-              </div>
-              <div>
-                <h4 className="service-name">Cart Service</h4>
-                <span className="service-port">Spring Boot 3 • Redis In-Memory Cache</span>
-              </div>
-            </div>
-            <div className="service-status-pill">
-              <span className={`status-badge-text ${cartStatus.isUp ? 'text-emerald' : 'text-rose'}`}>
-                {cartStatus.isUp ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                {cartStatus.status}
-              </span>
-              <span className="service-latency">{cartStatus.latency}</span>
-            </div>
-          </div>
-
-          {/* Order Service */}
-          <div className="service-card glass-card">
-            <div className="service-card-top">
-              <div className="service-icon-box order">
-                <Database size={18} />
-              </div>
-              <div>
-                <h4 className="service-name">Order Service</h4>
-                <span className="service-port">Spring Boot 3 • MySQL Transactions & Auth</span>
-              </div>
-            </div>
-            <div className="service-status-pill">
-              <span className={`status-badge-text ${orderStatus.isUp ? 'text-emerald' : 'text-rose'}`}>
-                {orderStatus.isUp ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                {orderStatus.status}
-              </span>
-              <span className="service-latency">{orderStatus.latency}</span>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Telemetry Footer Controls */}
         <div className="telemetry-footer">
-          <div className="telemetry-timestamp">
-            <span>Last cluster poll: {healthData?.timestamp ? new Date(healthData.timestamp).toLocaleTimeString() : 'Just now'}</span>
-          </div>
+          <span className="telemetry-timestamp">
+            Last checked: {healthData?.timestamp ? new Date(healthData.timestamp).toLocaleTimeString() : 'Just now'}
+          </span>
 
           <button
             id="refresh-telemetry-btn"
-            className="btn btn-secondary"
+            className="btn btn-secondary telemetry-refresh-btn"
             onClick={onRefresh}
             disabled={isRefreshing}
             title="Poll cluster health endpoints"
           >
-            <RefreshCw size={15} className={isRefreshing ? 'spin' : ''} />
-            <span>{isRefreshing ? 'Querying Pods...' : 'Poll Health Actuators'}</span>
+            <RefreshCw size={14} className={isRefreshing ? 'spin' : ''} />
+            <span>{isRefreshing ? 'Checking...' : 'Refresh Status'}</span>
           </button>
         </div>
       </div>

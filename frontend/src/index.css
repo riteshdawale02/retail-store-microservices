@@ -1,6 +1,6 @@
 /* ==========================================================================
-   NOVA Storefront Design System & Global Styles
-   Minimal, Clean & E-Commerce First Experience
+   CloudRetail Storefront Design System & Global Styles
+   Forest & Botanical Organic Palette (#1F3A2F, #7F8C6A, #C8B48A, #F5F0E6)
    ========================================================================== */
 
 :root {
@@ -8,42 +8,42 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
 
-  /* Stitch AI Premium Cosmic Slate Palette (Deep Space Slate, Linear/Apple Refined Theme) */
-  --bg-primary: #090D16;
-  --bg-secondary: #0B0F19;
-  --bg-tertiary: #131B2E;
-  --bg-card: #0D1322;
-  --bg-card-hover: #131B2E;
-  --bg-overlay: rgba(9, 13, 22, 0.85);
-  --bg-input: #0B0F19;
+  /* Deep Forest & Botanical Palette */
+  --bg-primary: #111E18;
+  --bg-secondary: #172821;
+  --bg-tertiary: #1F3A2F;
+  --bg-card: #16241E;
+  --bg-card-hover: #1F3A2F;
+  --bg-overlay: rgba(17, 30, 24, 0.88);
+  --bg-input: #111E18;
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: #1E293B;
-  --border-focus: #6366F1;
-  --border-highlight: rgba(99, 102, 241, 0.35);
+  --border-subtle: rgba(245, 240, 230, 0.1);
+  --border-strong: #2A4438;
+  --border-focus: #C8B48A;
+  --border-highlight: rgba(200, 180, 138, 0.35);
 
-  --primary: #6366F1;
+  --primary: #7F8C6A;
   --primary-contrast: #FFFFFF;
-  --primary-hover: #4F46E5;
-  --primary-glow: rgba(99, 102, 241, 0.25);
+  --primary-hover: #6E7C5A;
+  --primary-glow: rgba(127, 140, 106, 0.3);
 
-  --accent-indigo: #6366F1;
-  --accent-indigo-hover: #4F46E5;
-  --accent-indigo-glow: rgba(99, 102, 241, 0.25);
-  --accent-cyan-bright: #38BDF8;
+  --accent-indigo: #C8B48A;
+  --accent-indigo-hover: #D8C7A0;
+  --accent-indigo-glow: rgba(200, 180, 138, 0.25);
+  --accent-cyan-bright: #A3B899;
 
-  --accent-emerald: #10B981;
-  --accent-amber: #F59E0B;
-  --accent-rose: #EF4444;
-  --accent-cyan: #38BDF8;
+  --accent-emerald: #7F8C6A;
+  --accent-amber: #C8B48A;
+  --accent-rose: #E06C6C;
+  --accent-cyan: #98AA84;
 
-  --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
-  --text-subtle: #64748B;
+  --text-main: #F5F0E6;
+  --text-muted: #B8C2B3;
+  --text-subtle: #82917D;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(99, 102, 241, 0.06);
-  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(99, 102, 241, 0.1);
+  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(127, 140, 106, 0.08);
+  --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(127, 140, 106, 0.12);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -56,47 +56,48 @@
   --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Mode (Crisp White / Minimal Charcoal) */
+/* Light Mode (Warm Cream & Forest Pine) */
 [data-theme="light"],
 .light-theme {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-card: #ffffff;
-  --bg-overlay: rgba(0, 0, 0, 0.45);
-  --bg-input: #ffffff;
+  --bg-primary: #F5F0E6;
+  --bg-secondary: #ECE5D8;
+  --bg-tertiary: #E2DACB;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FAF7F2;
+  --bg-overlay: rgba(31, 58, 47, 0.45);
+  --bg-input: #FFFFFF;
 
-  --border-subtle: #e5e7eb;
-  --border-strong: #d1d5db;
-  --border-focus: #111827;
-  --border-highlight: #cbd5e1;
+  --border-subtle: #DCD4C4;
+  --border-strong: #C4BAA6;
+  --border-focus: #1F3A2F;
+  --border-highlight: rgba(31, 58, 47, 0.25);
 
-  --primary: #111827;
-  --primary-contrast: #ffffff;
-  --primary-hover: #000000;
-  --primary-glow: rgba(0, 0, 0, 0.05);
+  --primary: #1F3A2F;
+  --primary-contrast: #F5F0E6;
+  --primary-hover: #14271F;
+  --primary-glow: rgba(31, 58, 47, 0.15);
 
-  --accent-indigo: #4f46e5;
-  --accent-indigo-hover: #4338ca;
-  --accent-indigo-glow: rgba(79, 70, 229, 0.15);
-  --accent-cyan-bright: #0284c7;
+  --accent-indigo: #1F3A2F;
+  --accent-indigo-hover: #14271F;
+  --accent-indigo-glow: rgba(31, 58, 47, 0.15);
+  --accent-cyan-bright: #7F8C6A;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Geist', var(--font-sans);
   --card-radius: 12px;
   --control-radius: 8px;
 
-  --accent-emerald: #059669;
-  --accent-amber: #d97706;
-  --accent-rose: #e11d48;
-  --accent-cyan: #0284c7;
+  --accent-emerald: #527058;
+  --accent-amber: #C8B48A;
+  --accent-rose: #C04D4D;
+  --accent-cyan: #7F8C6A;
 
-  --text-main: #111827;
-  --text-muted: #4b5563;
-  --text-subtle: #6b7280;
+  --text-main: #1F3A2F;
+  --text-muted: #5C6E5F;
+  --text-subtle: #7F8C6A;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(31, 58, 47, 0.05);
+  --shadow-md: 0 4px 12px rgba(31, 58, 47, 0.08);
+  --shadow-lg: 0 12px 24px rgba(31, 58, 47, 0.1);
 }
 
 /* Reset & Global Elements */
@@ -122,8 +123,8 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-primary);
   background-image:
-    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(99, 102, 241, 0.12), transparent),
-    radial-gradient(circle 500px at 100% 15%, rgba(56, 189, 248, 0.05), transparent);
+    radial-gradient(ellipse 90% 45% at 50% -12%, rgba(127, 140, 106, 0.15), transparent),
+    radial-gradient(circle 500px at 100% 15%, rgba(200, 180, 138, 0.08), transparent);
   background-attachment: fixed;
   color: var(--text-main);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -143,7 +144,7 @@ body {
 [data-theme="light"] body,
 .light-theme body {
   background-image:
-    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(99, 102, 241, 0.04), transparent);
+    radial-gradient(ellipse 80% 35% at 50% -10%, rgba(127, 140, 106, 0.06), transparent);
 }
 
 h1, h2, h3, h4, h5, h6 {
