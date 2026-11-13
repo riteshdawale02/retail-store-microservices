@@ -31,15 +31,10 @@ export default function Navbar({
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           role="button"
           tabIndex={0}
-          title="CloudRetail - Return to Home"
+          title="Return to Home"
+          aria-label="Home"
         >
-          <div className="brand-icon-box">
-            <ShoppingBag size={19} strokeWidth={2.2} />
-          </div>
-          <div className="brand-text-cluster">
-            <span className="brand-title">CloudRetail</span>
-            <span className="brand-subtitle">Microservices Platform</span>
-          </div>
+          <img src="/logo.png" alt="Logo" className="brand-logo-img" />
         </div>
 
         {/* Search Bar */}

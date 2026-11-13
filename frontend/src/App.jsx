@@ -419,7 +419,7 @@ export default function App() {
         <div className="app-container footer-content">
           <div className="footer-col brand-col">
             <div className="footer-brand">
-              <span className="footer-brand-title">CloudRetail</span>
+              <img src="/logo.png" alt="Logo" className="footer-brand-logo-img" />
             </div>
             <p className="footer-tagline">
               Curated everyday essentials, electronics, and lifestyle goods designed for modern simplicity.

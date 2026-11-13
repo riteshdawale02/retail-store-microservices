@@ -40,39 +40,26 @@
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
+  transition: transform var(--transition-fast);
 }
 
-.brand-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+.brand-logo:hover {
+  transform: scale(1.05);
 }
 
-.brand-text-cluster {
-  display: flex;
-  flex-direction: column;
+.brand-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
-.brand-title {
-  font-size: 1.18rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--text-main);
-  line-height: 1.1;
-}
-
-.brand-subtitle {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+.footer-brand-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 8px;
 }
 
 /* Search Bar (Amazon / Flipkart Style Minimalist Search) */
@@ -2046,18 +2033,8 @@
     gap: 8px;
   }
 
-  .brand-icon-box {
-    width: 32px;
-    height: 32px;
-  }
-
-  .brand-title {
-    font-size: 1.15rem;
-    font-weight: 800;
-  }
-
-  .brand-subtitle {
-    display: none !important;
+  .brand-logo-img {
+    height: 38px;
   }
 
   .nav-actions {
@@ -2431,11 +2408,8 @@
 
 /* Small Phones (<= 480px) */
 @media (max-width: 480px) {
-  .brand-subtitle {
-    display: none;
-  }
-  .brand-title {
-    font-size: 1.1rem;
+  .brand-logo-img {
+    height: 34px;
   }
   .hero-simple-card {
     padding: 20px 16px;
