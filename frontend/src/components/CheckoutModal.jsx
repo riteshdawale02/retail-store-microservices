@@ -109,12 +109,13 @@ export default function CheckoutModal({
 
         {/* Body Form */}
         <form onSubmit={handleSubmit} className="checkout-form">
-          <div className="form-grid">
-            {/* Customer Information */}
-            <div className="form-section">
-              <h3 className="section-subtitle">
-                <Truck size={16} /> Shipping Details
-              </h3>
+          <div className="checkout-grid">
+            {/* Left Column: Customer Information & Payment */}
+            <div className="checkout-left-col">
+              <div className="checkout-section-header">
+                <Truck size={17} className="text-primary" />
+                <h3>Shipping Details</h3>
+              </div>
 
               <div className="form-group">
                 <label htmlFor="customer-name-input">Full Name *</label>
@@ -157,9 +158,11 @@ export default function CheckoutModal({
 
               {/* Payment Gateway Method Selection */}
               <div className="checkout-payment-section">
-                <h3 className="section-subtitle">
-                  <ShieldCheck size={16} /> Payment Method
-                </h3>
+                <div className="checkout-section-header">
+                  <ShieldCheck size={17} className="text-primary" />
+                  <h3>Payment Method</h3>
+                </div>
+
                 <div className="checkout-payment-selector">
                   <button
                     type="button"
@@ -217,7 +220,7 @@ export default function CheckoutModal({
                         <input
                           id="card-cvv-input"
                           type="password"
-                          placeholder="•••"
+                          placeholder="889"
                           value={formData.cardCvv}
                           maxLength={4}
                           onChange={(e) => setFormData({ ...formData, cardCvv: e.target.value })}
@@ -246,86 +249,106 @@ export default function CheckoutModal({
 
                 {formData.paymentMethod === 'COD' && (
                   <div className="checkout-payment-box checkout-cod-note">
-                    <span>Cash or UPI payment will be collected by courier upon doorstep delivery.</span>
+                    <span>Cash or UPI will be collected upon doorstep delivery.</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Order Review */}
-            <div className="form-section order-review-box glass-card">
-              <h3 className="section-subtitle">
-                <PackageCheck size={16} /> Order Summary ({items.length} {items.length === 1 ? 'item' : 'items'})
-              </h3>
-
-              <div className="checkout-items-preview">
-                {items.map((item) => (
-                  <div key={item.productId} className="checkout-item-preview-row">
-                    <span className="preview-name">{item.productName} <span className="preview-qty">× {item.quantity}</span></span>
-                    <span className="preview-price">${Number(item.subtotal || item.unitPrice * item.quantity).toFixed(2)}</span>
+            {/* Right Column: Order Summary & Action */}
+            <div className="checkout-right-col">
+              <div className="checkout-summary-card">
+                <div className="checkout-summary-header">
+                  <div className="summary-title-group">
+                    <PackageCheck size={17} className="text-primary" />
+                    <h3>Order Summary</h3>
                   </div>
-                ))}
-              </div>
+                  <span className="summary-count-badge">
+                    {items.length} {items.length === 1 ? 'item' : 'items'}
+                  </span>
+                </div>
 
-              <div className="checkout-price-divider"></div>
+                <div className="checkout-items-preview">
+                  {items.map((item) => (
+                    <div key={item.productId} className="checkout-item-preview-row">
+                      <div className="preview-item-info">
+                        {item.imageUrl && (
+                          <img src={item.imageUrl} alt={item.productName} className="checkout-item-thumb" />
+                        )}
+                        <div className="preview-item-texts">
+                          <span className="preview-name">{item.productName}</span>
+                          <span className="preview-qty">Qty: {item.quantity}</span>
+                        </div>
+                      </div>
+                      <span className="preview-price">
+                        ${Number(item.subtotal || item.unitPrice * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
 
-              <div className="checkout-subtotal-row">
-                <span>Subtotal</span>
-                <span>${totalAmount.toFixed(2)}</span>
-              </div>
-              <div className="checkout-subtotal-row">
-                <span>Shipping</span>
-                <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
-                  {totalAmount >= 50 ? 'FREE' : '$4.99'}
-                </span>
-              </div>
-              <div className="checkout-subtotal-row">
-                <span>Estimated Tax (8%)</span>
-                <span>${(totalAmount * 0.08).toFixed(2)}</span>
-              </div>
+                <div className="checkout-price-divider"></div>
 
-              <div className="checkout-price-divider"></div>
+                <div className="checkout-subtotal-row">
+                  <span>Subtotal</span>
+                  <span>${totalAmount.toFixed(2)}</span>
+                </div>
+                <div className="checkout-subtotal-row">
+                  <span>Shipping</span>
+                  <span className={totalAmount >= 50 ? 'text-emerald' : ''}>
+                    {totalAmount >= 50 ? 'FREE' : '$4.99'}
+                  </span>
+                </div>
+                <div className="checkout-subtotal-row">
+                  <span>Estimated Tax (8%)</span>
+                  <span>${(totalAmount * 0.08).toFixed(2)}</span>
+                </div>
 
-              <div className="checkout-total-row">
-                <span className="total-label">Total Due</span>
-                <span className="total-amount">${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)}</span>
-              </div>
+                <div className="checkout-price-divider"></div>
 
-              <div className="checkout-telemetry-note">
-                <ShieldCheck size={14} className="text-emerald" />
-                <span>Secure 256-Bit Encrypted Checkout</span>
+                <div className="checkout-total-row">
+                  <span className="total-label">Total Due</span>
+                  <span className="total-amount">
+                    ${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="checkout-cta-group">
+                  <button
+                    id="confirm-place-order-btn"
+                    type="submit"
+                    className="btn btn-primary checkout-submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-small"></span>
+                        <span>{processingStep || 'Processing Order...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 size={18} />
+                        <span>Pay & Place Order (${(totalAmount + (totalAmount >= 50 ? 0 : 4.99) + (totalAmount * 0.08)).toFixed(2)})</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    className="checkout-cancel-link"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                  >
+                    Cancel and return to store
+                  </button>
+                </div>
+
+                <div className="checkout-telemetry-note">
+                  <ShieldCheck size={14} className="text-emerald" />
+                  <span>Secure 256-Bit Encrypted Checkout</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Footer Action */}
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              id="confirm-place-order-btn"
-              type="submit"
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner-small"></span>
-                  <span>{processingStep || 'Processing Order...'}</span>
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 size={18} />
-                  <span>Pay & Place Order (${totalAmount.toFixed(2)})</span>
-                </>
-              )}
-            </button>
           </div>
         </form>
       </div>
