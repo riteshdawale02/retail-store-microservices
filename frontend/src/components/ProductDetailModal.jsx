@@ -8,7 +8,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
 
   if (!product) return null;
 
-  const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 30;
+  const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 10;
   const isOutOfStock = product.stockQuantity <= 0;
 
   const handleAdd = async () => {
@@ -80,7 +80,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
               {isOutOfStock ? (
                 <span className="badge badge-warning">Out of Stock</span>
               ) : isLowStock ? (
-                <span className="badge badge-warning">Low Stock ({product.stockQuantity} remaining)</span>
+                <span className="badge badge-warning">Only {product.stockQuantity} Left</span>
               ) : (
                 <span className="badge badge-success">In Stock ({product.stockQuantity} available)</span>
               )}
@@ -109,15 +109,19 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
               <div className="detail-actions">
                 <div className="detail-quantity-box">
                   <button
+                    type="button"
                     className="qty-btn"
                     onClick={() => setQty(Math.max(1, qty - 1))}
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
                   <span className="detail-qty-num">{qty}</span>
                   <button
+                    type="button"
                     className="qty-btn"
                     onClick={() => setQty(Math.min(product.stockQuantity, qty + 1))}
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>

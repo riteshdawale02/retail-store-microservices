@@ -374,7 +374,7 @@ export default function App() {
             <div className="retailer-alert-strip glass-card animate-fade">
               <div className="retailer-strip-left">
                 <span className="badge badge-warning">Merchant Mode Active</span>
-                <p>You have merchant permissions to publish new products, modify pricing, and delete items from catalog.</p>
+                <p>You have merchant permissions to publish new products, update inventory, and manage catalog items.</p>
               </div>
               <button
                 className="btn btn-primary"

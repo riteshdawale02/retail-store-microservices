@@ -14,7 +14,7 @@ export default function OrdersModal({ isOpen, onClose, orders, isLoading }) {
         <div className="modal-header">
           <div className="modal-title-row">
             <Package size={22} className="text-primary" />
-            <h2 className="modal-title">My Orders History</h2>
+            <h2 className="modal-title">Order History</h2>
           </div>
           <button
             id="close-orders-modal"
