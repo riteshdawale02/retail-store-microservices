@@ -39,12 +39,15 @@ describe('Frontend API Service & Utilities', () => {
       expect(FALLBACK_PRODUCTS.length).toBe(100);
     });
 
-    it('every product has required properties with valid types and realistic images', () => {
+    it('every product has required properties with valid types and realistic images with zero duplicates', () => {
       const uniqueIds = new Set();
+      const uniqueUrls = new Set();
       FALLBACK_PRODUCTS.forEach((product) => {
         expect(product.id).toBeTypeOf('number');
         expect(uniqueIds.has(product.id)).toBe(false);
         uniqueIds.add(product.id);
+        expect(uniqueUrls.has(product.imageUrl)).toBe(false);
+        uniqueUrls.add(product.imageUrl);
         expect(product.name).toBeTypeOf('string');
         expect(product.name.trim().length).toBeGreaterThan(3);
         expect(product.price).toBeGreaterThan(0);
@@ -54,6 +57,7 @@ describe('Frontend API Service & Utilities', () => {
         expect(product.rating).toBeGreaterThanOrEqual(4.0);
         expect(product.reviewCount).toBeGreaterThan(0);
       });
+      expect(uniqueUrls.size).toBe(100);
     });
   });
 

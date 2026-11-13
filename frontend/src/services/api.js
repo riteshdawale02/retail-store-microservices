@@ -81,7 +81,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 189.0,
     "stockQuantity": 67,
     "category": "Computing",
-    "imageUrl": "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 68
   },
@@ -268,7 +268,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 219.0,
     "stockQuantity": 26,
     "category": "Audio",
-    "imageUrl": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=600&auto=format&fit=crop&q=80",
     "rating": 4.5,
     "reviewCount": 82
   },
@@ -279,7 +279,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 42.0,
     "stockQuantity": 33,
     "category": "Audio",
-    "imageUrl": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 91
   },
@@ -290,7 +290,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 39.5,
     "stockQuantity": 40,
     "category": "Audio",
-    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&auto=format&fit=crop&q=80",
     "rating": 4.5,
     "reviewCount": 47
   },
@@ -378,7 +378,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 28.0,
     "stockQuantity": 96,
     "category": "Peripherals",
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=600&auto=format&fit=crop&q=80",
     "rating": 4.9,
     "reviewCount": 83
   },
@@ -389,7 +389,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 24.5,
     "stockQuantity": 103,
     "category": "Peripherals",
-    "imageUrl": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 165
   },
@@ -400,7 +400,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 59.0,
     "stockQuantity": 30,
     "category": "Peripherals",
-    "imageUrl": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1517059224940-d4af9eec41b7?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 77
   },
@@ -411,7 +411,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 49.0,
     "stockQuantity": 37,
     "category": "Peripherals",
-    "imageUrl": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&auto=format&fit=crop&q=80",
     "rating": 4.5,
     "reviewCount": 31
   },
@@ -422,7 +422,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 19.99,
     "stockQuantity": 44,
     "category": "Peripherals",
-    "imageUrl": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 65
   },
@@ -521,7 +521,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 219.0,
     "stockQuantity": 27,
     "category": "Photography",
-    "imageUrl": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 85
   },
@@ -532,7 +532,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 89.0,
     "stockQuantity": 34,
     "category": "Photography",
-    "imageUrl": "https://images.unsplash.com/photo-1607462109225-6b64ae2dd3cb?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1500634245200-e5245c7574ef?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 67
   },
@@ -543,7 +543,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 79.99,
     "stockQuantity": 41,
     "category": "Photography",
-    "imageUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1495707902641-75cac38802fc?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 98
   },
@@ -554,7 +554,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 119.0,
     "stockQuantity": 48,
     "category": "Photography",
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 134
   },
@@ -565,7 +565,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 139.0,
     "stockQuantity": 55,
     "category": "Photography",
-    "imageUrl": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 120
   },
@@ -609,7 +609,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 279.0,
     "stockQuantity": 83,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 74
   },
@@ -620,7 +620,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 45.0,
     "stockQuantity": 90,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 95
   },
@@ -631,7 +631,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 389.0,
     "stockQuantity": 97,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 63
   },
@@ -642,7 +642,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 299.0,
     "stockQuantity": 104,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=600&auto=format&fit=crop&q=80",
     "rating": 4.9,
     "reviewCount": 128
   },
@@ -653,7 +653,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 29.0,
     "stockQuantity": 31,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 210
   },
@@ -664,7 +664,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 99.0,
     "stockQuantity": 38,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&auto=format&fit=crop&q=80",
     "rating": 4.5,
     "reviewCount": 87
   },
@@ -675,7 +675,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 189.0,
     "stockQuantity": 45,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 72
   },
@@ -686,7 +686,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 68.0,
     "stockQuantity": 52,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1539185441755-769473a23570?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 54
   },
@@ -697,7 +697,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 39.0,
     "stockQuantity": 59,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 140
   },
@@ -708,7 +708,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 32.0,
     "stockQuantity": 66,
     "category": "Wearables",
-    "imageUrl": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 180
   },
@@ -785,7 +785,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 54.0,
     "stockQuantity": 35,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 86
   },
@@ -796,7 +796,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 69.0,
     "stockQuantity": 42,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 220
   },
@@ -807,7 +807,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 35.0,
     "stockQuantity": 49,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1580481077111-e6e24177f154?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1584905066893-7d5c142ba4e1?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 94
   },
@@ -818,7 +818,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 32.0,
     "stockQuantity": 56,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1580481077111-e6e24177f154?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 68
   },
@@ -829,7 +829,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 399.0,
     "stockQuantity": 63,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
     "rating": 4.9,
     "reviewCount": 104
   },
@@ -840,7 +840,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 49.0,
     "stockQuantity": 70,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1585338107529-13afc5f02586?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 160
   },
@@ -851,7 +851,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 42.0,
     "stockQuantity": 77,
     "category": "Workspace",
-    "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 78
   },
@@ -939,7 +939,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 28.0,
     "stockQuantity": 53,
     "category": "Lifestyle",
-    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 114
   },
@@ -950,7 +950,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 119.0,
     "stockQuantity": 60,
     "category": "Lifestyle",
-    "imageUrl": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&auto=format&fit=crop&q=80",
     "rating": 4.9,
     "reviewCount": 155
   },
@@ -961,7 +961,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 46.0,
     "stockQuantity": 67,
     "category": "Lifestyle",
-    "imageUrl": "https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=600&auto=format&fit=crop&q=80",
     "rating": 4.6,
     "reviewCount": 94
   },
@@ -972,7 +972,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 38.0,
     "stockQuantity": 74,
     "category": "Lifestyle",
-    "imageUrl": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 168
   },
@@ -983,7 +983,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 39.0,
     "stockQuantity": 81,
     "category": "Lifestyle",
-    "imageUrl": "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1518832553480-cd0e625ed3e6?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 122
   },
@@ -1071,7 +1071,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 29.0,
     "stockQuantity": 57,
     "category": "Accessories",
-    "imageUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 94
   },
@@ -1082,7 +1082,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 38.0,
     "stockQuantity": 64,
     "category": "Accessories",
-    "imageUrl": "https://images.unsplash.com/photo-1580481077111-e6e24177f154?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 126
   },
@@ -1093,7 +1093,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 22.0,
     "stockQuantity": 71,
     "category": "Accessories",
-    "imageUrl": "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=80",
     "rating": 4.9,
     "reviewCount": 310
   },
@@ -1104,7 +1104,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 98.0,
     "stockQuantity": 78,
     "category": "Accessories",
-    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1547949003-9792a18a2601?w=600&auto=format&fit=crop&q=80",
     "rating": 4.7,
     "reviewCount": 85
   },
@@ -1115,7 +1115,7 @@ export const FALLBACK_PRODUCTS = [
     "price": 18.0,
     "stockQuantity": 85,
     "category": "Accessories",
-    "imageUrl": "https://images.unsplash.com/photo-1546938576-6e6a64f317cc?w=600&auto=format&fit=crop&q=80",
+    "imageUrl": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&auto=format&fit=crop&q=80",
     "rating": 4.8,
     "reviewCount": 62
   }
