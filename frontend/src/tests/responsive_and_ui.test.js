@@ -70,8 +70,10 @@ describe('CloudRetail Theme Tokens & Stylesheets', () => {
   });
 
   it('implements streamlined checkout and receipt modal styling', () => {
+    expect(appCss).toContain('.checkout-modal-box');
     expect(appCss).toContain('.checkout-payment-selector');
     expect(appCss).toContain('.checkout-payment-tab');
+    expect(appCss).toContain('.product-detail-modal-box');
     expect(appCss).toContain('.receipt-items-container');
     expect(appCss).toContain('.receipt-item-row');
     expect(appCss).toContain('.receipt-item-qty-badge');
@@ -108,6 +110,11 @@ describe('Component Module Integrity', () => {
 
   it('exports ProductCard component', async () => {
     const mod = await import('../components/ProductCard.jsx');
+    expect(mod.default).toBeDefined();
+  });
+
+  it('exports ProductDetailModal component', async () => {
+    const mod = await import('../components/ProductDetailModal.jsx');
     expect(mod.default).toBeDefined();
   });
 

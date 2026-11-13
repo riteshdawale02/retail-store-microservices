@@ -81,9 +81,8 @@ export default function CheckoutModal({
     <div className="modal-overlay" onClick={onClose}>
       <div
         id="checkout-modal-container"
-        className="modal-box glass-panel animate-fade"
+        className="modal-box glass-panel animate-fade checkout-modal-box"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '640px' }}
       >
         {/* Header */}
         <div className="modal-header">

@@ -30,7 +30,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     <div className="modal-overlay" onClick={onClose}>
       <div
         id="product-detail-modal"
-        className="modal-box glass-panel animate-fade product-detail-modal"
+        className="modal-box glass-panel animate-fade product-detail-modal-box"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -90,7 +90,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
 
             <div className="detail-perks">
               <div className="perk-item">
-                <Truck size={16} className="text-cyan" />
+                <Truck size={16} className="text-primary" />
                 <span>Free expedited standard delivery</span>
               </div>
               <div className="perk-item">
@@ -99,11 +99,9 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
               </div>
             </div>
 
-            <div className="detail-telemetry-badge">
-              <span className="beacon-indicator">
-                <span className="beacon-core"></span>
-              </span>
-              <span>Dispatched via Order Microservice • Sub-15ms sync</span>
+            <div className="detail-trust-guarantee">
+              <span className="status-dot dot-online" />
+              <span>In Stock & Ready to Ship • Free 30-Day Hassle-Free Returns</span>
             </div>
 
             {/* Quantity and CTA */}
